@@ -6,6 +6,17 @@
 
 int fruit_amount;
 
+std::vector<int> get_true_indices(std::vector<bool> items)
+{
+    std::vector<int> result;
+    for (int idx = 0; idx < items.size(); idx++)
+    {
+        if (items[idx])
+            result.push_back(idx);
+    }
+    return result;
+}
+
 class LookupTable
 {
 private:
@@ -96,6 +107,8 @@ private:
 
 public:
     const int get_id() const { return id; }
+    const std::vector<std::vector<bool>> get_allowed_fruits() const { return allowed_fruit_sets; }
+    const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
 
     Stand(int id)
         : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount)
@@ -136,9 +149,6 @@ public:
     //         if (!already_allocated_fruits[idx] &&)
     //     }
     // }
-
-    const std::vector<std::vector<bool>> get_allowed_fruits() const { return allowed_fruit_sets; }
-    const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
 };
 
 int read_file(const char *file_path, std::vector<int> &requested_fruits, std::vector<Stick> &sticks)
@@ -268,23 +278,25 @@ int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
         stands.push_back(this_stand);
     }
 
-#if 0
+#ifdef DEBUG
     std::cout << "Stands:" << std::endl;
     for (Stand stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
-        for (std::vector<int> stick : stand.get_allowed_fruits())
+        for (std::vector<bool> stick : stand.get_allowed_fruits())
         {
-            for (int fruit : stick)
+            for (int fruit : get_true_indices(stick))
                 std::cout << fruit << " ";
             std::cout << " | ";
         }
         std::cout << "\t\t\t| ";
-        for (int fruit : stand.get_disallowed_fruits())
+        for (int fruit : get_true_indices(stand.get_disallowed_fruits()))
             std::cout << fruit << " ";
         std::cout << std::endl;
     }
 #endif
+
+    
     return 0;
 }
 
