@@ -11,11 +11,6 @@ int LookupTable::add_item(std::string value)
     return match - items.begin();
 }
 
-const std::vector<std::string> &LookupTable::get_values() const
-{
-    return items;
-}
-
 // todo: get std::optional working
 const std::string LookupTable::get_value(int key) const
 {

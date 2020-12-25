@@ -15,7 +15,7 @@ public:
     // or when the value is already included only return the key
     int add_item(std::string value);
 
-    const std::vector<std::string> &get_values() const;
+    const std::vector<std::string> &get_values() const { return items; }
 
     // todo: get std::optional working
     const std::string get_value(int key) const;
