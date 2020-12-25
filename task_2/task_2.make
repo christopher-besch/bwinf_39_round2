@@ -63,14 +63,8 @@ endif
 GENERATED :=
 OBJECTS :=
 
-GENERATED += $(OBJDIR)/LookupTable.o
 GENERATED += $(OBJDIR)/Main.o
-GENERATED += $(OBJDIR)/Stand.o
-GENERATED += $(OBJDIR)/Stick.o
-OBJECTS += $(OBJDIR)/LookupTable.o
 OBJECTS += $(OBJDIR)/Main.o
-OBJECTS += $(OBJDIR)/Stand.o
-OBJECTS += $(OBJDIR)/Stick.o
 
 # Rules
 # #############################################
@@ -134,16 +128,7 @@ endif
 # File Rules
 # #############################################
 
-$(OBJDIR)/LookupTable.o: src/LookupTable.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Main.o: src/Main.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Stand.o: src/Stand.cpp
-	@echo $(notdir $<)
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Stick.o: src/Stick.cpp
 	@echo $(notdir $<)
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 
