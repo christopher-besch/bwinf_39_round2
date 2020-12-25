@@ -17,6 +17,14 @@ std::vector<int> get_true_indices(std::vector<bool> items)
     return result;
 }
 
+int get_amount_trues(std::vector<bool> items)
+{
+    int amount = 0;
+    for (bool item : items)
+        amount++;
+    return amount;
+}
+
 class LookupTable
 {
 private:
@@ -107,8 +115,9 @@ private:
 
 public:
     const int get_id() const { return id; }
-    const std::vector<std::vector<bool>> get_allowed_fruits() const { return allowed_fruit_sets; }
+    const std::vector<std::vector<bool>> get_allowed_fruit_sets() const { return allowed_fruit_sets; }
     const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
+    const std::vector<bool> get_legal_fruits() const { return legal_fruits; }
 
     Stand(int id)
         : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount)
@@ -137,18 +146,19 @@ public:
         }
     }
 
+    void add_legal_fruit(int fruit)
+    {
+        legal_fruits[fruit] = true;
+    }
+    void remove_legal_fruit(int fruit)
+    {
+        legal_fruits[fruit] = false;
+    }
+
     bool is_disallowed_fruit(int fruit)
     {
         return disallowed_fruits[fruit];
     }
-
-    // void determine_legal_fruits(std::vector<bool> already_allocated_fruits)
-    // {
-    //     for (int idx = 0; idx < legal_fruit_flags.size(); idx++)
-    //     {
-    //         if (!already_allocated_fruits[idx] &&)
-    //     }
-    // }
 };
 
 int read_file(const char *file_path, std::vector<int> &requested_fruits, std::vector<Stick> &sticks)
@@ -278,25 +288,52 @@ int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
         stands.push_back(this_stand);
     }
 
+    std::vector<bool> already_allocated_fruits(fruit_amount);
+    for (bool fruit : already_allocated_fruits)
+        fruit = false;
+
+    // todo: why is Stand stand : stands not working?
+    for (int stand_idx = 0; stand_idx < stands.size(); stand_idx++)
+    {
+        for (int idx = 0; idx < fruit_amount; idx++)
+        {
+            bool in_all = true;
+            for (std::vector<bool> fruit_set : stands[stand_idx].get_allowed_fruit_sets())
+                if (!fruit_set[idx])
+                {
+                    in_all = false;
+                    break;
+                }
+
+            if (!already_allocated_fruits[idx] && !stands[stand_idx].get_disallowed_fruits()[idx] && in_all)
+                stands[stand_idx].add_legal_fruit(idx);
+        }
+        if (get_amount_trues(stands[stand_idx].get_legal_fruits()) == 1)
+            already_allocated_fruits[get_true_indices(stands[stand_idx].get_legal_fruits())[0]] = true;
+    }
+
 #ifdef DEBUG
     std::cout << "Stands:" << std::endl;
     for (Stand stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
-        for (std::vector<bool> stick : stand.get_allowed_fruits())
+        for (std::vector<bool> fruit_set : stand.get_allowed_fruit_sets())
         {
-            for (int fruit : get_true_indices(stick))
+            for (int fruit : get_true_indices(fruit_set))
                 std::cout << fruit << " ";
             std::cout << " | ";
         }
         std::cout << "\t\t\t| ";
         for (int fruit : get_true_indices(stand.get_disallowed_fruits()))
             std::cout << fruit << " ";
+
+        std::cout << "| \t| ";
+        for (int fruit : get_true_indices(stand.get_legal_fruits()))
+            std::cout << fruit << " ";
         std::cout << std::endl;
     }
 #endif
 
-    
     return 0;
 }
 
