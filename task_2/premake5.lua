@@ -16,7 +16,7 @@ workspace "task_2"
 project "task_2"
     language "C++"
     architecture "x86_64"
-    cppdialect "C++17"
+    cppdialect "c++latest"
     kind "ConsoleApp"
 
     location "."
