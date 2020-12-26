@@ -1,16 +1,35 @@
 #include <vector>
 #include <iostream>
+#include <istream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
 
 #define raise_error(msg)                                                                                                             \
     {                                                                                                                                \
-        std::cout << msg << " (in file: " << __FILE__ << "; in func: " << __func__ << "; in line: " << __LINE__ << ")" << std::endl; \
+        std::cerr << msg << " (in file: " << __FILE__ << "; in func: " << __func__ << "; in line: " << __LINE__ << ")" << std::endl; \
         std::exit(EXIT_FAILURE);                                                                                                     \
     }
 
 int fruit_amount;
+
+void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
+{
+    if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
+        raise_error("File Parsing Error: More lines required!");
+}
+
+int checked_stoi(std::string str)
+{
+    try
+    {
+        return std::stoi(str);
+    }
+    catch (std::invalid_argument ex)
+    {
+        raise_error("File Parsing Error: Can't convert \"" << str << "\" to int");
+    }
+}
 
 // get vector of indices of all true elements
 std::vector<int> get_true_indices(std::vector<bool> items)
@@ -36,6 +55,9 @@ public:
     // or when the value is already included only return the key
     int add_item(std::string value)
     {
+        if (value.empty())
+            raise_error("Trying to add an empty value to a lookup table!");
+
         std::vector<std::string>::iterator match = std::find(items.begin(), items.end(), value);
         if (match == items.end())
         {
@@ -51,6 +73,12 @@ public:
             raise_error("Trying to lookup a non-existent key!");
 
         return items[key];
+    }
+
+    void reset()
+    {
+        // todo: is that good?
+        items.resize(0);
     }
 
     int get_amount() const { return items.size(); }
@@ -158,59 +186,45 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     if (!file)
         raise_error("Can't open input file!");
 
-    // todo: what if can't be converted?
     // read amount of fruits
     std::string input_buffer;
-    std::getline(file, input_buffer);
-    fruit_amount = std::stoi(input_buffer);
+    checked_getline(file, input_buffer);
+    fruit_amount = checked_stoi(input_buffer);
 
+    fruit_look_up.reset();
     // bool for each fruit, true if requested
     requested_fruits.resize(fruit_amount);
     for (int idx = 0; idx < requested_fruits.size(); idx++)
         requested_fruits[idx] = false;
     // read requested fruits
-    std::getline(file, input_buffer);
+    checked_getline(file, input_buffer);
     std::stringstream ss_input_buffer(input_buffer);
-    std::string fruit_buffer;
-    while (std::getline(ss_input_buffer, fruit_buffer, ' '))
-    {
-        // todo: add checks like everywhere
-        // todo: should fruit_look_up be reset?
-        // todo: how many checks are too much?
+    for (std::string fruit_buffer; std::getline(ss_input_buffer, fruit_buffer, ' ');)
         requested_fruits[fruit_look_up.add_item(fruit_buffer)] = true;
-    }
 
-    std::getline(file, input_buffer);
-    int amount_skewers = std::stoi(input_buffer);
+    checked_getline(file, input_buffer);
+    int amount_skewers = checked_stoi(input_buffer);
 
+    stand_look_up.reset();
     // get skewers
     for (int idx = 0; idx < amount_skewers; idx++)
     {
-        // todo: add checks if amount_skewers is correct
         Skewer skewer;
 
         // todo: code duplication bad?
         // extract stands
-        std::getline(file, input_buffer);
+        checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
-        std::string stand_buffer;
-        while (std::getline(ss_input_buffer, stand_buffer, ' '))
-        {
-            // todo: add checks like everywhere
+        for (std::string stand_buffer; std::getline(ss_input_buffer, stand_buffer, ' ');)
             skewer.add_stand(stand_look_up.add_item(stand_buffer));
-        }
 
         // extract fruits
-        std::getline(file, input_buffer);
+        checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
-        std::string fruit_buffer;
-        while (std::getline(ss_input_buffer, fruit_buffer, ' '))
-        {
-            // todo: add checks like everywhere
+        for (std::string fruit_buffer; std::getline(ss_input_buffer, fruit_buffer, ' ');)
             skewer.add_fruit(fruit_look_up.add_item(fruit_buffer));
-        }
 
         skewers.push_back(skewer);
     }
@@ -230,12 +244,10 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         }
     }
     if (stand_look_up.get_amount() != fruit_amount)
-        // todo: better error please
-        raise_error("Error while parsing file!");
+        raise_error("File Parsing Error: There are more stands than the stated amount of fruits!");
 
     if (fruit_look_up.get_amount() != fruit_amount)
-        // todo: better error please
-        raise_error("Error while parsing file!");
+        raise_error("File Parsing Error: The stated amount of fruits isn't reflected in the used fruits!");
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -390,5 +402,5 @@ int main()
     return 0;
 }
 
-// todo: what if file doesn't make sense
-// todo: make fruit_amount not global
+// todo: global good?
+// todo: enough checks?
