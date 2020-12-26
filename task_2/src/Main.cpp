@@ -166,15 +166,12 @@ public:
 };
 
 // create Skewer instances from input file
-int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::vector<Skewer> &skewers)
+void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::vector<Skewer> &skewers)
 {
     std::fstream file;
     file.open(file_path);
     if (!file)
-    {
-        std::cout << "Can't open input file!" << std::endl;
-        return 1;
-    }
+        raise_error("Can't open input file!");
 
     // todo: what if can't be converted?
     // read amount of fruits
@@ -248,18 +245,12 @@ int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::v
         }
     }
     if (stand_look_up.get_amount() != fruit_amount)
-    {
         // todo: better error please
-        std::cout << "Warning while parsing file!" << std::endl;
-        return 1;
-    }
+        raise_error("Error while parsing file!");
 
     if (fruit_look_up.get_amount() != fruit_amount)
-    {
         // todo: better error please
-        std::cout << "Warning while parsing file!" << std::endl;
-        return 1;
-    }
+        raise_error("Error while parsing file!");
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -278,11 +269,10 @@ int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::v
     std::cout << std::endl
               << std::endl;
 #endif
-    return 0;
 }
 
 // determine which fruit could be at which stand
-int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skewers)
+void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skewers)
 {
     // create Stand objects
     // go through all stands and search for skewers using this stand
@@ -352,13 +342,11 @@ int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skew
     }
     std::cout << std::endl;
 #endif
-
-    return 0;
 }
 
 int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
 {
-    // false when there isn't enough information to determine to wich stands to go to
+    // false when there isn't enough information to determine to which stands to go to
     possible = true;
     // test each stand: is this one providing one of the requested fruits?
     for (Stand &stand : stands)
@@ -393,16 +381,13 @@ int main()
 {
     std::vector<bool> requested_fruits;
     std::vector<Skewer> skewers;
-    if (read_file("examples/myspiesse1.txt", requested_fruits, skewers))
-        return 1;
+    read_file("examples/myspiesse1.txt", requested_fruits, skewers);
 
     std::vector<Stand> stands;
-    if (determine_legal_fruits(stands, skewers))
-        return 1;
+    determine_legal_fruits(stands, skewers);
 
     bool possible;
-    if (get_selected_stands(stands, requested_fruits, possible))
-        return 1;
+    get_selected_stands(stands, requested_fruits, possible);
 
     // todo: better output
     if (possible)
