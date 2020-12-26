@@ -69,15 +69,7 @@ private:
 
 public:
     Skewer()
-        : stands(fruit_amount), fruits(fruit_amount)
-    {
-        // create elements for each stand/fruit
-        for (bool stand : stands)
-            stand = false;
-
-        for (bool fruit : fruits)
-            fruit = false;
-    }
+        : stands(fruit_amount), fruits(fruit_amount) {}
 
     const std::vector<bool> get_fruits() const { return fruits; }
     const std::vector<bool> get_stands() const { return stands; }
@@ -127,14 +119,7 @@ private:
 
 public:
     Stand(int id)
-        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false)
-    {
-        for (bool fruit : legal_fruits)
-            fruit = false;
-
-        for (bool fruit : disallowed_fruits)
-            fruit = false;
-    }
+        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false) {}
 
     const int get_id() const { return id; }
     const std::vector<std::vector<bool>> get_allowed_fruit_sets() const { return allowed_fruit_sets; }
@@ -181,8 +166,8 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
 
     // bool for each fruit, true if requested
     requested_fruits.resize(fruit_amount);
-    for (bool requested_fruit : requested_fruits)
-        requested_fruit = false;
+    for (int idx = 0; idx < requested_fruits.size(); idx++)
+        requested_fruits[idx] = false;
     // read requested fruits
     std::getline(file, input_buffer);
     std::stringstream ss_input_buffer(input_buffer);
@@ -281,7 +266,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
         Stand new_stand(stand_id);
 
         // search through all skewers
-        for (Skewer skewer : skewers)
+        for (Skewer &skewer : skewers)
         {
             // when this skewer uses the current stand, one of the fruits on the skewer has to be this stand's one
             if (skewer.uses_stand(stand_id))
@@ -301,7 +286,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
         {
             // also true when no skewers given <- no info means everything is possible
             bool in_all = true;
-            for (std::vector<bool> fruit_set : stand.get_allowed_fruit_sets())
+            for (const std::vector<bool> &fruit_set : stand.get_allowed_fruit_sets())
                 if (!fruit_set[fruit_idx])
                 {
                     in_all = false;
@@ -316,7 +301,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
 
 #ifdef DEBUG
     std::cout << "Stands (allowed/disallowed fruits):" << std::endl;
-    for (Stand stand : stands)
+    for (Stand &stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
         for (std::vector<bool> fruit_set : stand.get_allowed_fruit_sets())
@@ -333,7 +318,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
 
     std::cout << std::endl
               << "Stands (legal fruits):" << std::endl;
-    for (Stand stand : stands)
+    for (Stand &stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
         for (int fruit : get_true_indices(stand.get_legal_fruits()))
@@ -407,5 +392,3 @@ int main()
 
 // todo: what if file doesn't make sense
 // todo: make fruit_amount not global
-
-// todo: for (bool &x : y)
