@@ -4,6 +4,12 @@
 #include <sstream>
 #include <algorithm>
 
+#define raise_error(msg)                                                                                                             \
+    {                                                                                                                                \
+        std::cout << msg << " (in file: " << __FILE__ << "; in func: " << __func__ << "; in line: " << __LINE__ << ")" << std::endl; \
+        std::exit(EXIT_FAILURE);                                                                                                     \
+    }
+
 int fruit_amount;
 
 // get vector of indices of all true elements
@@ -39,12 +45,12 @@ public:
         return match - items.begin();
     }
 
-    // todo: get std::optional working
     const std::string get_value(int key) const
     {
-        if (0 <= key && key < items.size())
-            return items[key];
-        return "";
+        if (key < 0 || key >= items.size())
+            raise_error("Trying to lookup a non-existent key!");
+
+        return items[key];
     }
 
     int get_amount() const { return items.size(); }
@@ -76,32 +82,30 @@ public:
     const std::vector<bool> get_fruits() const { return fruits; }
     const std::vector<bool> get_stands() const { return stands; }
 
-    // todo: std::optional
     bool contains_fruit(int fruit) const
     {
-        if (0 <= fruit && fruit < fruits.size())
-            return fruits[fruit];
-        return false;
+        if (fruit < 0 || fruit >= fruits.size())
+            raise_error("Trying to access a non-existent fruit!");
+        return fruits[fruit];
     }
-    // todo: std::optional
     bool uses_stand(int stand) const
     {
-        if (0 <= stand && stand < stands.size())
-            return stands[stand];
-        return false;
+        if (stand < 0 || stand >= stands.size())
+            raise_error("Trying to access a non-existent stand!");
+        return stands[stand];
     }
 
-    // todo: any error needed?
     void add_fruit(int fruit)
     {
-        if (0 <= fruit && fruit < fruits.size())
-            fruits[fruit] = true;
+        if (fruit < 0 || fruit >= fruits.size())
+            raise_error("Trying to add a non-existent fruit!");
+        fruits[fruit] = true;
     }
-    // todo: any error needed?
     void add_stand(int stand)
     {
-        if (0 <= stand && stand < stands.size())
-            stands[stand] = true;
+        if (stand < 0 || stand >= stands.size())
+            raise_error("Trying to add a non-existent stand!");
+        stands[stand] = true;
     }
 };
 
@@ -145,14 +149,14 @@ public:
     // using or on all possible fruits
     void add_disallowed_fruits(std::vector<bool> fruits)
     {
-        for (int idx = 0; idx < fruit_amount; idx++)
+        for (int idx = 0; idx < disallowed_fruits.size(); idx++)
             disallowed_fruits[idx] = disallowed_fruits[idx] || fruits[idx];
     }
-    // todo: error needed?
     void add_legal_fruit(int fruit)
     {
-        if (0 <= fruit && fruit < legal_fruits.size())
-            legal_fruits[fruit] = true;
+        if (fruit < 0 || fruit >= legal_fruits.size())
+            raise_error("Trying to add non-existent legal fruit!");
+        legal_fruits[fruit] = true;
     }
 
     void set_selected(bool new_value = true)
@@ -179,9 +183,9 @@ int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::v
     fruit_amount = std::stoi(input_buffer);
 
     // bool for each fruit, true if requested
-    requested_fruits = std::vector<bool>(fruit_amount);
-    for (int idx = 0; idx < fruit_amount; idx++)
-        requested_fruits[idx] = false;
+    requested_fruits.resize(fruit_amount);
+    for (bool requested_fruit : requested_fruits)
+        requested_fruit = false;
     // read requested fruits
     std::getline(file, input_buffer);
     std::stringstream ss_input_buffer(input_buffer);
@@ -277,7 +281,7 @@ int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::v
     return 0;
 }
 
-// determine wich fruit could be at wich stand
+// determine which fruit could be at which stand
 int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skewers)
 {
     // create Stand objects
@@ -301,14 +305,13 @@ int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skew
     }
 
     // find legal stands
-    // todo: why is Stand stand : stands not working?
-    for (int stand_idx = 0; stand_idx < stands.size(); stand_idx++)
+    for (Stand &stand : stands)
     {
         for (int fruit_idx = 0; fruit_idx < fruit_amount; fruit_idx++)
         {
             // also true when no skewers given <- no info means everything is possible
             bool in_all = true;
-            for (std::vector<bool> fruit_set : stands[stand_idx].get_allowed_fruit_sets())
+            for (std::vector<bool> fruit_set : stand.get_allowed_fruit_sets())
                 if (!fruit_set[fruit_idx])
                 {
                     in_all = false;
@@ -316,8 +319,8 @@ int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skew
                 }
 
             // for this to be a legal fruit, it has to be in every allowed fruit set and not a disallowed fruit
-            if (!stands[stand_idx].get_disallowed_fruits()[fruit_idx] && in_all)
-                stands[stand_idx].add_legal_fruit(fruit_idx);
+            if (!stand.get_disallowed_fruits()[fruit_idx] && in_all)
+                stand.add_legal_fruit(fruit_idx);
         }
     }
 
@@ -353,20 +356,19 @@ int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skew
     return 0;
 }
 
-int get_slected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
+int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
 {
     // false when there isn't enough information to determine to wich stands to go to
     possible = true;
-    // todo: why is Stand stand : stands not working?
     // test each stand: is this one providing one of the requested fruits?
-    for (int stand_idx = 0; stand_idx < stands.size(); stand_idx++)
+    for (Stand &stand : stands)
     {
         bool all_legal_are_requested = true;
         bool all_legal_are_not_requested = true;
         // go through all the fruits, one of which this stand provides
         for (int idx = 0; idx < fruit_amount; idx++)
         {
-            if (stands[stand_idx].get_legal_fruits()[idx])
+            if (stand.get_legal_fruits()[idx])
             {
                 if (requested_fruits[idx])
                     all_legal_are_not_requested = false;
@@ -382,7 +384,7 @@ int get_slected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_
             return 0;
         }
         else if (all_legal_are_requested)
-            stands[stand_idx].set_selected();
+            stand.set_selected();
     }
     return 0;
 }
@@ -399,7 +401,7 @@ int main()
         return 1;
 
     bool possible;
-    if (get_slected_stands(stands, requested_fruits, possible))
+    if (get_selected_stands(stands, requested_fruits, possible))
         return 1;
 
     // todo: better output
@@ -420,3 +422,5 @@ int main()
 
 // todo: what if file doesn't make sense
 // todo: make fruit_amount not global
+
+// todo: for (bool &x : y)
