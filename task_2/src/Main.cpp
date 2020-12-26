@@ -112,6 +112,8 @@ private:
     std::vector<bool> disallowed_fruits;
     // one bool for each fruit, true when this stand could contain this fruit
     std::vector<bool> legal_fruits;
+    // when this stand can satisfy the requested fruits
+    bool selected;
 
 public:
     const int get_id() const { return id; }
@@ -120,7 +122,7 @@ public:
     const std::vector<bool> get_legal_fruits() const { return legal_fruits; }
 
     Stand(int id)
-        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount)
+        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false)
     {
         for (bool fruit : legal_fruits)
             fruit = false;
@@ -159,9 +161,14 @@ public:
     {
         return disallowed_fruits[fruit];
     }
+    void set_selected(bool new_value = true)
+    {
+        selected = new_value;
+    }
+    bool is_selected() { return selected; }
 };
 
-int read_file(const char *file_path, std::vector<int> &requested_fruits, std::vector<Stick> &sticks)
+int read_file(const char *file_path, std::vector<bool> &requested_fruits, std::vector<Stick> &sticks)
 {
     std::fstream file;
     file.open(file_path);
@@ -175,7 +182,10 @@ int read_file(const char *file_path, std::vector<int> &requested_fruits, std::ve
     std::string input_buffer;
     std::getline(file, input_buffer);
     fruit_amount = std::stoi(input_buffer);
-    // todo: check if amount_fruits is size of fruits
+
+    // bit field for each fruit, true if requested
+    for (int idx = 0; idx < fruit_amount; idx++)
+        requested_fruits.push_back(false);
 
     // read requested fruits
     std::getline(file, input_buffer);
@@ -184,7 +194,7 @@ int read_file(const char *file_path, std::vector<int> &requested_fruits, std::ve
     while (std::getline(ss_input_buffer, fruit_buffer, ' '))
     {
         // todo: add checks like everywhere
-        requested_fruits.push_back(fruit_look_up.add_item(fruit_buffer));
+        requested_fruits[fruit_look_up.add_item(fruit_buffer)] = true;
     }
 
     std::getline(file, input_buffer);
@@ -258,7 +268,7 @@ int read_file(const char *file_path, std::vector<int> &requested_fruits, std::ve
     std::cout << std::endl;
 
     std::cout << "Requested Fruits: ";
-    for (int fruit : requested_fruits)
+    for (int fruit : get_true_indices(requested_fruits))
         std::cout << fruit << " ";
     std::cout << std::endl
               << std::endl;
@@ -266,7 +276,7 @@ int read_file(const char *file_path, std::vector<int> &requested_fruits, std::ve
     return 0;
 }
 
-int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
+int determine_legal_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
 {
     // go through all stands and search for sticks using this stand
     for (int stand_id = 0; stand_id < fruit_amount; stand_id++)
@@ -288,15 +298,12 @@ int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
         stands.push_back(this_stand);
     }
 
-    std::vector<bool> already_allocated_fruits(fruit_amount);
-    for (bool fruit : already_allocated_fruits)
-        fruit = false;
-
     // todo: why is Stand stand : stands not working?
     for (int stand_idx = 0; stand_idx < stands.size(); stand_idx++)
     {
         for (int idx = 0; idx < fruit_amount; idx++)
         {
+            // also true when no sticks given
             bool in_all = true;
             for (std::vector<bool> fruit_set : stands[stand_idx].get_allowed_fruit_sets())
                 if (!fruit_set[idx])
@@ -305,15 +312,13 @@ int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
                     break;
                 }
 
-            if (!already_allocated_fruits[idx] && !stands[stand_idx].get_disallowed_fruits()[idx] && in_all)
+            if (!stands[stand_idx].get_disallowed_fruits()[idx] && in_all)
                 stands[stand_idx].add_legal_fruit(idx);
         }
-        if (get_amount_trues(stands[stand_idx].get_legal_fruits()) == 1)
-            already_allocated_fruits[get_true_indices(stands[stand_idx].get_legal_fruits())[0]] = true;
     }
 
 #ifdef DEBUG
-    std::cout << "Stands:" << std::endl;
+    std::cout << "Stands (allowed/disallowed fruits):" << std::endl;
     for (Stand stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
@@ -326,27 +331,77 @@ int assign_fruits(std::vector<Stand> &stands, std::vector<Stick> &sticks)
         std::cout << "\t\t\t| ";
         for (int fruit : get_true_indices(stand.get_disallowed_fruits()))
             std::cout << fruit << " ";
+        std::cout << std::endl;
+    }
 
-        std::cout << "| \t| ";
+    std::cout << std::endl
+              << "Stands (legal fruits):" << std::endl;
+    for (Stand stand : stands)
+    {
+        std::cout << stand.get_id() << " | \t| ";
         for (int fruit : get_true_indices(stand.get_legal_fruits()))
             std::cout << fruit << " ";
         std::cout << std::endl;
     }
+    std::cout << std::endl;
 #endif
+
+    return 0;
+}
+
+int get_slected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
+{
+    possible = true;
+    for (int stand_idx = 0; stand_idx < stands.size(); stand_idx++)
+    {
+        bool all_provided_are_requested = true;
+        bool all_provided_are_not_requested = true;
+        for (int idx = 0; idx < fruit_amount; idx++)
+        {
+            if (stands[stand_idx].get_legal_fruits()[idx] && requested_fruits[idx])
+                all_provided_are_not_requested = false;
+            else if (stands[stand_idx].get_legal_fruits()[idx] && !requested_fruits[idx])
+                all_provided_are_requested = false;
+        }
+
+        if (!all_provided_are_requested && !all_provided_are_not_requested)
+        {
+            possible = false;
+            return 0;
+        }
+        else if (all_provided_are_requested)
+            stands[stand_idx].set_selected();
+    }
 
     return 0;
 }
 
 int main()
 {
-    std::vector<int> requested_fruits;
+    std::vector<bool> requested_fruits;
     std::vector<Stick> sticks;
     if (read_file("examples/myspiesse1.txt", requested_fruits, sticks))
         return 1;
 
     std::vector<Stand> stands;
-    if (assign_fruits(stands, sticks))
+    if (determine_legal_fruits(stands, sticks))
         return 1;
+
+    bool possible;
+    if (get_slected_stands(stands, requested_fruits, possible))
+        return 1;
+
+    if (possible)
+    {
+        std::cout << "Selected Stands:" << std::endl;
+        for (int idx = 0; idx < stands.size(); idx++)
+            if (stands[idx].is_selected())
+                std::cout << stand_look_up.get_value(stands[idx].get_id()) << std::endl;
+    }
+    else
+    {
+        std::cout << "Not enough info!" << std::endl;
+    }
 
     return 0;
 }
