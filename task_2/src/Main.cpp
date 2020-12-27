@@ -11,8 +11,6 @@
         std::exit(EXIT_FAILURE);                                                                                          \
     }
 
-int fruit_amount;
-
 void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
 {
     if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
@@ -36,10 +34,8 @@ std::vector<int> get_true_indices(std::vector<bool> items)
 {
     std::vector<int> result;
     for (int idx = 0; idx < items.size(); idx++)
-    {
         if (items[idx])
             result.push_back(idx);
-    }
     return result;
 }
 
@@ -56,7 +52,7 @@ public:
     int add_item(std::string value)
     {
         if (value.empty())
-            raise_error("Trying to add an empty value to a lookup table!");
+            raise_error("Trying to add an empty string as value to a lookup table!");
 
         std::vector<std::string>::iterator match = std::find(items.begin(), items.end(), value);
         if (match == items.end())
@@ -71,19 +67,18 @@ public:
     {
         if (key < 0 || key >= items.size())
             raise_error("Trying to lookup a non-existent key!");
-
         return items[key];
     }
 
     void reset()
     {
-        // todo: is that good?
         items.resize(0);
     }
 
     int get_amount() const { return items.size(); }
 };
 
+// todo: global good?
 LookupTable fruit_look_up;
 LookupTable stand_look_up;
 
@@ -96,7 +91,7 @@ private:
     std::vector<bool> stands;
 
 public:
-    Skewer()
+    Skewer(int fruit_amount)
         : stands(fruit_amount), fruits(fruit_amount) {}
 
     const std::vector<bool> get_fruits() const { return fruits; }
@@ -127,6 +122,12 @@ public:
             raise_error("Trying to add a non-existent stand!");
         stands[stand] = true;
     }
+
+    void resize(int new_amount)
+    {
+        stands.resize(new_amount);
+        fruits.resize(new_amount);
+    }
 };
 
 class Stand
@@ -148,13 +149,14 @@ private:
     bool possible_selected;
 
 public:
-    Stand(int id)
+    Stand(int id, int fruit_amount)
         : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false), possible_selected(false) {}
 
     const int get_id() const { return id; }
     const std::vector<std::vector<bool>> get_allowed_fruit_sets() const { return allowed_fruit_sets; }
     const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
     const std::vector<bool> get_legal_fruits() const { return legal_fruits; }
+
     const bool is_selected() const { return selected; }
     const bool is_possible_selected() const { return possible_selected; }
 
@@ -165,6 +167,8 @@ public:
     // using or on all possible fruits
     void add_disallowed_fruits(std::vector<bool> fruits)
     {
+        if (disallowed_fruits.size() != fruits.size())
+            raise_error("Amount of disallowed fruits to be added is invalid!");
         for (int idx = 0; idx < disallowed_fruits.size(); idx++)
             disallowed_fruits[idx] = disallowed_fruits[idx] || fruits[idx];
     }
@@ -196,7 +200,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     // read amount of fruits
     std::string input_buffer;
     checked_getline(file, input_buffer);
-    fruit_amount = checked_stoi(input_buffer);
+    int fruit_amount = checked_stoi(input_buffer);
 
     fruit_look_up.reset();
     // bool for each fruit, true if requested
@@ -216,40 +220,41 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     // get skewers
     for (int idx = 0; idx < amount_skewers; idx++)
     {
-        Skewer skewer;
-
+        Skewer new_skewer(fruit_amount);
         // todo: code duplication bad?
         // extract stands
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
         for (std::string stand_buffer; std::getline(ss_input_buffer, stand_buffer, ' ');)
-            skewer.add_stand(stand_look_up.add_item(stand_buffer));
+            new_skewer.add_stand(stand_look_up.add_item(stand_buffer));
 
         // extract fruits
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
         for (std::string fruit_buffer; std::getline(ss_input_buffer, fruit_buffer, ' ');)
-            skewer.add_fruit(fruit_look_up.add_item(fruit_buffer));
+            new_skewer.add_fruit(fruit_look_up.add_item(fruit_buffer));
 
-        skewers.push_back(skewer);
+        skewers.push_back(new_skewer);
     }
 
     if (fruit_amount > fruit_look_up.get_amount())
     {
         // there are fruits that are neither requested nor part of any skewer and therefor also not part of any of the named stands -> these fruits can be ignored
         std::cerr << "File Parsing Warning: The stated amount of fruits (" << fruit_amount << ") is bigger than the amount of used fruits (" << fruit_look_up.get_amount() << ")" << std::endl;
-        std::cerr << "The stated amount of fruits will be ignored in favour of the detected amount of used fruits." << std::endl
+        std::cerr << "The stated amount of fruits will be ignored in favour of the detected amount of used fruits (" << fruit_look_up.get_amount() << ")." << std::endl
                   << std::endl;
-        // resetting fruit amount and all everything it has bee used for
+        // resetting fruit amount and everything it has been used for
         fruit_amount = fruit_look_up.get_amount();
         requested_fruits.resize(fruit_amount);
+        for (Skewer &Skewer : skewers)
+            Skewer.resize(fruit_amount);
     }
     else if (fruit_amount < fruit_look_up.get_amount())
         raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") is smaller than the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
 
-    // create stands that have no occurrence in the file
+    // create stands that have no occurrence in any skewer
     for (int idx = stand_look_up.get_amount(); idx < fruit_amount; idx++)
     {
         // create new stand name
@@ -258,6 +263,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         {
             std::stringstream this_name;
             this_name << "new_stand" << try_number;
+            // when a new item has been created
             if (stand_look_up.add_item(this_name.str()) == idx)
                 break;
             try_number++;
@@ -290,10 +296,9 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
 {
     // create Stand objects
     // go through all stands and search for skewers using this stand
-    for (int stand_id = 0; stand_id < fruit_amount; stand_id++)
+    for (int stand_id = 0; stand_id < stand_look_up.get_amount(); stand_id++)
     {
-        Stand new_stand(stand_id);
-
+        Stand new_stand(stand_id, fruit_look_up.get_amount());
         // search through all skewers
         for (Skewer &skewer : skewers)
         {
@@ -304,14 +309,13 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
             else
                 new_stand.add_disallowed_fruits(skewer.get_fruits());
         }
-
         stands.push_back(new_stand);
     }
 
     // find legal stands
     for (Stand &stand : stands)
     {
-        for (int fruit_idx = 0; fruit_idx < fruit_amount; fruit_idx++)
+        for (int fruit_idx = 0; fruit_idx < fruit_look_up.get_amount(); fruit_idx++)
         {
             // also true when no skewers given <- no info means everything is possible
             bool in_all = true;
@@ -333,7 +337,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
     for (Stand &stand : stands)
     {
         std::cout << stand.get_id() << " | \t| ";
-        for (std::vector<bool> fruit_set : stand.get_allowed_fruit_sets())
+        for (const std::vector<bool> &fruit_set : stand.get_allowed_fruit_sets())
         {
             for (int fruit : get_true_indices(fruit_set))
                 std::cout << fruit << " ";
@@ -344,7 +348,6 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
             std::cout << fruit << " ";
         std::cout << std::endl;
     }
-
     std::cout << std::endl
               << "Stands (legal fruits):" << std::endl;
     for (Stand &stand : stands)
@@ -360,7 +363,7 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
 
 int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
 {
-    // false when there isn't enough information to determine to which stands to go to
+    // false when there isn't enough information to determine which stands to select
     possible = true;
     // test each stand: is this one providing one of the requested fruits?
     for (Stand &stand : stands)
@@ -368,7 +371,7 @@ int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested
         bool all_legal_are_requested = true;
         bool all_legal_are_not_requested = true;
         // go through all the fruits, one of which this stand provides
-        for (int idx = 0; idx < fruit_amount; idx++)
+        for (int idx = 0; idx < fruit_look_up.get_amount(); idx++)
         {
             if (stand.get_legal_fruits()[idx])
             {
@@ -397,8 +400,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
         raise_error("Please specify the input file as the first console parameter.");
 
-    std::vector<bool>
-        requested_fruits;
+    std::vector<bool> requested_fruits;
     std::vector<Skewer> skewers;
     read_file(argv[1], requested_fruits, skewers);
 
@@ -420,6 +422,11 @@ int main(int argc, char *argv[])
     std::cout << std::endl;
 
     // printing results
+    std::cout << "Requested Fruits:" << std::endl;
+    for (int fruit : get_true_indices(requested_fruits))
+        std::cout << fruit_look_up.get_value(fruit) << " ";
+    std::cout << std::endl
+              << std::endl;
     if (possible)
     {
         std::cout << "There is enough information to precicely determine the right stands." << std::endl;
@@ -448,6 +455,5 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-// todo: global good?
 // todo: enough checks?
 // todo: raise_error with parsing error good?
