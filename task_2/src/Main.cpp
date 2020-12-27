@@ -5,10 +5,10 @@
 #include <sstream>
 #include <algorithm>
 
-#define raise_error(msg)                                                                                                             \
-    {                                                                                                                                \
-        std::cerr << msg << " (in file: " << __FILE__ << "; in func: " << __func__ << "; in line: " << __LINE__ << ")" << std::endl; \
-        std::exit(EXIT_FAILURE);                                                                                                     \
+#define raise_error(msg)                                                                                                  \
+    {                                                                                                                     \
+        std::cerr << msg << " (in: " << __FILE__ << ":" << __LINE__ << "; in function: " << __func__ << ")" << std::endl; \
+        std::exit(EXIT_FAILURE);                                                                                          \
     }
 
 int fruit_amount;
@@ -144,16 +144,19 @@ private:
     std::vector<bool> legal_fruits;
     // true when this stand can satisfy the requested fruits
     bool selected;
+    // true when this stand could satisfy the requested fruits but there isn't enough information to be sure
+    bool possible_selected;
 
 public:
     Stand(int id)
-        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false) {}
+        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false), possible_selected(false) {}
 
     const int get_id() const { return id; }
     const std::vector<std::vector<bool>> get_allowed_fruit_sets() const { return allowed_fruit_sets; }
     const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
     const std::vector<bool> get_legal_fruits() const { return legal_fruits; }
     const bool is_selected() const { return selected; }
+    const bool is_possible_selected() const { return possible_selected; }
 
     void add_allowed_fruit_set(std::vector<bool> fruits)
     {
@@ -175,6 +178,10 @@ public:
     void set_selected(bool new_value = true)
     {
         selected = new_value;
+    }
+    void set_possibly_selected(bool new_value = true)
+    {
+        possible_selected = new_value;
     }
 };
 
@@ -244,10 +251,10 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         }
     }
     if (stand_look_up.get_amount() != fruit_amount)
-        raise_error("File Parsing Error: There are more stands than the stated amount of fruits!");
+        raise_error("File Parsing Error: There are more stands (" << stand_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
 
     if (fruit_look_up.get_amount() != fruit_amount)
-        raise_error("File Parsing Error: The stated amount of fruits isn't reflected in the used fruits!");
+        raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") isn't reflected in the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -362,23 +369,28 @@ int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested
             }
         }
 
-        // when there are stands, some of which legal fruits are required and others aren't, there isn't enough information
+        // when some of this stands legal fruits are required and others aren't, there isn't enough information
         if (!all_legal_are_requested && !all_legal_are_not_requested)
         {
             possible = false;
-            return 0;
+            stand.set_possibly_selected();
         }
+        // when all of this stands legal fruits are required
         else if (all_legal_are_requested)
             stand.set_selected();
     }
     return 0;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::vector<bool> requested_fruits;
+    if (argc < 2)
+        raise_error("Please specify the input file as the first console parameter.");
+
+    std::vector<bool>
+        requested_fruits;
     std::vector<Skewer> skewers;
-    read_file("examples/myspiesse1.txt", requested_fruits, skewers);
+    read_file(argv[1], requested_fruits, skewers);
 
     std::vector<Stand> stands;
     determine_legal_fruits(stands, skewers);
@@ -386,17 +398,41 @@ int main()
     bool possible;
     get_selected_stands(stands, requested_fruits, possible);
 
-    // todo: better output
+    std::cout << "Stand-Fruit Lookup:" << std::endl;
+    std::cout << "stand\tfruit (multiple (all possible fruits) when there isn't enough information to precisely determine the fruit)" << std::endl;
+    for (Stand &stand : stands)
+    {
+        std::cout << stand_look_up.get_value(stand.get_id()) << "\t";
+        for (int fruit_id : get_true_indices(stand.get_legal_fruits()))
+            std::cout << fruit_look_up.get_value(fruit_id) << " ";
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    // printing results
     if (possible)
     {
+        std::cout << "There is enough information to precicely determine the right stands." << std::endl;
         std::cout << "Selected Stands:" << std::endl;
-        for (int idx = 0; idx < stands.size(); idx++)
-            if (stands[idx].is_selected())
-                std::cout << stand_look_up.get_value(stands[idx].get_id()) << std::endl;
+        for (Stand &stand : stands)
+            if (stand.is_selected())
+                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << std::endl;
+        std::cout << "These stands contain all and only the required fruits." << std::endl;
     }
     else
     {
-        std::cout << "Not enough info!" << std::endl;
+        std::cout << "There isn't enough information to precicely determine the right stands." << std::endl;
+        std::cout << "These stands are definitely containing the required fruits:" << std::endl;
+        for (Stand &stand : stands)
+            if (stand.is_selected())
+                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << std::endl;
+        std::cout << "These stands might contain the required fruits but more information is required to precicely determine which one:" << std::endl;
+        for (Stand &stand : stands)
+            if (stand.is_possible_selected())
+                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << std::endl;
     }
 
     return 0;
@@ -404,3 +440,4 @@ int main()
 
 // todo: global good?
 // todo: enough checks?
+// todo: raise_error with parsing error good?
