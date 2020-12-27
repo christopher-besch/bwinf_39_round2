@@ -1,0 +1,175 @@
+\documentclass[a4paper,10pt,ngerman]{scrartcl}
+\usepackage{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[a4paper,margin=2.5cm,footskip=0.5cm]{geometry}
+
+% todo: check TeilnahmeId
+\newcommand{\Aufgabe}{Aufgabe 2: Flohmarkt in Langdorf}
+\newcommand{\TeilnahmeId}{56860}
+\newcommand{\Name}{Christopher Besch}
+
+
+% header and footer
+\usepackage{scrlayer-scrpage, lastpage}
+\setkomafont{pageheadfoot}{\large\textrm}
+\lohead{\Aufgabe}
+\rohead{Teilnahme-ID: \TeilnahmeId}
+\cfoot*{\thepage{}/\pageref{LastPage}}
+
+% title position
+\usepackage{titling}
+\setlength{\droptitle}{-1.0cm}
+
+% for math commands and symbols
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% for images
+\usepackage{graphicx}
+
+% for tables
+\usepackage{tabularx}
+
+% for algorithms
+\usepackage{algpseudocode}
+
+% for source code
+\usepackage{listings}
+\usepackage{color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\lstset{
+  keywordstyle=\color{blue},commentstyle=\color{mygreen},
+  stringstyle=\color{mymauve},rulecolor=\color{black},
+  basicstyle=\footnotesize\ttfamily,numberstyle=\tiny\color{mygray},
+  captionpos=b, % sets the caption-position to bottom
+  keepspaces=true, % keeps spaces in text
+  numbers=left, numbersep=5pt, showspaces=false,showstringspaces=true,
+  showtabs=false, stepnumber=2, tabsize=2, title=\lstname
+}
+\lstdefinelanguage{JavaScript}{ % JavaScript is the only non-predefined language
+  keywords={break, case, catch, continue, debugger, default, delete, do, else, finally, for, function, if, in, instanceof, new, return, switch, this, throw, try, typeof, var, void, while, with},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]",
+  sensitive=true
+}
+
+% these packages must be loaded last
+\usepackage{hyperref}
+\usepackage{cleveref}
+
+% c++ source code setup
+\lstset{
+    language=C++,
+    basicstyle=\small\sffamily,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=tb,
+    tabsize=4,
+    columns=fixed,
+    showstringspaces=false,
+    showtabs=false,
+    keepspaces,
+    commentstyle=\color{red},
+    keywordstyle=\color{blue}
+}
+
+% title
+\title{\textbf{\Huge\Aufgabe}}
+\author{\LARGE Teilnahme-ID: \LARGE \TeilnahmeId \\\\
+	    \LARGE Bearbeiter/-in dieser Aufgabe: \\ 
+	    \LARGE \Name\\\\}
+\date{\LARGE\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\vspace{0.5cm}
+
+\section{Lösungsidee}
+% Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
+
+Die von Donald beobachteten Spieße lassen sich wie folgt darstellen:
+
+\begin{center}
+\begin{tabular}{l|l}
+    \textbf{Stände} & \textbf{Früchte} \\
+    \hline
+    1, 4, 5 & Apfel, Banane, Brombeere \\
+    3, 5, 6 & Banane, Pflaume, Weintraube \\
+    1, 2, 4 & Apfel, Brombeere, Erdbeere \\
+    2, 6 & Erdbeere, Pflaume
+\end{tabular}
+\end{center}
+
+Nun wird in einer Tabelle jeder Stand mit den Früchten der Spieße, die diesen Stand verwendeten, aufgelistet (eine Spalte pro Spieß).
+Zudem werden in einer weiteren Spalte alle Früchte notiert, die in Spießen vorkommen, die nicht diesen Stand verwenden, sie werden verbotene Früchte genannt.
+Diese Früchte können nicht von diesem Stand sein.
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l|X|X|X}
+    \textbf{Stand} & \textbf{Spieße von diesem Stand} & & \textbf{Verbotene Früchte} \\
+    \hline
+    1 & Apfel, Banane, Brombeere & Apfel, Brombeere, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
+    \hline
+    2 & Apfel, Brombeere, Erdbeere & Erdbeere, Pflaume & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+    \hline
+    3 & Banane, Pflaume, Weintraube & & Banane, Apfel, Brombeere, Erdbeere, Pflaume \\
+    \hline
+    4 & Apfel, Banane, Brombeere & Apfel, Brombeere, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
+    \hline
+    5 & Apfel, Banane, Brombeere & Banane, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume \\
+    \hline
+    6 & Banane, Pflaume, Weintraube & Erdbeere, Pflaume & Banane, Apfel, Brombeere, Erdbeere
+\end{tabularx}
+\end{center}
+
+Nun werden für jeden Stand alle möglicherweise vorliegenden Früchte gesucht, diese werden im Folgenden legale Früchte genannt.
+Alle legalen Früchte für einen bestimmten Stand müssen zwei Regeln erfüllen:
+\begin{enumerate}
+    \item Die Frucht muss in allen Spießen vorkommen, die diesen Stand benutzen.
+    \item Die darf für diesen Stand nicht verboten sein.
+\end{enumerate}
+Alle legalen Früchte werden nun markiert:
+
+\begin{center}
+\begin{tabularx}{\linewidth}{l|X|X|X}
+    \textbf{Stand} & \textbf{Spieße von diesem Stand} & & \textbf{Verbotene Früchte} \\
+    \hline
+    1 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
+    \hline
+    2 & Apfel, Brombeere, \underline{Erdbeere} & \underline{Erdbeere}, Pflaume & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+    \hline
+    3 & Banane, Pflaume, \underline{Weintraube} & & Banane, Apfel, Brombeere, Erdbeere, Pflaume \\
+    \hline
+    4 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
+    \hline
+    5 & Apfel, \underline{Banane}, Brombeere & \underline{Banane}, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume \\
+    \hline
+    6 & Banane, \underline{Pflaume}, Weintraube & Erdbeere, \underline{Pflaume} & Banane, Apfel, Brombeere, Erdbeere
+\end{tabularx}
+\end{center}
+
+Die folgenden Früchte sind (von Donald) gefordert: Weintraube, Brombeere und Apfel
+
+Es werden alle Stände durchgegangen, wenn alle legalen Früchte eines Standes gefordert sind, ist dieser Stand ein ausgewählter Stand.
+% todo: add reasoning
+Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Stand.
+Wenn einige, aber nicht alle legale Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Stand eine ausgewählte Frucht enthält oder nicht.
+
+\section{Umsetzung}
+% Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
+
+\section{Beispiele}
+% Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
+
+\section{Quellcode}
+% Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
+
+\end{document}
