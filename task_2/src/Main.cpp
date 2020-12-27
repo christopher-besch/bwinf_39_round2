@@ -236,6 +236,19 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         skewers.push_back(skewer);
     }
 
+    if (fruit_amount > fruit_look_up.get_amount())
+    {
+        // there are fruits that are neither requested nor part of any skewer and therefor also not part of any of the named stands -> these fruits can be ignored
+        std::cerr << "File Parsing Warning: The stated amount of fruits (" << fruit_amount << ") is bigger than the amount of used fruits (" << fruit_look_up.get_amount() << ")" << std::endl;
+        std::cerr << "The stated amount of fruits will be ignored in favour of the detected amount of used fruits." << std::endl
+                  << std::endl;
+        // resetting fruit amount and all everything it has bee used for
+        fruit_amount = fruit_look_up.get_amount();
+        requested_fruits.resize(fruit_amount);
+    }
+    else if (fruit_amount < fruit_look_up.get_amount())
+        raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") is smaller than the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
+
     // create stands that have no occurrence in the file
     for (int idx = stand_look_up.get_amount(); idx < fruit_amount; idx++)
     {
@@ -252,9 +265,6 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     }
     if (stand_look_up.get_amount() != fruit_amount)
         raise_error("File Parsing Error: There are more stands (" << stand_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
-
-    if (fruit_look_up.get_amount() != fruit_amount)
-        raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") isn't reflected in the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -418,7 +428,7 @@ int main(int argc, char *argv[])
             if (stand.is_selected())
                 std::cout << stand_look_up.get_value(stand.get_id()) << " ";
         std::cout << std::endl;
-        std::cout << "These stands contain all and only the required fruits." << std::endl;
+        std::cout << "These stands contain every and only the required fruits." << std::endl;
     }
     else
     {
