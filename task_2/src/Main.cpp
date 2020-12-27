@@ -454,6 +454,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-// todo: enough checks?
-// todo: raise_error with parsing error good?
