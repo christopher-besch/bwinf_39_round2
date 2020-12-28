@@ -131,10 +131,12 @@ Diese Früchte können nicht von diesem Stand sein.
 \end{center}
 
 Nun werden für jeden Stand alle möglicherweise vorliegenden Früchte gesucht, diese werden im Folgenden legale Früchte genannt.
+An jedem Stand liegt eine Frucht aus der Menge der legalen Früchte für diesen Stand.
+
 Alle legalen Früchte für einen bestimmten Stand müssen zwei Regeln erfüllen:
 \begin{enumerate}
     \item Die Frucht muss in allen Spießen vorkommen, die diesen Stand benutzen.
-    \item Die darf für diesen Stand nicht verboten sein.
+    \item Die Frucht darf für diesen Stand nicht verboten sein.
 \end{enumerate}
 Alle legalen Früchte werden nun markiert:
 
@@ -158,10 +160,16 @@ Alle legalen Früchte werden nun markiert:
 
 Die folgenden Früchte sind (von Donald) gefordert: Weintraube, Brombeere und Apfel
 
-Es werden alle Stände durchgegangen, wenn alle legalen Früchte eines Standes gefordert sind, ist dieser Stand ein ausgewählter Stand.
-% todo: add reasoning
-Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Stand.
-Wenn einige, aber nicht alle legale Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Stand eine ausgewählte Frucht enthält oder nicht.
+Es werden alle Stände durchgegangen.
+\begin{itemize}
+    \item Wenn alle legalen Früchte eines Standes gefordert sind, wird dieser Stand ausgewählt, da ganz egal, welche legale Frucht die tatsächlich am Stand liegende ist, der Stand eine geforderte Frucht liefert.
+    \item Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Stand.
+    \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Stand eine ausgewählte Frucht enthält oder nicht.
+\end{itemize}
+Es ergibt sich die Menge aller ausgewählten Ständen: 1, 2 und 3
+
+Die Stände 1 und 2 liefern jeweils entweder Äpfel oder Brombeeren.
+Da beide Früchte gefordert sind, ist diese Ungewissheit irrelevant.
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.

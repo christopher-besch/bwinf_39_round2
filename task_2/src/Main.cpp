@@ -39,7 +39,7 @@ std::vector<int> get_true_indices(std::vector<bool> items)
     return result;
 }
 
-// used to resolve fruit and stand names to enumerated numbers, starting by 0
+// used to resolve fruit and bowl names to enumerated numbers, starting by 0
 class LookupTable
 {
 private:
@@ -78,24 +78,23 @@ public:
     int get_amount() const { return items.size(); }
 };
 
-// todo: global good?
 LookupTable fruit_look_up;
-LookupTable stand_look_up;
+LookupTable bowl_look_up;
 
 class Skewer
 {
 private:
-    // using flags for each fruit/stand
-    // one bool per possible fruit/stand <- true when contains that fruit / uses that stand
+    // using flags for each fruit/bowl
+    // one bool per possible fruit/bowl <- true when contains that fruit / uses that bowl
     std::vector<bool> fruits;
-    std::vector<bool> stands;
+    std::vector<bool> bowls;
 
 public:
     Skewer(int fruit_amount)
-        : stands(fruit_amount), fruits(fruit_amount) {}
+        : bowls(fruit_amount), fruits(fruit_amount) {}
 
     const std::vector<bool> get_fruits() const { return fruits; }
-    const std::vector<bool> get_stands() const { return stands; }
+    const std::vector<bool> get_bowls() const { return bowls; }
 
     bool contains_fruit(int fruit) const
     {
@@ -103,11 +102,11 @@ public:
             raise_error("Trying to access a non-existent fruit!");
         return fruits[fruit];
     }
-    bool uses_stand(int stand) const
+    bool uses_bowl(int bowl) const
     {
-        if (stand < 0 || stand >= stands.size())
-            raise_error("Trying to access a non-existent stand!");
-        return stands[stand];
+        if (bowl < 0 || bowl >= bowls.size())
+            raise_error("Trying to access a non-existent bowl!");
+        return bowls[bowl];
     }
 
     void add_fruit(int fruit)
@@ -116,40 +115,40 @@ public:
             raise_error("Trying to add a non-existent fruit!");
         fruits[fruit] = true;
     }
-    void add_stand(int stand)
+    void add_bowl(int bowl)
     {
-        if (stand < 0 || stand >= stands.size())
-            raise_error("Trying to add a non-existent stand!");
-        stands[stand] = true;
+        if (bowl < 0 || bowl >= bowls.size())
+            raise_error("Trying to add a non-existent bowl!");
+        bowls[bowl] = true;
     }
 
     void resize(int new_amount)
     {
-        stands.resize(new_amount);
+        bowls.resize(new_amount);
         fruits.resize(new_amount);
     }
 };
 
-class Stand
+class Bowl
 {
 private:
-    // using flags for each fruit/stand
+    // using flags for each fruit/bowl
     int id;
-    // all fruit sets <- all fruits from all skewers using this stand
-    // -> this stand's fruit must be in all of these skewers
+    // all fruit sets <- all fruits from all skewers using this bowl
+    // -> this bowl's fruit must be in all of these skewers
     std::vector<std::vector<bool>> allowed_fruit_sets;
-    // all the fruits on the skewers that didn't use this stand
-    // -> this stand's fruit can't be in this list
+    // all the fruits on the skewers that didn't use this bowl
+    // -> this bowl's fruit can't be in this list
     std::vector<bool> disallowed_fruits;
-    // all the fruits this stand could contain
+    // all the fruits this bowl could contain
     std::vector<bool> legal_fruits;
-    // true when this stand can satisfy the requested fruits
+    // true when this bowl can satisfy the requested fruits
     bool selected;
-    // true when this stand could satisfy the requested fruits but there isn't enough information to be sure
+    // true when this bowl could satisfy the requested fruits but there isn't enough information to be sure
     bool possible_selected;
 
 public:
-    Stand(int id, int fruit_amount)
+    Bowl(int id, int fruit_amount)
         : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false), possible_selected(false) {}
 
     const int get_id() const { return id; }
@@ -216,18 +215,18 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     checked_getline(file, input_buffer);
     int amount_skewers = checked_stoi(input_buffer);
 
-    stand_look_up.reset();
+    bowl_look_up.reset();
     // get skewers
     for (int idx = 0; idx < amount_skewers; idx++)
     {
         Skewer new_skewer(fruit_amount);
         // todo: code duplication bad?
-        // extract stands
+        // extract bowls
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
-        for (std::string stand_buffer; std::getline(ss_input_buffer, stand_buffer, ' ');)
-            new_skewer.add_stand(stand_look_up.add_item(stand_buffer));
+        for (std::string bowl_buffer; std::getline(ss_input_buffer, bowl_buffer, ' ');)
+            new_skewer.add_bowl(bowl_look_up.add_item(bowl_buffer));
 
         // extract fruits
         checked_getline(file, input_buffer);
@@ -241,7 +240,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
 
     if (fruit_amount > fruit_look_up.get_amount())
     {
-        // there are fruits that are neither requested nor part of any skewer and therefor also not part of any of the named stands -> these fruits can be ignored
+        // there are fruits that are neither requested nor part of any skewer and therefor also not part of any of the named bowls -> these fruits can be ignored
         std::cerr << "File Parsing Warning: The stated amount of fruits (" << fruit_amount << ") is bigger than the amount of used fruits (" << fruit_look_up.get_amount() << ")" << std::endl;
         std::cerr << "The stated amount of fruits will be ignored in favour of the detected amount of used fruits (" << fruit_look_up.get_amount() << ")." << std::endl
                   << std::endl;
@@ -254,23 +253,23 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     else if (fruit_amount < fruit_look_up.get_amount())
         raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") is smaller than the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
 
-    // create stands that have no occurrence in any skewer
-    for (int idx = stand_look_up.get_amount(); idx < fruit_amount; idx++)
+    // create bowls that have no occurrence in any skewer
+    for (int idx = bowl_look_up.get_amount(); idx < fruit_amount; idx++)
     {
-        // create new stand name
+        // create new bowl name
         int try_number = 0;
         while (true)
         {
             std::stringstream this_name;
-            this_name << "new_stand" << try_number;
+            this_name << "new_bowl" << try_number;
             // when a new item has been created
-            if (stand_look_up.add_item(this_name.str()) == idx)
+            if (bowl_look_up.add_item(this_name.str()) == idx)
                 break;
             try_number++;
         }
     }
-    if (stand_look_up.get_amount() != fruit_amount)
-        raise_error("File Parsing Error: There are more stands (" << stand_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
+    if (bowl_look_up.get_amount() != fruit_amount)
+        raise_error("File Parsing Error: There are more bowls (" << bowl_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -278,9 +277,9 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         std::cout << idx << "\t" << fruit_look_up.get_value(idx) << std::endl;
     std::cout << std::endl;
 
-    std::cout << "Stand Lookup:" << std::endl;
-    for (int idx = 0; idx < stand_look_up.get_amount(); idx++)
-        std::cout << idx << "\t" << stand_look_up.get_value(idx) << std::endl;
+    std::cout << "Bowl Lookup:" << std::endl;
+    for (int idx = 0; idx < bowl_look_up.get_amount(); idx++)
+        std::cout << idx << "\t" << bowl_look_up.get_value(idx) << std::endl;
     std::cout << std::endl;
 
     std::cout << "Requested Fruits: ";
@@ -291,35 +290,35 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
 #endif
 }
 
-// determine which fruit could be at which stand
-void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &skewers)
+// determine which fruit could be at which bowl
+void determine_legal_fruits(std::vector<Bowl> &bowls, std::vector<Skewer> &skewers)
 {
-    // create Stand objects
-    // go through all stands and search for skewers using this stand
-    for (int stand_id = 0; stand_id < stand_look_up.get_amount(); stand_id++)
+    // create Bowl objects
+    // go through all bowls and search for skewers using this bowl
+    for (int bowl_id = 0; bowl_id < bowl_look_up.get_amount(); bowl_id++)
     {
-        Stand new_stand(stand_id, fruit_look_up.get_amount());
+        Bowl new_bowl(bowl_id, fruit_look_up.get_amount());
         // search through all skewers
         for (Skewer &skewer : skewers)
         {
-            // when this skewer uses the current stand, one of the fruits on the skewer has to be this stand's one
-            if (skewer.uses_stand(stand_id))
-                new_stand.add_allowed_fruit_set(skewer.get_fruits());
+            // when this skewer uses the current bowl, one of the fruits on the skewer has to be this bowl's one
+            if (skewer.uses_bowl(bowl_id))
+                new_bowl.add_allowed_fruit_set(skewer.get_fruits());
             // otherwise all the fruits can't be the one
             else
-                new_stand.add_disallowed_fruits(skewer.get_fruits());
+                new_bowl.add_disallowed_fruits(skewer.get_fruits());
         }
-        stands.push_back(new_stand);
+        bowls.push_back(new_bowl);
     }
 
-    // find legal stands
-    for (Stand &stand : stands)
+    // find legal bowls
+    for (Bowl &bowl : bowls)
     {
         for (int fruit_idx = 0; fruit_idx < fruit_look_up.get_amount(); fruit_idx++)
         {
             // also true when no skewers given <- no info means everything is possible
             bool in_all = true;
-            for (const std::vector<bool> &fruit_set : stand.get_allowed_fruit_sets())
+            for (const std::vector<bool> &fruit_set : bowl.get_allowed_fruit_sets())
                 if (!fruit_set[fruit_idx])
                 {
                     in_all = false;
@@ -327,33 +326,33 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
                 }
 
             // for this to be a legal fruit, it has to be in every allowed fruit set and not a disallowed fruit
-            if (!stand.get_disallowed_fruits()[fruit_idx] && in_all)
-                stand.add_legal_fruit(fruit_idx);
+            if (!bowl.get_disallowed_fruits()[fruit_idx] && in_all)
+                bowl.add_legal_fruit(fruit_idx);
         }
     }
 
 #ifdef DEBUG
-    std::cout << "Stands (allowed/disallowed fruits):" << std::endl;
-    for (Stand &stand : stands)
+    std::cout << "Bowls (allowed/disallowed fruits):" << std::endl;
+    for (Bowl &bowl : bowls)
     {
-        std::cout << stand.get_id() << " | \t| ";
-        for (const std::vector<bool> &fruit_set : stand.get_allowed_fruit_sets())
+        std::cout << bowl.get_id() << " | \t| ";
+        for (const std::vector<bool> &fruit_set : bowl.get_allowed_fruit_sets())
         {
             for (int fruit : get_true_indices(fruit_set))
                 std::cout << fruit << " ";
             std::cout << " | ";
         }
         std::cout << "\t\t\t| ";
-        for (int fruit : get_true_indices(stand.get_disallowed_fruits()))
+        for (int fruit : get_true_indices(bowl.get_disallowed_fruits()))
             std::cout << fruit << " ";
         std::cout << std::endl;
     }
     std::cout << std::endl
-              << "Stands (legal fruits):" << std::endl;
-    for (Stand &stand : stands)
+              << "Bowls (legal fruits):" << std::endl;
+    for (Bowl &bowl : bowls)
     {
-        std::cout << stand.get_id() << " | \t| ";
-        for (int fruit : get_true_indices(stand.get_legal_fruits()))
+        std::cout << bowl.get_id() << " | \t| ";
+        for (int fruit : get_true_indices(bowl.get_legal_fruits()))
             std::cout << fruit << " ";
         std::cout << std::endl;
     }
@@ -361,19 +360,19 @@ void determine_legal_fruits(std::vector<Stand> &stands, std::vector<Skewer> &ske
 #endif
 }
 
-int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested_fruits, bool &possible)
+int get_selected_bowls(std::vector<Bowl> &bowls, std::vector<bool> &requested_fruits, bool &possible)
 {
-    // false when there isn't enough information to determine which stands to select
+    // false when there isn't enough information to determine which bowls to select
     possible = true;
-    // test each stand: is this one providing one of the requested fruits?
-    for (Stand &stand : stands)
+    // test each bowl: is this one providing one of the requested fruits?
+    for (Bowl &bowl : bowls)
     {
         bool all_legal_are_requested = true;
         bool all_legal_are_not_requested = true;
-        // go through all the fruits, one of which this stand provides
+        // go through all the fruits, one of which this bowl provides
         for (int idx = 0; idx < fruit_look_up.get_amount(); idx++)
         {
-            if (stand.get_legal_fruits()[idx])
+            if (bowl.get_legal_fruits()[idx])
             {
                 if (requested_fruits[idx])
                     all_legal_are_not_requested = false;
@@ -382,15 +381,15 @@ int get_selected_stands(std::vector<Stand> &stands, std::vector<bool> &requested
             }
         }
 
-        // when some of this stands legal fruits are required and others aren't, there isn't enough information
+        // when some of this bowls legal fruits are required and others aren't, there isn't enough information
         if (!all_legal_are_requested && !all_legal_are_not_requested)
         {
             possible = false;
-            stand.set_possibly_selected();
+            bowl.set_possibly_selected();
         }
-        // when all of this stands legal fruits are required
+        // when all of this bowls legal fruits are required
         else if (all_legal_are_requested)
-            stand.set_selected();
+            bowl.set_selected();
     }
     return 0;
 }
@@ -404,18 +403,18 @@ int main(int argc, char *argv[])
     std::vector<Skewer> skewers;
     read_file(argv[1], requested_fruits, skewers);
 
-    std::vector<Stand> stands;
-    determine_legal_fruits(stands, skewers);
+    std::vector<Bowl> bowls;
+    determine_legal_fruits(bowls, skewers);
 
     bool possible;
-    get_selected_stands(stands, requested_fruits, possible);
+    get_selected_bowls(bowls, requested_fruits, possible);
 
-    std::cout << "Stand-Fruit Lookup:" << std::endl;
-    std::cout << "stand\tfruit (multiple (all possible fruits) when there isn't enough information to precisely determine the fruit)" << std::endl;
-    for (Stand &stand : stands)
+    std::cout << "Bowl-Fruit Lookup:" << std::endl;
+    std::cout << "bowl\tfruit (multiple (all possible fruits) when there isn't enough information to precisely determine the fruit)" << std::endl;
+    for (Bowl &bowl : bowls)
     {
-        std::cout << stand_look_up.get_value(stand.get_id()) << "\t";
-        for (int fruit_id : get_true_indices(stand.get_legal_fruits()))
+        std::cout << bowl_look_up.get_value(bowl.get_id()) << "\t";
+        for (int fruit_id : get_true_indices(bowl.get_legal_fruits()))
             std::cout << fruit_look_up.get_value(fruit_id) << " ";
         std::cout << std::endl;
     }
@@ -429,26 +428,26 @@ int main(int argc, char *argv[])
               << std::endl;
     if (possible)
     {
-        std::cout << "There is enough information to precicely determine the right stands." << std::endl;
-        std::cout << "Selected Stands:" << std::endl;
-        for (Stand &stand : stands)
-            if (stand.is_selected())
-                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << "There is enough information to precicely determine the right bowls." << std::endl;
+        std::cout << "Selected Bowls:" << std::endl;
+        for (Bowl &bowl : bowls)
+            if (bowl.is_selected())
+                std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
         std::cout << std::endl;
-        std::cout << "These stands contain every and only the required fruits." << std::endl;
+        std::cout << "These bowls contain every and only the required fruits." << std::endl;
     }
     else
     {
-        std::cout << "There isn't enough information to precicely determine the right stands." << std::endl;
-        std::cout << "These stands are definitely containing the required fruits:" << std::endl;
-        for (Stand &stand : stands)
-            if (stand.is_selected())
-                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << "There isn't enough information to precicely determine the right bowls." << std::endl;
+        std::cout << "These bowls are definitely containing the required fruits:" << std::endl;
+        for (Bowl &bowl : bowls)
+            if (bowl.is_selected())
+                std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
         std::cout << std::endl;
-        std::cout << "These stands might contain the required fruits but more information is required to precicely determine which one:" << std::endl;
-        for (Stand &stand : stands)
-            if (stand.is_possible_selected())
-                std::cout << stand_look_up.get_value(stand.get_id()) << " ";
+        std::cout << "These bowls might contain the required fruits but more information is required to precicely determine which one:" << std::endl;
+        for (Bowl &bowl : bowls)
+            if (bowl.is_possible_selected())
+                std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
         std::cout << std::endl;
     }
 
