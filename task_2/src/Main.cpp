@@ -238,20 +238,10 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
         skewers.push_back(new_skewer);
     }
 
-    if (fruit_amount > fruit_look_up.get_amount())
-    {
-        // there are fruits that are neither requested nor part of any skewer and therefor also not part of any of the named bowls -> these fruits can be ignored
-        std::cerr << "File Parsing Warning: The stated amount of fruits (" << fruit_amount << ") is bigger than the amount of used fruits (" << fruit_look_up.get_amount() << ")" << std::endl;
-        std::cerr << "The stated amount of fruits will be ignored in favour of the detected amount of used fruits (" << fruit_look_up.get_amount() << ")." << std::endl
-                  << std::endl;
-        // resetting fruit amount and everything it has been used for
-        fruit_amount = fruit_look_up.get_amount();
-        requested_fruits.resize(fruit_amount);
-        for (Skewer &Skewer : skewers)
-            Skewer.resize(fruit_amount);
-    }
-    else if (fruit_amount < fruit_look_up.get_amount())
+    if (fruit_amount < fruit_look_up.get_amount())
         raise_error("File Parsing Error: The stated amount of fruits (" << fruit_amount << ") is smaller than the amount of used fruits (" << fruit_look_up.get_amount() << ")!");
+    if (fruit_amount < bowl_look_up.get_amount())
+        raise_error("File Parsing Error: There are more bowls (" << bowl_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
 
     // create bowls that have no occurrence in any skewer
     for (int idx = bowl_look_up.get_amount(); idx < fruit_amount; idx++)
@@ -268,8 +258,21 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
             try_number++;
         }
     }
-    if (bowl_look_up.get_amount() != fruit_amount)
-        raise_error("File Parsing Error: There are more bowls (" << bowl_look_up.get_amount() << ") than the stated amount of fruits (" << fruit_amount << ")!");
+    // create fruits that have no occurrence in any skewer
+    for (int idx = fruit_look_up.get_amount(); idx < fruit_amount; idx++)
+    {
+        // create new fruit name
+        int try_number = 0;
+        while (true)
+        {
+            std::stringstream this_name;
+            this_name << "new_fruit" << try_number;
+            // when a new item has been created
+            if (fruit_look_up.add_item(this_name.str()) == idx)
+                break;
+            try_number++;
+        }
+    }
 
 #ifdef DEBUG
     std::cout << "Fruit Lookup:" << std::endl;
@@ -453,3 +456,5 @@ int main(int argc, char *argv[])
 
     return 0;
 }
+
+// todo: what about too many fruits

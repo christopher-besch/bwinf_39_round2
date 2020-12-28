@@ -94,12 +94,11 @@
 
 \section{Lösungsidee}
 % Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
-
 Die von Donald beobachteten Spieße lassen sich wie folgt darstellen:
 
 \begin{center}
 \begin{tabular}{l|l}
-    \textbf{Stände} & \textbf{Früchte} \\
+    \textbf{Schüsseln} & \textbf{Früchte} \\
     \hline
     1, 4, 5 & Apfel, Banane, Brombeere \\
     3, 5, 6 & Banane, Pflaume, Weintraube \\
@@ -108,13 +107,13 @@ Die von Donald beobachteten Spieße lassen sich wie folgt darstellen:
 \end{tabular}
 \end{center}
 
-Nun wird in einer Tabelle jeder Stand mit den Früchten der Spieße, die diesen Stand verwendeten, aufgelistet (eine Spalte pro Spieß).
-Zudem werden in einer weiteren Spalte alle Früchte notiert, die in Spießen vorkommen, die nicht diesen Stand verwenden, sie werden verbotene Früchte genannt.
-Diese Früchte können nicht von diesem Stand sein.
+Nun wird in einer Tabelle jede Schüssel mit den Früchten der Spieße, die diese Schüssel verwendeten, aufgelistet (eine Spalte pro Spieß).
+Zudem werden in einer weiteren Spalte alle Früchte notiert, die in Spießen vorkommen, die nicht diese Schüssel verwenden, sie werden verbotene Früchte genannt.
+Diese Früchte können nicht von dieser Schüssel sein.
 
 \begin{center}
 \begin{tabularx}{\linewidth}{l|X|X|X}
-    \textbf{Stand} & \textbf{Spieße von diesem Stand} & & \textbf{Verbotene Früchte} \\
+    \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} & & \textbf{Verbotene Früchte} \\
     \hline
     1 & Apfel, Banane, Brombeere & Apfel, Brombeere, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
     \hline
@@ -130,19 +129,19 @@ Diese Früchte können nicht von diesem Stand sein.
 \end{tabularx}
 \end{center}
 
-Nun werden für jeden Stand alle möglicherweise vorliegenden Früchte gesucht, diese werden im Folgenden legale Früchte genannt.
-An jedem Stand liegt eine Frucht aus der Menge der legalen Früchte für diesen Stand.
+Nun werden für jede Schüssel alle möglicherweise vorliegenden Früchte gesucht, diese werden im Folgenden legale Früchte genannt.
+An jede Schüssel liegt eine Frucht aus der Menge der legalen Früchte für diese Schüssel.
 
-Alle legalen Früchte für einen bestimmten Stand müssen zwei Regeln erfüllen:
+Alle legalen Früchte für eine bestimmte Schüssel müssen zwei Regeln erfüllen:
 \begin{enumerate}
-    \item Die Frucht muss in allen Spießen vorkommen, die diesen Stand benutzen.
-    \item Die Frucht darf für diesen Stand nicht verboten sein.
+    \item Die Frucht muss in allen Spießen vorkommen, die diese Schüssel benutzen.
+    \item Die Frucht darf für diese Schüssel nicht verboten sein.
 \end{enumerate}
 Alle legalen Früchte werden nun markiert:
 
 \begin{center}
 \begin{tabularx}{\linewidth}{l|X|X|X}
-    \textbf{Stand} & \textbf{Spieße von diesem Stand} & & \textbf{Verbotene Früchte} \\
+    \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} & & \textbf{Verbotene Früchte} \\
     \hline
     1 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
     \hline
@@ -160,19 +159,40 @@ Alle legalen Früchte werden nun markiert:
 
 Die folgenden Früchte sind (von Donald) gefordert: Weintraube, Brombeere und Apfel
 
-Es werden alle Stände durchgegangen.
+Es werden alle Schüsseln durchgegangen.
 \begin{itemize}
-    \item Wenn alle legalen Früchte eines Standes gefordert sind, wird dieser Stand ausgewählt, da ganz egal, welche legale Frucht die tatsächlich am Stand liegende ist, der Stand eine geforderte Frucht liefert.
-    \item Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Stand.
-    \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Stand eine ausgewählte Frucht enthält oder nicht.
+    \item Wenn alle legalen Früchte einer Schüssel gefordert sind, wird diese Schüssel ausgewählt, da ganz egal, welche legale Frucht die tatsächlich an der Schüssel liegende ist, die Schüssel eine geforderte Frucht liefert.
+    \item Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Schüssel.
+    \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Schüssel eine ausgewählte Frucht enthält oder nicht.
 \end{itemize}
-Es ergibt sich die Menge aller ausgewählten Ständen: 1, 2 und 3
+Es ergibt sich die Menge aller ausgewählten Schüsseln: 1, 2 und 3
 
-Die Stände 1 und 2 liefern jeweils entweder Äpfel oder Brombeeren.
+Die Schüsseln 1 und 2 liefern jeweils entweder Äpfel oder Brombeeren.
 Da beide Früchte gefordert sind, ist diese Ungewissheit irrelevant.
+
+Mit dieser Methode kann in allen Fällen eine Aussage gefällt werden, ob genügend Information vorliegt und wenn dies der Fall ist, die Menge der ausgewählten Schüsseln angegeben werden.
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
+Die Lösungsidee wird in C++ implementiert.
+Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
+Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht wird das Programm abgebrochen.
+
+Die Fruchtnamen werden mithilfe einer Instanz der Klasse \textbf{LookupTable} aufsteigend und anfangend bei $0$ in Glanzzahlen, Frucht IDs, übersetzt.
+Dadurch ist die Anzahl an verschieden Früchten nicht limitiert.
+Ein weiterer Vorteil ist, dass da die ID aufsteigend und bei $0$ anfangend verteilt werden, die IDs als Indizes in Bit Fields verwendet werden können.
+So liegt für jede Frucht ein Bit/Bool vor, ist er true, ist diese Frucht enthalten, ist sie false, ist sie nicht enthalten.
+Diese kompakte Datenstruktur ist ressourcenschonender im Vergleich zu einem std::vector<std::string> mit den Namen aller enthaltenden Früchten.
+
+Die Namen für die Schüsseln werden auf die gleiche Weise behandelt.
+Zwar ist angegeben, dass alle Schüsseln nummeriert sind, es ist allerdings nicht klar, wie die Nummern verteilt werden, daher ergibt es Sinn, die Namen der Schüsseln als Strings zu behandeln und ebenfalls eine Instanz von \textbf{LookupTable} zu verwenden.
+So können auch für die Schüsseln Bit Fields verwendet werden.
+Ein zusätzlicher Vorteil ist, dass so jegliche Namen für die Schüsseln erlaubt sind.
+
+Es werden Instanzen der Klasse \textbf{Skewer} erstellt, diese enthalten die Menge der Früchte auf einem Spieß und die Menge der Schüsseln, von denen die Früchte genommen sind.
+Hierbei werden, wie bereits erwähnt, Bit Fields verwendet.
+
+
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
