@@ -220,7 +220,6 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     for (int idx = 0; idx < amount_skewers; idx++)
     {
         Skewer new_skewer(fruit_amount);
-        // todo: code duplication bad?
         // extract bowls
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
@@ -314,7 +313,7 @@ void determine_legal_fruits(std::vector<Bowl> &bowls, std::vector<Skewer> &skewe
         bowls.push_back(new_bowl);
     }
 
-    // find legal bowls
+    // find legal fruits
     for (Bowl &bowl : bowls)
     {
         for (int fruit_idx = 0; fruit_idx < fruit_look_up.get_amount(); fruit_idx++)
@@ -456,5 +455,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-
-// todo: what about too many fruits
