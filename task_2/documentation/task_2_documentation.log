@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  28 DEC 2020 14:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  28 DEC 2020 17:43
 entering extended mode
 **./task_2_documentation.tex
 (task_2_documentation.tex
@@ -744,6 +744,9 @@ Package: bookmark 2020-11-06 v1.29 PDF bookmarks (HO)
 File: bkm-pdftex.def 2020-11-06 v1.29 bookmark driver for pdfTeX (HO)
 \BKM@id=\count305
 ))
+(C:\Users\strom\AppData\Roaming\MiKTeX\tex/latex/ucs\uni-0.def
+File: uni-0.def 2013/05/13 UCS: Unicode data U+0000..U+00FF
+)
 LaTeX Font Info:    Trying to load font information for U+msa on input line 91.
 
 
@@ -767,9 +770,7 @@ Package cleveref Info: loaded `ngerman' language definitions on input line 1.
 \tf@toc=\write4
 \openout4 = `task_2_documentation.toc'.
 
-(C:\Users\strom\AppData\Roaming\MiKTeX\tex/latex/ucs\uni-0.def
-File: uni-0.def 2013/05/13 UCS: Unicode data U+0000..U+00FF
-)
+
 Underfull \hbox (badness 10000) in paragraph at lines 130--130
 []|\T1/cmr/m/n/10 Banane, Pflau-me, Wein-
  []
@@ -809,20 +810,26 @@ cmr/bx/n/10 se-lec-ted \T1/cmr/m/n/10 und \T1/cmr/bx/n/10 pos-si-ble_selected\T
 1/cmr/m/n/10 ,
  []
 
-[3] 
+[3] [4]
+LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 
+330.
+ ("C:\Program Files\MiKTeX\tex/latex/base\ts1cmss.fd"
+File: ts1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
+)
+
 AED: lastpage setting LastPage
-[4]
+[5]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     270.
-
-
-LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     270.
+(LaTeX3)     378.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     270.
+(LaTeX3)     378.
+
+
+LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
+(LaTeX3)     378.
 
  (task_2_documentation.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 25.
@@ -831,27 +838,31 @@ Package rerunfilecheck Info: File `task_2_documentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 16523 strings out of 479697
- 309418 string characters out of 2877008
- 960248 words of memory out of 3000000
- 33323 multiletter control sequences out of 15000+200000
- 417023 words of font info for 63 fonts, out of 3000000 for 9000
+ 17047 strings out of 479697
+ 315352 string characters out of 2877008
+ 1019241 words of memory out of 3000000
+ 33775 multiletter control sequences out of 15000+200000
+ 420436 words of font info for 68 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
- 106i,20n,111p,10635b,682s stack positions out of 5000i,500n,10000p,200000b,50000s
- <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
-1000.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
-0\ecrm1200.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
-/dpi600\ecbx1000.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
-pen/ec/dpi600\ecrm1000.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour
-/jknappen/ec/dpi600\ecsx1000.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/
-ljfour/jknappen/ec/dpi600\ecsx1440.pk> <C:\Users\strom\AppData\Local\MiKTeX\fon
-ts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk> <C:\Users\strom\AppData\Local\MiKT
-eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk><C:/Program Files/MiKTeX/font
-s/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/publ
-ic/amsfonts/cm/cmr10.pfb>
-Output written on task_2_documentation.pdf (4 pages, 131054 bytes).
+ 106i,20n,111p,10635b,1490s stack positions out of 5000i,500n,10000p,200000b,50000s
+ <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcss
+0900.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
+0\ecss0900.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
+/dpi600\ecrm0500.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+pen/ec/dpi600\ecsx1200.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/ljfour
+/jknappen/ec/dpi600\tcrm1000.pk> <C:\Users\strom\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\strom\AppData\Local\MiKTeX\fon
+ts/pk/ljfour/jknappen/ec/dpi600\ecbx1000.pk> <C:\Users\strom\AppData\Local\MiKT
+eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\strom\AppData\Loca
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1000.pk> <C:\Users\strom\AppDat
+a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1440.pk> <C:\Users\strom\
+AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk> <C:\Users\
+strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk><C:/P
+rogram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
+/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb>
+Output written on task_2_documentation.pdf (5 pages, 166881 bytes).
 PDF statistics:
- 397 PDF objects out of 1000 (max. 8388607)
- 40 named destinations out of 1000 (max. 500000)
- 33 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 563 PDF objects out of 1000 (max. 8388607)
+ 104 named destinations out of 1000 (max. 500000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

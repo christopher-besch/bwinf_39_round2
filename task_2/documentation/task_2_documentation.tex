@@ -5,7 +5,7 @@
 \usepackage[a4paper,margin=2.5cm,footskip=0.5cm]{geometry}
 
 % todo: check TeilnahmeId
-\newcommand{\Aufgabe}{Aufgabe 2: Flohmarkt in Langdorf}
+\newcommand{\Aufgabe}{Aufgabe 2: Spießgesellen}
 \newcommand{\TeilnahmeId}{56860}
 \newcommand{\Name}{Christopher Besch}
 
@@ -263,8 +263,116 @@ Es liegt genügend Information vor und die ausgewählten Schalen sind 18, 15, 20
 \paragraph{spiesse7.txt}
 Es liegt nicht genügend Information vor und die Schalen 14, 8, 5, 24, 23, new\_bowl0, new\_bowl1 und new\_bowl2 liefern garantiert geforderte Früchte, wobei new\_bowl0, new\_bowl1 und new\_bowl2 Schalen sind, die für keinen der angegebenen Spieße verwendet wurden sind.
 Zusätzlich gibt das Programm aus, dass vier der folgenden Schalen geforderte Früchte enthalten: 3, 20, 26, 10, 25 und 18
+\subsection{Eigene Beispiele}
+
+\paragraph{myspiesse0.txt}
+In der Aufgabenstellung ist angegeben, dass die Namen der Früchte immer unterschiedlichen Anfangsbuchstaben haben.
+Dieses Programm limitiert, die Eingabedatei allerdings nicht auf diese Weise.
+
+Dies ist in diesem Beispiel gezeigt, es ist eine Kopie von spiesse0.txt, wobei alle Früchte den selben Anfangsbuchstaben haben.
+Das Programm produziert das korrekte Ergebnis, Schüsseln 1, 4 und 3.
+
+\paragraph{myspiesse1.txt}
+Es handelt sich erneut um eine Kopie von spiesse0.txt.
+Hier ist die angegebene Anzahl an Früchten deutlich höher (10) als die in den Spießen und geforderten Früchten gelisteten Schalen und Früchten (6).
+Das Programm erstellt daher vier neue Früchte und Schalen.
+Es produziert das korrekte Ergebnis: 1, 4 und 3
+
+\paragraph{myspiesse2.txt}
+Die Datei sieht wie folgt aus:
+
+\textbf{1}
+
+\textbf{Weintraube}
+
+\textbf{0}
+
+Es ist nur eine Frucht vorhanden, die ebenfalls gefordert wird.
+Es liegt keinerlei Information über jegliche Spieße vor.
+
+Das Programm produziert das korrekte Ergebnis, new\_bowl0, da nur eine Schale vorliegt und diese damit die geforderte Frucht enthalten muss.
+
+\paragraph{myspiesse3.txt}
+Die Datei sieht wie folgt aus:
+
+\textbf{2}
+
+\textbf{Weintraube}
+
+\textbf{0}
+Der einzige Unterschied zu dem vorherigen Beispiel ist die Anzahl aller Früchte total.
+In Diesem Fall sind zwei Früchte vorhanden.
+
+Das Programm erstellt eine neue Frucht, da nur eine gefunden werden kann, Weintraube, und zwei neue Schalen.
+In diesem Fall ist nicht klar, in welcher Schale die geforderten Weintrauben liegen.
+Dies gibt das Programm korrekt aus.
+
+\paragraph{myspiesse4.txt}
+Dies ist eine leere Datei, weshalb das Programm mit einer Fehlermeldung abbricht: \glqq File Parsing Error: More lines required!\grqq{}
+
+\paragraph{myspiesse5.txt}
+Dies ist eine Kopie von spiesse7.txt, wobei die Nummern aller Schalen durch zufällige Wörter ersetzt wurden.
+Das Programm produziert problemlos das korrekte Ergebnis.
+
+\paragraph{myspiesse6.txt}
+In diesem Fall wird für die Anzahl aller Früchte \glqq fdfhasdfgdfhsdfh\grqq{} eingesetzt.
+Das Programm bricht mit einem Fehler ab, \glqq File Parsing Error: Can't convert "fdfhasdfgdfhsdfh" to int!\grqq{}
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
+Dies ist der Teil der Funktion \textbf{determine\_legal\_fruits}, der die legalen Früchte für alle Schüsseln auswählt.
+\glqq fruit\_look\_up.get\_amount()\grqq{} gibt die Anzahl aller Früchte zurück.
+\begin{lstlisting}
+for (Bowl &bowl : bowls)
+{
+    for (int fruit_idx = 0; fruit_idx < fruit_look_up.get_amount(); fruit_idx++)
+    {
+        // also true when no skewers given <- no info means everything is possible
+        bool in_all = true;
+        for (const std::vector<bool> &fruit_set : bowl.get_allowed_fruit_sets())
+            if (!fruit_set[fruit_idx])
+            {
+                in_all = false;
+                break;
+            }
+
+        // for this to be a legal fruit, it has to be in every allowed fruit set
+        // and not a disallowed fruit
+        if (!bowl.get_disallowed_fruits()[fruit_idx] && in_all)
+            bowl.add_legal_fruit(fruit_idx);
+    }
+}
+\end{lstlisting}
+
+Die Funktion \textbf{get\_selected\_bowls} verwendet den folgenden Teil, um die jeweils legalen Früchte für alle Schalen auszuwählen.
+\begin{lstlisting}
+possible = true;
+for (Bowl &bowl : bowls)
+{
+    bool all_legal_are_requested = true;
+    bool all_legal_are_not_requested = true;
+    // go through all the fruits, one of which this bowl provides
+    for (int idx = 0; idx < fruit_look_up.get_amount(); idx++)
+    {
+        if (bowl.get_legal_fruits()[idx])
+        {
+            if (requested_fruits[idx])
+                all_legal_are_not_requested = false;
+            else
+                all_legal_are_requested = false;
+        }
+    }
+
+    // when some of this bowls legal fruits are required and others aren't,
+    // there isn't enough information
+    if (!all_legal_are_requested && !all_legal_are_not_requested)
+    {
+        possible = false;
+        bowl.set_possibly_selected();
+    }
+    else if (all_legal_are_requested)
+        bowl.set_selected();
+}
+\end{lstlisting}
 
 \end{document}

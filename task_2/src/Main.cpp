@@ -33,7 +33,7 @@ int checked_stoi(std::string str)
     }
     catch (std::invalid_argument ex)
     {
-        raise_error("File Parsing Error: Can't convert \"" << str << "\" to int");
+        raise_error("File Parsing Error: Can't convert \"" << str << "\" to int!");
     }
 }
 
@@ -391,13 +391,12 @@ int get_selected_bowls(std::vector<Bowl> &bowls, std::vector<bool> &requested_fr
             }
         }
 
-        // when some of this bowls legal fruits are required and others aren't, there isn't enough information
+        // when some of this bowls legal fruits are requested and others aren't, there isn't enough information
         if (!all_legal_are_requested && !all_legal_are_not_requested)
         {
             possible = false;
             bowl.set_possibly_selected();
         }
-        // when all of this bowls legal fruits are required
         else if (all_legal_are_requested)
             bowl.set_selected();
     }
@@ -444,12 +443,12 @@ int main(int argc, char *argv[])
             if (bowl.is_selected())
                 std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
         std::cout << std::endl;
-        std::cout << "These bowls contain every and only the required fruits." << std::endl;
+        std::cout << "These bowls contain every and only the requested fruits." << std::endl;
     }
     else
     {
         std::cout << "There isn't enough information to precicely determine the right bowls." << std::endl;
-        std::cout << "These bowls are definitely containing the required fruits:" << std::endl;
+        std::cout << "These bowls are definitely containing the requested fruits:" << std::endl;
         int amount_unfulfilled_requests = get_true_indices(requested_fruits).size();
         for (Bowl &bowl : bowls)
             if (bowl.is_selected())
@@ -458,7 +457,7 @@ int main(int argc, char *argv[])
                 amount_unfulfilled_requests--;
             }
         std::cout << std::endl;
-        std::cout << amount_unfulfilled_requests << " of these bowls contain(s) required fruits but more information is required to precicely determine which one:" << std::endl;
+        std::cout << amount_unfulfilled_requests << " of these bowls contain(s) requested fruits but more information is requested to precicely determine which one:" << std::endl;
         for (Bowl &bowl : bowls)
             if (bowl.is_possible_selected())
                 std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
