@@ -1,6 +1,7 @@
 #!/bin/sh
 
 make config=release
+clear
 
 for file in examples/*
 do

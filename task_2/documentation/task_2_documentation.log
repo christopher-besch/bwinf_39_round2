@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  28 DEC 2020 11:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  28 DEC 2020 14:20
 entering extended mode
 **./task_2_documentation.tex
 (task_2_documentation.tex
@@ -809,20 +809,20 @@ cmr/bx/n/10 se-lec-ted \T1/cmr/m/n/10 und \T1/cmr/bx/n/10 pos-si-ble_selected\T
 1/cmr/m/n/10 ,
  []
 
-
+[3] 
 AED: lastpage setting LastPage
-[3]
+[4]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     234.
-
-
-LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     234.
+(LaTeX3)     270.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     234.
+(LaTeX3)     270.
+
+
+LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
+(LaTeX3)     270.
 
  (task_2_documentation.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 25.
@@ -831,8 +831,8 @@ Package rerunfilecheck Info: File `task_2_documentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 16506 strings out of 479697
- 309220 string characters out of 2877008
+ 16523 strings out of 479697
+ 309418 string characters out of 2877008
  960248 words of memory out of 3000000
  33323 multiletter control sequences out of 15000+200000
  417023 words of font info for 63 fonts, out of 3000000 for 9000
@@ -849,9 +849,9 @@ ts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk> <C:\Users\strom\AppData\Local\MiKT
 eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk><C:/Program Files/MiKTeX/font
 s/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/publ
 ic/amsfonts/cm/cmr10.pfb>
-Output written on task_2_documentation.pdf (3 pages, 121757 bytes).
+Output written on task_2_documentation.pdf (4 pages, 131054 bytes).
 PDF statistics:
- 357 PDF objects out of 1000 (max. 8388607)
- 23 named destinations out of 1000 (max. 500000)
+ 397 PDF objects out of 1000 (max. 8388607)
+ 40 named destinations out of 1000 (max. 500000)
  33 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -5,11 +5,19 @@
 #include <sstream>
 #include <algorithm>
 
+#ifdef DEBUG
 #define raise_error(msg)                                                                                                  \
     {                                                                                                                     \
         std::cerr << msg << " (in: " << __FILE__ << ":" << __LINE__ << "; in function: " << __func__ << ")" << std::endl; \
         std::exit(EXIT_FAILURE);                                                                                          \
     }
+#else
+#define raise_error(msg)               \
+    {                                  \
+        std::cerr << msg << std::endl; \
+        std::exit(EXIT_FAILURE);       \
+    }
+#endif
 
 void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
 {
@@ -442,11 +450,15 @@ int main(int argc, char *argv[])
     {
         std::cout << "There isn't enough information to precicely determine the right bowls." << std::endl;
         std::cout << "These bowls are definitely containing the required fruits:" << std::endl;
+        int amount_unfulfilled_requests = get_true_indices(requested_fruits).size();
         for (Bowl &bowl : bowls)
             if (bowl.is_selected())
+            {
                 std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";
+                amount_unfulfilled_requests--;
+            }
         std::cout << std::endl;
-        std::cout << "These bowls might contain the required fruits but more information is required to precicely determine which one:" << std::endl;
+        std::cout << amount_unfulfilled_requests << " of these bowls contain(s) required fruits but more information is required to precicely determine which one:" << std::endl;
         for (Bowl &bowl : bowls)
             if (bowl.is_possible_selected())
                 std::cout << bowl_look_up.get_value(bowl.get_id()) << " ";

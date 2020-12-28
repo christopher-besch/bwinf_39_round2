@@ -1,0 +1,11 @@
+6
+AWeintraube ABrombeere AApfel
+4
+1 4 5
+AApfel ABanane ABrombeere
+3 5 6
+ABanane APflaume AWeintraube
+1 2 4
+AApfel ABrombeere AErdbeere
+2 6
+AErdbeere APflaume

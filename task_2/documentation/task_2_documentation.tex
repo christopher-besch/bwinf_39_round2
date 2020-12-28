@@ -168,7 +168,7 @@ Es werden alle Schüsseln durchgegangen.
     \item Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Schüssel.
     \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Schüssel eine ausgewählte Frucht enthält oder nicht.
 \end{itemize}
-Es ergibt sich die Menge aller ausgewählten Schüsseln: 1, 2 und 3
+Es ergibt sich die Menge aller ausgewählten Schüsseln: 1, 3 und 4
 
 Die Schüsseln 1 und 2 liefern jeweils entweder Äpfel oder Brombeeren.
 Da beide Früchte gefordert sind, ist diese Ungewissheit irrelevant.
@@ -227,6 +227,42 @@ In der \text{main} Funktion werden die drei genannten Funktionen ausgeführt und
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
+Nun wird das Programm mit allen Beispieldateien ausgeführt.
+
+\paragraph{spiesse0.txt}
+Dies ist das Beispiel, das in dem Aufgabenblatt vorgestellt ist.
+
+Das Programm liefert die richtige Antwort, es ist genügend Information vorhanden und die ausgewählten Schalen sind 1, 4 und 3.
+
+\paragraph{spiesse1.txt}
+Das Programm erkennt, dass genügend Information vorliegt und wählt die Schalen 2, 1, 4, 5 und new\_bowl0 aus.
+
+Hier lässt sich erkennen, dass eine Schale in keinem Spieß vorkommt und einen Namen zugeteilt bekommen hat.
+
+\paragraph{spiesse2.txt}
+Erneut wird das korrekte Ergebnis produziert, es liegt genügend Information vor und die Schalen 6, 1, 7, 11, 5 und 10 wurden ausgewählt.
+
+\paragraph{spiesse3.txt}
+In diesem Fall liegt nicht genügend Information vor, um eindeutig sagen zu können, welche Schalen auszuwählen sind.
+Dies gibt das Programm korrekt aus und gibt and, dass die Schalen 7, 10, 12, 5, 1 und 8 definitiv geforderte Früchte enthalten und dass entweder die Schale 2 oder 11 eine geforderte Frucht enthält, es liegt allerdings nicht genügend Information vor, um genau bestimmen zu können, welche das ist.
+
+In der ersten Zeile der Beispieldatei wird die Anzahl der Früchte angegeben, in diesem Fall 15.
+Allerdings sind nur 14 verschiedene Früchte in den Spießen und den geforderten Früchten vorzufinden.
+Daher wird die fehlende Frucht new\_fruit0 genannt, auch wenn sie für die Lösung des Problems irrelevant ist, da sie nicht gefordert wurde.
+
+\paragraph{spiesse4.txt}
+Erneut können die Schalen mit den geforderten Früchten genau bestimmt werden, 7, 9, 2, 6, 8, 12, 13 und 14.
+
+\paragraph{spiesse5.txt}
+Genau wie bei \textbf{spiesse3.txt} ist die angegebene Anzahl an Früchten zu hoch, weshalb eine Frucht new\_fruit0 genannt wird.
+Das Programm liefert die korrekte Ausgabe, es gibt eine Lösung und die ausgewählten Schalen sind 16, 14, 6, 9, 2, 3, 1, 19, 5, 10, 12, 4 und 20.
+
+\paragraph{spiesse6.txt}
+Es liegt genügend Information vor und die ausgewählten Schalen sind 18, 15, 20, 11, 4, 7, 10 und 6.
+
+\paragraph{spiesse7.txt}
+Es liegt nicht genügend Information vor und die Schalen 14, 8, 5, 24, 23, new\_bowl0, new\_bowl1 und new\_bowl2 liefern garantiert geforderte Früchte, wobei new\_bowl0, new\_bowl1 und new\_bowl2 Schalen sind, die für keinen der angegebenen Spieße verwendet wurden sind.
+Zusätzlich gibt das Programm aus, dass vier der folgenden Schalen geforderte Früchte enthalten: 3, 20, 26, 10, 25 und 18
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
