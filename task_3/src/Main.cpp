@@ -49,31 +49,32 @@ void read_file(const char *file_path, int &circumference, std::vector<int> &hous
     checked_getline(file, input_buffer, '\n');
     int amount_houses = checked_stoi(input_buffer);
 
-    // todo: might cause a degfault, to bad
     houses.resize(amount_houses);
-    for (int idx = 0; std::getline(file, input_buffer, ' '); idx++)
+    for (int idx = 0; idx < amount_houses; idx++)
+    {
+        checked_getline(file, input_buffer, ' ');
         houses[idx] = checked_stoi(input_buffer);
+    }
 }
 
-int get_min_distance(int circumference, int place_a, int place_b)
+int get_distance(int circumference, int place_a, int place_b)
 {
     int direct_distance = std::abs(place_a - place_b);
-    // when it's shorter to go the other way
-    if (direct_distance > circumference / 2)
-        return circumference - direct_distance;
-    return direct_distance;
+    // take shortest way, direct or the other direction
+    return std::min(direct_distance, circumference - direct_distance);
 }
 
 bool vote(int circumference, int house_place, int old_place, int new_place)
 {
     // is new place better?
-    if (get_min_distance(circumference, house_place, new_place) < get_min_distance(circumference, house_place, old_place))
+    if (get_distance(circumference, house_place, new_place) < get_distance(circumference, house_place, old_place))
         return true;
     return false;
 }
 
 bool is_stable(int circumference, std::vector<int> &houses, int test_place)
 {
+    // would any other place win an election against test_place?
     for (int other_place = 0; other_place < circumference; other_place++)
     {
         int trues = 0;
@@ -89,6 +90,7 @@ bool is_stable(int circumference, std::vector<int> &houses, int test_place)
 
 std::vector<int> get_stabel_places(int circumference, std::vector<int> &houses)
 {
+    // go thorugh all possible places
     std::vector<int> result;
     for (int test_place = 0; test_place < circumference; test_place++)
         if (is_stable(circumference, houses, test_place))
@@ -96,18 +98,27 @@ std::vector<int> get_stabel_places(int circumference, std::vector<int> &houses)
     return result;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
+    if (argc < 2)
+        raise_error("Please specify the input file as the first console parameter.");
+
     int circumference;
     std::vector<int> houses;
-    read_file("examples/eisbuden7.txt", circumference, houses);
+    read_file(argv[1], circumference, houses);
 
     std::vector<int> stable_places = get_stabel_places(circumference, houses);
 
     // print results
-    for (int stable_place : stable_places)
-        std::cout << stable_place << " ";
-    std::cout << std::endl;
+    if (stable_places.size())
+    {
+        std::cout << "These are all the stable places:" << std::endl;
+        for (int stable_place : stable_places)
+            std::cout << stable_place << " ";
+        std::cout << std::endl;
+    }
+    else
+        std::cout << "There are no stable places." << std::endl;
 
     return 0;
 }

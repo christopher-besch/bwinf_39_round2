@@ -1,0 +1,16 @@
+\babel@toc {ngerman}{}
+\contentsline {section}{\numberline {1}L\IeC {\"o}sungsidee}{1}{section.1}%
+\contentsline {section}{\numberline {2}Umsetzung}{1}{section.2}%
+\contentsline {paragraph}{\nonumberline Einlese der Eingabedatei}{1}{paragraph*.3}%
+\contentsline {paragraph}{\nonumberline Bestimmung der stabilen Positionen}{2}{paragraph*.5}%
+\contentsline {section}{\numberline {3}Beispiele}{2}{section.3}%
+\contentsline {paragraph}{\nonumberline eisbuden1.txt}{2}{paragraph*.7}%
+\contentsline {paragraph}{\nonumberline eisbuden2.txt}{2}{paragraph*.9}%
+\contentsline {paragraph}{\nonumberline eisbuden3.txt}{2}{paragraph*.11}%
+\contentsline {paragraph}{\nonumberline eisbuden4.txt}{2}{paragraph*.13}%
+\contentsline {paragraph}{\nonumberline eisbuden5.txt}{2}{paragraph*.15}%
+\contentsline {paragraph}{\nonumberline eisbuden6.txt}{2}{paragraph*.17}%
+\contentsline {paragraph}{\nonumberline eisbuden7.txt}{3}{paragraph*.19}%
+\contentsline {subsection}{\numberline {3.1}Eigene Beispiele}{3}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Quellcode}{3}{section.4}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
