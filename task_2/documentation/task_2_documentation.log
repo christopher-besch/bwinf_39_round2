@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  28 DEC 2020 17:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  29 DEC 2020 18:31
 entering extended mode
 **./task_2_documentation.tex
 (task_2_documentation.tex
@@ -812,7 +812,7 @@ cmr/bx/n/10 se-lec-ted \T1/cmr/m/n/10 und \T1/cmr/bx/n/10 pos-si-ble_selected\T
 
 [3] [4]
 LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 
-330.
+331.
  ("C:\Program Files\MiKTeX\tex/latex/base\ts1cmss.fd"
 File: ts1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
@@ -821,15 +821,15 @@ AED: lastpage setting LastPage
 [5]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     378.
+(LaTeX3)     379.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     378.
+(LaTeX3)     379.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     378.
+(LaTeX3)     379.
 
  (task_2_documentation.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 25.
@@ -860,9 +860,9 @@ AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk> <C:\Users\
 strom\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk><C:/P
 rogram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Program Files
 /MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-Output written on task_2_documentation.pdf (5 pages, 166881 bytes).
+Output written on task_2_documentation.pdf (5 pages, 167327 bytes).
 PDF statistics:
- 563 PDF objects out of 1000 (max. 8388607)
+ 564 PDF objects out of 1000 (max. 8388607)
  104 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

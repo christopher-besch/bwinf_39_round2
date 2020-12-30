@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  29 DEC 2020 19:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (MiKTeX 20.12) (preloaded format=pdflatex 2020.12.18)  30 DEC 2020 09:00
 entering extended mode
 **./task_3_documentation.tex
 (task_3_documentation.tex
@@ -773,25 +773,25 @@ File: uni-0.def 2013/05/13 UCS: Unicode data U+0000..U+00FF
 
 {C:/Users/strom/AppData/Local/MiKTeX/pdftex/config/pdftex.map}] [2]
 LaTeX Font Info:    Trying to load font information for TS1+cmss on input line 
-222.
+243.
 
 ("C:\Program Files\MiKTeX\tex/latex/base\ts1cmss.fd"
 File: ts1cmss.fd 2019/12/16 v2.5j Standard LaTeX font definitions
-)
+) [3]
 
 AED: lastpage setting LastPage
-[3]
+[4]
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     263.
-
-
-LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     263.
+(LaTeX3)     284.
 
 
 LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
-(LaTeX3)     263.
+(LaTeX3)     284.
+
+
+LaTeX3 Info: Redefining command \BeforeClosingMainAux with sig. 'm' on line
+(LaTeX3)     284.
 
  (task_3_documentation.aux
 Package cleveref Info: loaded `ngerman' language definitions on input line 26.
@@ -800,9 +800,9 @@ Package rerunfilecheck Info: File `task_3_documentation.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 17006 strings out of 479697
- 314699 string characters out of 2877008
- 1005242 words of memory out of 3000000
+ 17011 strings out of 479697
+ 314753 string characters out of 2877008
+ 1007242 words of memory out of 3000000
  33767 multiletter control sequences out of 15000+200000
  420101 words of font info for 67 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -819,9 +819,9 @@ eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1000.pk> <C:\Users\strom\AppData\Loca
 l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx1440.pk> <C:\Users\strom\AppDat
 a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk> <C:\Users\strom\
 AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx2488.pk>
-Output written on task_3_documentation.pdf (3 pages, 119560 bytes).
+Output written on task_3_documentation.pdf (4 pages, 122713 bytes).
 PDF statistics:
- 451 PDF objects out of 1000 (max. 8388607)
- 72 named destinations out of 1000 (max. 500000)
+ 466 PDF objects out of 1000 (max. 8388607)
+ 77 named destinations out of 1000 (max. 500000)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 

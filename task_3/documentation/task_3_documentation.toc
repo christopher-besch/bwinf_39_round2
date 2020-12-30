@@ -12,5 +12,7 @@
 \contentsline {paragraph}{\nonumberline eisbuden6.txt}{2}{paragraph*.17}%
 \contentsline {paragraph}{\nonumberline eisbuden7.txt}{3}{paragraph*.19}%
 \contentsline {subsection}{\numberline {3.1}Eigene Beispiele}{3}{subsection.3.1}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{3}{paragraph*.21}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{3}{paragraph*.23}%
 \contentsline {section}{\numberline {4}Quellcode}{3}{section.4}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
