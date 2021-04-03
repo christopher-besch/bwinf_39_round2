@@ -41,7 +41,7 @@ struct Lake
     int circumference;
     std::vector<int> houses;
     // required for a test position to be stable regarding some dummy position
-    int required_nos;
+    int min_nos;
     // not using bool to prevent space-efficient specialization
     // allows multiple houses in same location
     std::vector<uint8_t> houses_map;
@@ -58,10 +58,10 @@ Lake read_file(const char *file_path)
     checked_getline(file, input_buffer, ' ');
     Lake lake;
     lake.circumference = checked_stoi(input_buffer);
-    lake.required_nos = lake.circumference - lake.circumference / 2 - 1;
 
     checked_getline(file, input_buffer, '\n');
     int amount_houses = checked_stoi(input_buffer);
+    lake.min_nos = amount_houses - amount_houses / 2 - 1;
 
     lake.houses.resize(amount_houses);
     lake.houses_map.resize(lake.circumference);
@@ -111,44 +111,36 @@ int get_shortest_route_middle_right(Lake lake, int test_place, int place_a, int 
     return std::min(middle_a, middle_b) % lake.circumference;
 }
 
+void print_debug(Lake lake, int place_a, int place_b, int place_c)
+{
+    for (auto place : lake.houses_map)
+    {
+        if (place)
+            std::cout << '|';
+        else
+            std::cout << '_';
+    }
+    std::cout << std::endl;
+    for (int idx = 0; idx < lake.circumference; ++idx)
+    {
+        if (idx == place_a)
+            std::cout << 'a';
+        else if (idx == place_b)
+            std::cout << 'b';
+        else if (idx == place_c)
+            std::cout << 'c';
+        else
+            std::cout << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+}
+
 bool test_place(Lake lake, int test_place, int place_a, int place_b)
 {
     // get outer area of yes-voting houses
     int middle_left = get_shortest_route_middle_left(lake, test_place, place_a, place_b);
     int middle_right = get_shortest_route_middle_right(lake, test_place, place_a, place_b);
-
-    // debug
-    // for (auto place : lake.houses_map)
-    // {
-    //     if (place)
-    //         std::cout << '|';
-    //     else
-    //         std::cout << '_';
-    // }
-    // std::cout << std::endl;
-    // for (int idx = 0; idx < lake.circumference; ++idx)
-    // {
-    //     if (idx == test_place)
-    //         std::cout << '^';
-    //     else if (idx == place_a)
-    //         std::cout << '+';
-    //     else if (idx == place_b)
-    //         std::cout << '+';
-    //     else
-    //         std::cout << ' ';
-    // }
-    // std::cout << std::endl;
-    // for (int idx = 0; idx < lake.circumference; ++idx)
-    // {
-    //     if (idx == middle_left)
-    //         std::cout << 'a';
-    //     else if (idx == middle_right)
-    //         std::cout << 'b';
-    //     else
-    //         std::cout << ' ';
-    // }
-    // std::cout << std::endl;
-    // std::cout << std::endl;
 
     // count all houses between a and b
     int yes = 0;
@@ -160,7 +152,8 @@ bool test_place(Lake lake, int test_place, int place_a, int place_b)
         if (current_location == lake.circumference)
             current_location = 0;
     }
-    return !(yes > lake.required_nos);
+    // print_debug(lake, place_a, place_b, test_place);
+    return !(yes > lake.min_nos);
 }
 
 int main_()
@@ -183,27 +176,32 @@ int main(int argc, char *argv[])
 
     // three ints each
     std::vector<int> result_sets;
-    std::vector<int> final_result_sets;
 
     // go through all possible locations for first ice
     for (int ice_a = 0; ice_a < lake.circumference; ++ice_a)
     {
         std::cout << ice_a << std::endl;
         // go through all possible locations for second ice
-        for (int ice_b = 0; ice_b < lake.circumference; ++ice_b)
+        for (int ice_b = ice_a; ice_b < lake.circumference; ++ice_b)
         {
-            if (ice_b == ice_a)
-                continue;
             // test all possible locations for third ice
-            for (int ice_c = 0; ice_c < lake.circumference; ++ice_c)
+            for (int ice_c = ice_b; ice_c < lake.circumference; ++ice_c)
             {
-                if (ice_c == ice_a || ice_c == ice_b)
-                    continue;
-                if (test_place(lake, ice_c, ice_a, ice_b))
+                // test all three locations for stability
+                // each test expects the other locations to be stable
+                bool a = test_place(lake, ice_a, ice_b, ice_c);
+                bool b = test_place(lake, ice_b, ice_c, ice_a);
+                bool c = test_place(lake, ice_c, ice_a, ice_b);
+
+                if (ice_a != ice_b && ice_b != ice_c && ice_c != ice_a &&
+                    test_place(lake, ice_a, ice_b, ice_c) &&
+                    test_place(lake, ice_b, ice_c, ice_a) &&
+                    test_place(lake, ice_c, ice_a, ice_b))
                 {
                     result_sets.push_back(ice_a);
                     result_sets.push_back(ice_b);
                     result_sets.push_back(ice_c);
+                    print_debug(lake, ice_a, ice_b, ice_c);
                 }
             }
         }
