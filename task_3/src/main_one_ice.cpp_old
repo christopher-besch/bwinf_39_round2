@@ -98,7 +98,7 @@ std::vector<int> get_stabel_places(int circumference, std::vector<int> &houses)
     return result;
 }
 
-int main(int argc, char *argv[])
+int main_old(int argc, char *argv[])
 {
     if (argc < 2)
         raise_error("Please specify the input file as the first console parameter.");
