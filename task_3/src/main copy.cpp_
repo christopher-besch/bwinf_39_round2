@@ -36,6 +36,12 @@ int checked_stoi(std::string str)
     }
 }
 
+enum class Direction
+{
+    left,
+    right
+};
+
 struct Lake
 {
     int circumference;
@@ -75,13 +81,16 @@ Lake read_file(const char *file_path)
     return lake;
 }
 
-int get_abs_distance(int circumference, int place_a, int place_b, bool direct = true)
+// use specified direction; automatically detects if indirect way is required
+int get_abs_distance(int circumference, int this_place, int other_place, Direction direction)
 {
-    int direct_distance = std::abs(place_a - place_b);
-    return direct ? direct_distance : circumference - direct_distance;
+    int direct_distance = direction == Direction::left ? this_place - other_place : other_place - this_place;
+    // only correct when direct_distance is negative
+    int indirect_distance = circumference + direct_distance;
+    return direct_distance < 0 ? indirect_distance : direct_distance;
 }
 
-// get middle index between a and b; always prefer position closer to a when there are two possible middles
+// get middle index between a and b; always prefer position closer to test_place when there are two possible middles
 int get_middle(int test_place, int other)
 {
     int distance = other - test_place;
@@ -90,34 +99,7 @@ int get_middle(int test_place, int other)
     return test_place + distance / 2;
 }
 
-int get_shortest_route_middle_left(Lake lake, int test_place, int place_a, int place_b)
-{
-    // a
-    if (place_a > test_place)
-        place_a = lake.circumference - place_a;
-    int middle_a = get_middle(test_place, place_a);
-    // b
-    if (place_b > test_place)
-        place_b = lake.circumference - place_b;
-    int middle_b = get_middle(test_place, place_b);
-    return std::min(middle_a, middle_b);
-}
-
-int get_shortest_route_middle_right(Lake lake, int test_place, int place_a, int place_b)
-{
-    // a
-    if (place_a < test_place)
-        place_a = lake.circumference + place_a;
-    int middle_a = get_middle(test_place, place_a);
-    // b
-    if (place_b < test_place)
-        place_b = lake.circumference + place_b;
-    int middle_b = get_middle(test_place, place_b);
-    // when middle_b == lake.circumference
-    return std::min(middle_a, middle_b) % lake.circumference;
-}
-
-void print_debug(Lake lake, int place_a, int place_b, int place_c)
+void print_houses(Lake lake)
 {
     for (auto place : lake.houses_map)
     {
@@ -127,56 +109,50 @@ void print_debug(Lake lake, int place_a, int place_b, int place_c)
             std::cout << '_';
     }
     std::cout << std::endl;
+}
+void print_places(Lake lake, int test_place, int place_a, int place_b)
+{
     for (int idx = 0; idx < lake.circumference; ++idx)
     {
-        if (idx == place_a)
+        if (idx == test_place)
+            std::cout << '^';
+        else if (idx == place_a)
             std::cout << 'a';
         else if (idx == place_b)
             std::cout << 'b';
-        else if (idx == place_c)
-            std::cout << 'c';
         else
             std::cout << ' ';
     }
     std::cout << std::endl;
+}
+void print_middles(Lake lake, int middle_left, int middle_right)
+{
+    for (int idx = 0; idx < lake.circumference; ++idx)
+    {
+        if (idx == middle_left)
+            std::cout << '|';
+        else if (idx == middle_right)
+            std::cout << '|';
+        else
+            std::cout << ' ';
+    }
     std::cout << std::endl;
 }
 
 bool test_place(Lake lake, int test_place, int place_a, int place_b)
 {
     // get outer area of yes-voting houses
+    int distance_a_left = get_abs_distance(lake.circumference, test_place, place_a, Direction::left);
+    int distance_b_left = get_abs_distance(lake.circumference, test_place, place_b, Direction::left);
+    int distance_a_right = get_abs_distance(lake.circumference, test_place, place_a, Direction::right);
+    int distance_b_right = get_abs_distance(lake.circumference, test_place, place_b, Direction::right);
 
-    int distance_direct_a = get_abs_distance(lake.circumference, test_place, place_a, true);
-    int distance_direct_b = get_abs_distance(lake.circumference, test_place, place_b, true);
-    int distance_indirect_a = get_abs_distance(lake.circumference, test_place, place_a, false);
-    int distance_indirect_b = get_abs_distance(lake.circumference, test_place, place_b, false);
+    int distance_left = distance_a_left < distance_b_left ? distance_a_left : distance_b_left;
+    int distance_right = distance_a_left < distance_b_left ? distance_b_right : distance_a_right;
+    int middle_left = test_place - distance_left / 2;
+    int middle_right = test_place + distance_right / 2;
 
-    // get shorter ways; either distance_direct_a and distance_indirect_b or distance_indirect_a and distance_direct_b
-    int distance_direct = distance_direct_a < distance_direct_b ? distance_direct_a : distance_direct_b;
-    int distance_indirect = distance_direct_a < distance_direct_b ? distance_indirect_b : distance_indirect_a;
-
-    int place_left,
-        place_right;
-
-    // go left
-    for (int current_location = test_place; current_location != current_location;)
-    {
-        if (current_location == place_a)
-        {
-            place_left = place_a;
-            place_right = place_b;
-        }
-        // todo: use ternary
-        ++current_location;
-        // rollover
-        if (current_location == lake.circumference)
-            current_location = 0;
-    }
-
-    int middle_left = get_shortest_route_middle_left(lake, test_place, place_a, place_b);
-    int middle_right = get_shortest_route_middle_right(lake, test_place, place_a, place_b);
-
-    // count all houses between a and b
+    // count all houses between these middles
     int yes = 0;
     for (int current_location = middle_left; current_location != middle_right;)
     {
@@ -186,18 +162,16 @@ bool test_place(Lake lake, int test_place, int place_a, int place_b)
         if (current_location == lake.circumference)
             current_location = 0;
     }
-    // print_debug(lake, place_a, place_b, test_place);
+    print_houses(lake);
+    print_places(lake, test_place, place_a, place_b);
+    print_middles(lake, middle_left, middle_right);
     return !(yes > lake.max_yes);
 }
 
-int main_()
+int main_(int argc, char *argv[])
 {
-    Lake lake;
-    lake.circumference = 10;
-    int middle_left = get_shortest_route_middle_left(lake, 5, 3, 7);
-    int middle_right = get_shortest_route_middle_right(lake, 5, 3, 7);
-
-    std::cout << middle_left << " " << middle_right << std::endl;
+    Lake lake = read_file(argv[1]);
+    test_place(lake, 10, 5, 15);
     return 0;
 }
 
@@ -234,7 +208,6 @@ int main__(int argc, char *argv[])
                     result_sets.push_back(ice_a);
                     result_sets.push_back(ice_b);
                     result_sets.push_back(ice_c);
-                    print_debug(lake, ice_a, ice_b, ice_c);
                 }
             }
         }
@@ -242,5 +215,44 @@ int main__(int argc, char *argv[])
 
     std::cout << "Hello" << std::endl;
 
+    return 0;
+}
+
+int main(int argc, char *argv[])
+{
+    if (argc < 2)
+        raise_error("Please specify the input file as the first console parameter.");
+
+    Lake lake = read_file(argv[1]);
+
+    // three ints each
+    std::vector<int> result_sets;
+
+    // go through all possible locations for first ice
+    for (int place_a = 0; place_a < lake.circumference; ++place_a)
+    {
+        // go through all possible locations for second ice
+        for (int place_b = place_a; place_b < lake.circumference; ++place_b)
+        {
+            // test if there is a location between these two that would make any other location unstable
+            if (does_allow_destabilizing(lake, place_a, place_b))
+                // if the gap gets bigger, only more possible destabilizing location will be found
+                break;
+            // test all possible locations for third ice
+            for (int place_c = place_b; place_c < lake.circumference; ++place_c)
+            {
+                // when the second gap gets too big
+                if (does_allow_destabilizing(lake, place_b, place_c))
+                    break;
+                // when the third gap is still too big
+                if (!does_allow_destabilizing(lake, place_c, place_a))
+                {
+                    result_sets.push_back(place_a);
+                    result_sets.push_back(place_b);
+                    result_sets.push_back(place_c);
+                }
+            }
+        }
+    }
     return 0;
 }
