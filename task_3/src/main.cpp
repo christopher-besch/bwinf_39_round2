@@ -9,29 +9,6 @@
 #include "brute_force.h"
 #include "scored_search.h"
 
-Arrangement get_better_arrangement(Lake &lake, Arrangement arrangement)
-{
-    // get all other possible locations
-    // go through all possible locations for first ice
-    for (int place_a = 0; place_a < lake.circumference; ++place_a)
-    {
-        // go through all possible locations for second ice
-        for (int place_b = place_a; place_b < lake.circumference; ++place_b)
-        {
-            // test all possible locations for third ice
-            for (int place_c = place_b; place_c < lake.circumference; ++place_c)
-            {
-                if (is_better(lake, arrangement, {place_a, place_b, place_c}))
-                {
-                    return get_better_arrangement(lake, {place_a, place_b, place_c});
-                    std::cout << "hit" << std::endl;
-                }
-            }
-        }
-    }
-    return arrangement;
-}
-
 Lake read_file(const char *file_path)
 {
     std::fstream file;
@@ -46,7 +23,7 @@ Lake read_file(const char *file_path)
 
     checked_getline(file, input_buffer, '\n');
     int amount_houses = checked_stoi(input_buffer);
-    lake.max_yes = amount_houses / 2;
+    lake.min_nos = (amount_houses + 1) / 2;
 
     lake.houses.resize(amount_houses);
     lake.houses_map.resize(lake.circumference);
@@ -67,7 +44,16 @@ int main(int argc, char *argv[])
 
     Lake lake = read_file(argv[1]);
 
+    // optimized_test_arrangement(lake, {0, 0, 6});
+
     // do_brute_force(lake);
-    do_scored_search(lake);
+    test_test_algos(lake);
+    // do_scored_search(lake);
+    // Arrangement test_arrangement{7, 14, 0};
+    // count_sector_nos(lake, test_arrangement, 1, 10);
+    // test_arrangement = {7, 14, 0};
+    // count_sector_nos(lake, test_arrangement, 1, 0);
+    // test_arrangement = {7, 14, 0};
+    // count_sector_nos(lake, test_arrangement, 1, 6);
     return 0;
 }

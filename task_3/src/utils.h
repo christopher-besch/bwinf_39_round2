@@ -47,12 +47,18 @@ void inline insert(std::vector<T> &list, T &value)
     list.insert(it, value);
 }
 
+enum class Direction
+{
+    left,
+    right
+};
+
 struct Lake
 {
     int circumference;
     std::vector<int> houses;
-    // one more yes-votes and the test position is unstable regarding some dummy position
-    int max_yes;
+    // minimum amount of no-votes required to not replace the locations
+    int min_nos;
     // not using bool to prevent space-efficient specialization
     // allows multiple houses in same location
     std::vector<uint8_t> houses_map;
@@ -73,26 +79,26 @@ struct Lake
     {
         for (int idx = 0; idx < circumference; ++idx)
         {
-            if (idx == test_place)
+            if (idx == (test_place % circumference))
                 std::cout << '^';
-            else if (idx == place_a)
+            else if (idx == (place_a % circumference))
                 std::cout << 'a';
-            else if (idx == place_b)
+            else if (idx == (place_b % circumference))
                 std::cout << 'b';
-            else if (idx == place_c)
+            else if (idx == (place_c % circumference))
                 std::cout << 'c';
             else
                 std::cout << ' ';
         }
         std::cout << std::endl;
     }
-    void print_middles(int middle_left, int middle_right) const
+    void print_marker(int place_a, int place_b) const
     {
         for (int idx = 0; idx < circumference; ++idx)
         {
-            if (idx == middle_left)
+            if (idx == (place_a % circumference))
                 std::cout << '|';
-            else if (idx == middle_right)
+            else if (idx == (place_b % circumference))
                 std::cout << '|';
             else
                 std::cout << ' ';
@@ -118,3 +124,8 @@ struct Arrangement
         return score > other.score;
     }
 };
+
+std::ostream &operator<<(std::ostream &os, Arrangement const &arrangement)
+{
+    return os << arrangement.place_a << ' ' << arrangement.place_b << ' ' << arrangement.place_c;
+}
