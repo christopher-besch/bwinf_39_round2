@@ -115,6 +115,7 @@ bool is_better(Lake &lake, Arrangement &current, Arrangement check)
     //     std::cout << std::endl;
     // }
     // more yes than nos?
+    std::cout << "yes: " << yes << std::endl;
     return yes > (lake.houses.size() - yes);
 }
 
@@ -123,7 +124,9 @@ bool optimized_is_better(Lake &lake, Arrangement &current, Arrangement check)
     int nos_a = count_sector_nos(lake, current, check.place_a, check.place_b);
     int nos_b = count_sector_nos(lake, current, check.place_b, check.place_c);
     int nos_c = count_sector_nos(lake, current, check.place_c, check.place_a);
-    return !((nos_a + nos_b + nos_c) >= lake.min_nos);
+    int nos = nos_a + nos_b + nos_c;
+    std::cout << "nos: " << nos << std::endl;
+    return nos < lake.min_nos;
 }
 
 bool test_arrangement(Lake &lake, Arrangement arrangement)
@@ -157,31 +160,17 @@ bool optimized_test_arrangement(Lake &lake, Arrangement arrangement)
             // when there are already so many no-votes between place_a and place_b,
             // the location of place_c won't change anything, this arrangement won't beat the test arrangement
             if (nos_sector_a >= lake.min_nos)
-            {
-                for (int place_c = place_b + 1; place_c < lake.circumference + 1; ++place_c)
-                    if (is_better(lake, arrangement, {place_a, place_b, place_c}))
-                        std::cout << "not good" << std::endl;
                 break;
-            }
             // test all possible locations for third ice
             for (int place_c = place_b + 1; place_c < lake.circumference + 1; ++place_c)
             {
                 int nos_sector_b = count_sector_nos(lake, arrangement, place_b, place_c);
-                int nos_sector_c = count_sector_nos(lake, arrangement, place_c, place_a);
+                int nos_sector_c = count_sector_nos(lake, arrangement, place_c, place_a + 20);
                 int nos = nos_sector_a + nos_sector_b + nos_sector_c;
-                if (nos >= lake.min_nos)
-                {
-                    if (is_better(lake, arrangement, {place_a, place_b, place_c}))
-                        std::cout << "not good" << std::endl;
-                    break;
-                }
-                return false;
+                if (nos < lake.min_nos)
+                    return false;
             }
         }
-    }
-    if (!test_arrangement(lake, arrangement))
-    {
-        test_arrangement(lake, arrangement);
     }
     return true;
 }
@@ -198,8 +187,6 @@ int do_brute_force(Lake &lake)
             // test all possible locations for third ice
             for (int place_c = place_b; place_c < lake.circumference; ++place_c)
             {
-                if (optimized_test_arrangement(lake, {place_a, place_b, place_c}) != test_arrangement(lake, {place_a, place_b, place_c}))
-                    std::cout << "not good" << std::endl;
                 if (optimized_test_arrangement(lake, {place_a, place_b, place_c}))
                 {
                     // debug
@@ -224,14 +211,21 @@ void test_test_algos(Lake &lake)
                     for (int check_place_b = check_place_a; check_place_b < lake.circumference; ++check_place_b)
                         for (int check_place_c = check_place_b; check_place_c < lake.circumference; ++check_place_c)
                         {
+                            // only the last one gets a rollover
+                            int weird_number = check_place_a + 20;
                             Arrangement arrangement{arrangement_place_a, arrangement_place_b, arrangement_place_c};
                             Arrangement check{check_place_a, check_place_b, check_place_c};
 
-                            if (is_better(lake, arrangement, check) != optimized_is_better(lake, arrangement, check))
+                            int yes = count_yes(lake, arrangement, check);
+                            int nos_a = count_sector_nos(lake, arrangement, check.place_a, check.place_b);
+                            int nos_b = count_sector_nos(lake, arrangement, check.place_b, check.place_c);
+                            int nos_c = count_sector_nos(lake, arrangement, check.place_c, weird_number);
+                            if ((yes + nos_a + nos_b + nos_c) != lake.houses.size())
                             {
-                                std::cout << is_better(lake, arrangement, check) << " " << optimized_is_better(lake, arrangement, check) << std::endl;
-                                std::cout
-                                    << "not good" << std::endl;
+                                count_sector_nos(lake, arrangement, check.place_a, check.place_b);
+                                count_sector_nos(lake, arrangement, check.place_b, check.place_c);
+                                count_sector_nos(lake, arrangement, check.place_c, weird_number);
+                                std::cout << "bad" << std::endl;
                             }
                         }
             }

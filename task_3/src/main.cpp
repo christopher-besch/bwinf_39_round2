@@ -46,8 +46,8 @@ int main(int argc, char *argv[])
 
     // optimized_test_arrangement(lake, {0, 0, 6});
 
-    // do_brute_force(lake);
-    test_test_algos(lake);
+    do_brute_force(lake);
+    // test_test_algos(lake);
     // do_scored_search(lake);
     // Arrangement test_arrangement{7, 14, 0};
     // count_sector_nos(lake, test_arrangement, 1, 10);
