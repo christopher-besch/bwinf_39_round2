@@ -8,13 +8,13 @@ float get_score(Lake &lake, Arrangement arrangement)
 {
     float sum = 0;
     for (auto house : lake.houses)
-        sum += get_closest_route(lake, arrangement, house);
+        sum += get_closest_route(lake, arrangement, house.location);
     return sum / lake.houses.size();
 }
 
 void do_scored_search(Lake lake)
 {
-    constexpr int max_arrangements = 10000;
+    constexpr int max_arrangements = 200;
     std::vector<Arrangement> best_arrangements;
     Arrangement dummy{};
     // worst possible score

@@ -4,6 +4,7 @@
 #include <array>
 #include <math.h>
 #include <string>
+#include <chrono>
 
 #include "utils.h"
 #include "brute_force.h"
@@ -31,7 +32,7 @@ Lake read_file(const char *file_path)
     {
         checked_getline(file, input_buffer, ' ');
         int house_location = checked_stoi(input_buffer);
-        lake.houses[idx] = house_location;
+        lake.houses[idx] = {house_location, -1};
         ++lake.houses_map[house_location];
     }
     return lake;
@@ -44,16 +45,22 @@ int main(int argc, char *argv[])
 
     Lake lake = read_file(argv[1]);
 
-    // optimized_test_arrangement(lake, {0, 0, 6});
+    auto begin = std::chrono::high_resolution_clock::now();
+    do_scored_search(lake);
 
-    do_brute_force(lake);
     // test_test_algos(lake);
-    // do_scored_search(lake);
-    // Arrangement test_arrangement{7, 14, 0};
-    // count_sector_nos(lake, test_arrangement, 1, 10);
-    // test_arrangement = {7, 14, 0};
-    // count_sector_nos(lake, test_arrangement, 1, 0);
-    // test_arrangement = {7, 14, 0};
-    // count_sector_nos(lake, test_arrangement, 1, 6);
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "Finished in ";
+    long long deltaTime = (end - begin).count();
+    if (deltaTime > 1e9)
+        std::cout << std::to_string(deltaTime / 1e9f) << " seconds";
+    else if (deltaTime > 1e6)
+        std::cout << std::to_string(deltaTime / 1e6f) << " milliseconds";
+    else if (deltaTime > 1e3)
+        std::cout << std::to_string(deltaTime / 1e3f) << " microseconds";
+    else
+        std::cout << std::to_string(deltaTime) << " nanoseconds";
+    std::cout << std::endl;
     return 0;
 }

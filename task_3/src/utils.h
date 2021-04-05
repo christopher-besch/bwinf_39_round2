@@ -53,10 +53,16 @@ enum class Direction
     right
 };
 
+struct House
+{
+    int location;
+    int closest_route;
+};
+
 struct Lake
 {
     int circumference;
-    std::vector<int> houses;
+    std::vector<House> houses;
     // minimum amount of no-votes required to not replace the locations
     int min_nos;
     // not using bool to prevent space-efficient specialization
@@ -128,4 +134,18 @@ struct Arrangement
 std::ostream &operator<<(std::ostream &os, Arrangement const &arrangement)
 {
     return os << arrangement.place_a << ' ' << arrangement.place_b << ' ' << arrangement.place_c;
+}
+int get_shortest_distance(int circumference, int place_a, int place_b)
+{
+    int direct_distance = std::abs(place_a - place_b);
+    // take shortest way, direct or the other direction
+    return std::min(direct_distance, circumference - direct_distance);
+}
+
+int get_closest_route(Lake &lake, Arrangement &arrangement, int location)
+{
+    int distance_a = get_shortest_distance(lake.circumference, location, arrangement.place_a);
+    int distance_b = get_shortest_distance(lake.circumference, location, arrangement.place_b);
+    int distance_c = get_shortest_distance(lake.circumference, location, arrangement.place_c);
+    return std::min(distance_a, std::min(distance_b, distance_c));
 }
