@@ -14,7 +14,7 @@ float get_score(Lake &lake, Arrangement arrangement)
 
 void do_scored_search(Lake lake)
 {
-    constexpr int max_arrangements = 200;
+    constexpr int max_arrangements = 1;
     std::vector<Arrangement> best_arrangements;
     Arrangement dummy{};
     // worst possible score

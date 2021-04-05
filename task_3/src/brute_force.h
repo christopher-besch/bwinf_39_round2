@@ -122,7 +122,8 @@ bool optimized_test_arrangement(Lake &lake, Arrangement arrangement)
     for (int place_a = 0; place_a < lake.circumference; ++place_a)
     {
         // go through all possible locations for second ice
-        for (int place_b = place_a; place_b < lake.circumference; ++place_b)
+        // todo: add flag
+        for (int place_b = place_a + 1; place_b < lake.circumference; ++place_b)
         {
             int nos_sector_a = count_sector_nos(lake, arrangement, place_a, place_b, false);
             // when there are already so many no-votes between place_a and place_b,
@@ -131,7 +132,7 @@ bool optimized_test_arrangement(Lake &lake, Arrangement arrangement)
                 break;
             // test all possible locations for third ice
             // todo: necessary?
-            for (int place_c = place_b + 1; place_c < lake.circumference + 1; ++place_c)
+            for (int place_c = place_b + 1; place_c < lake.circumference; ++place_c)
             {
                 int nos_sector_b = count_sector_nos(lake, arrangement, place_b, place_c, false);
                 int nos_sector_c = count_sector_nos(lake, arrangement, place_c, place_a, true);
