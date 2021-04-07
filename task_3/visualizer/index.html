@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice Cream Parlor Visualizer</title>
+    <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
+</head>
+
+<body style="padding-top: 2rem;">
+    <div class="container">
+        <form>
+            <!-- lake radius -->
+            <div class="form-group row">
+                <label for="lake-radius-form" class="col-sm-2 col-form-label">Lake Radius</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="lake-radius-form" value="350">
+                </div>
+            </div>
+            <!-- circumference -->
+            <div class="form-group row">
+                <label for="circumference-form" class="col-sm-2 col-form-label">Circumference</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="circumference-form" value="20">
+                </div>
+            </div>
+            <!-- houses -->
+            <div class="form-group row">
+                <label for="houses-form" class="col-sm-2 col-form-label">Houses</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="houses-form">
+                </div>
+            </div>
+            <!-- locations -->
+            <div class="form-group row">
+                <label for="locations-form" class="col-sm-2 col-form-label">Locations</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="locations-form">
+                </div>
+            </div>
+        </form>
+        <!-- buttons -->
+        <div class="form-group row">
+            <div class="col-sm-2">
+                <button onclick="render()" class="btn btn-primary mb-2">Render</button>
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-primary mb-2">Download</button>
+            </div>
+        </div>
+        <!-- canvas -->
+        <canvas id="lake_canvas" style="border: 1px solid; width: 800px; height: 800px">
+            Sorry, your browser does not support the canvas tag.
+        </canvas>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
