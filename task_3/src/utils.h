@@ -135,6 +135,7 @@ std::ostream &operator<<(std::ostream &os, Arrangement const &arrangement)
 {
     return os << arrangement.place_a << ' ' << arrangement.place_b << ' ' << arrangement.place_c;
 }
+
 int get_shortest_distance(int circumference, int place_a, int place_b)
 {
     int direct_distance = std::abs(place_a - place_b);
