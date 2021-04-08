@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="vendor/bootstrap/css/bootstrap.min.css">
 </head>
 
-<body style="padding-top: 2rem;">
+<body style="padding-top: 2rem; padding-bottom: 2rem">
     <div class="container">
         <form>
             <!-- lake radius -->
@@ -95,12 +95,15 @@
             </div>
         </div>
         <!-- canvas -->
+        <canvas id="tools_canvas" style="border: 1px solid; width: 800px; height: 100px">
+            Sorry, your browser does not support the canvas tag.
+        </canvas>
         <canvas id="lake_canvas" style="border: 1px solid; width: 800px; height: 800px">
             Sorry, your browser does not support the canvas tag.
         </canvas>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 
 </html>

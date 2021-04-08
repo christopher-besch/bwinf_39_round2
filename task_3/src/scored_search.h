@@ -8,6 +8,7 @@ float get_score(Lake &lake, Arrangement arrangement)
 {
     float sum = 0;
     for (auto house : lake.houses)
+        // todo: what if we'd take every route instead of only the best ones
         sum += get_closest_route(lake, arrangement, house.location);
     return sum / lake.houses.size();
 }
