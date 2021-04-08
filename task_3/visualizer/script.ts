@@ -12,6 +12,7 @@ abstract class Position {
     protected text_y_location_rel: number;
     protected text_y_location = 0;
     protected start_angle = 0;
+    protected labels = false;
 
     constructor(
         ctx: CanvasRenderingContext2D,
@@ -28,18 +29,20 @@ abstract class Position {
         this.color = color;
         this.text_y_location_rel = text_y_location_rel;
     }
-    resize(radius: number, icon_size: number, start_angle: number, circumference: number): void {
+
+    update(radius: number, icon_size: number, start_angle: number, circumference: number, labels: boolean): void {
         this.radius = radius;
         this.circumference = circumference;
         this.icon_size = icon_size;
         this.text_y_location = this.text_y_location_rel * icon_size;
         this.start_angle = start_angle;
+        this.labels = labels;
     }
 
     // icon should be scalable with icon_size
     abstract draw_icon(): void;
 
-    draw_address(): void {
+    draw_label(): void {
         this.ctx.font = `${this.icon_size * 3}px Sans`;
         this.ctx.textAlign = "center";
         this.ctx.fillStyle = this.color;
@@ -63,10 +66,12 @@ abstract class Position {
 
         this.draw_icon();
 
-        // further away from lake but horizontally rotated
-        this.ctx.translate(0, this.text_y_location);
-        this.ctx.rotate(-rotation + Math.PI / 2);
-        this.draw_address();
+        if (this.labels) {
+            // further away from lake but horizontally rotated
+            this.ctx.translate(0, this.text_y_location);
+            this.ctx.rotate(-rotation + Math.PI / 2);
+            this.draw_label();
+        }
 
         this.ctx.restore();
     }
@@ -116,10 +121,7 @@ class House extends Position {
 
 class Lake {
     private ctx: CanvasRenderingContext2D;
-    private circumference = 0;
     private radius = 0;
-    private icon_size = 0;
-    private start_angle = 0;
     private x: number;
     private y: number;
     // used to check if the addresses have been updated
@@ -136,20 +138,25 @@ class Lake {
         this.y = ctx.canvas.height / 2;
     }
 
-    resize(radius: number, icon_size: number, start_angle: number, circumference: number): void {
+    update(
+        radius: number,
+        icon_size: number,
+        start_angle: number,
+        circumference: number,
+        house_labels: boolean,
+        test_ice_label: boolean,
+        check_ice_labels: boolean
+    ): void {
         this.radius = radius;
-        this.circumference = circumference;
-        this.icon_size = icon_size;
-        this.start_angle = start_angle;
 
         this.houses.forEach((position) => {
-            position.resize(radius, icon_size, start_angle, circumference);
+            position.update(radius, icon_size, start_angle, circumference, house_labels);
         });
         this.test_ices.forEach((position) => {
-            position.resize(radius, icon_size, start_angle, circumference);
+            position.update(radius, icon_size, start_angle, circumference, test_ice_label);
         });
         this.check_ices.forEach((position) => {
-            position.resize(radius, icon_size, start_angle, circumference);
+            position.update(radius, icon_size, start_angle, circumference, check_ice_labels);
         });
     }
 
@@ -168,7 +175,7 @@ class Lake {
             });
         }
         if (check_ice_addresses != this.check_ice_addresses) {
-            this.check_ice_addresses = [];
+            this.check_ices = [];
             check_ice_addresses.forEach((address) => {
                 this.check_ices.push(new CheckIceCream(this.ctx, this.x, this.y, address));
             });
@@ -215,22 +222,27 @@ function render(): void {
 
 function update_settings(): void {
     // read form
-    let lake_radius_form = document.getElementById("lake-radius-form") as HTMLInputElement;
-    let icon_size_form = document.getElementById("icon-size-form") as HTMLInputElement;
-    let start_angle_degree_form = document.getElementById("start-angle-degree-form") as HTMLInputElement;
-    let circumference_form = document.getElementById("circumference-form") as HTMLInputElement;
-    let houses_form = document.getElementById("houses-form") as HTMLInputElement;
-    let test_ices_form = document.getElementById("test-ices-form") as HTMLInputElement;
-    let check_ices_form = document.getElementById("check-ices-form") as HTMLInputElement;
+    let lake_radius_raw = (document.getElementById("lake-radius-form") as HTMLInputElement).value;
+    let icon_size_raw = (document.getElementById("icon-size-form") as HTMLInputElement).value;
+    let start_angle_degree_raw = (document.getElementById("start-angle-degree-form") as HTMLInputElement).value;
+    let circumference_raw = (document.getElementById("circumference-form") as HTMLInputElement).value;
+
+    let houses_raw = (document.getElementById("houses-form") as HTMLInputElement).value;
+    let test_ices_raw = (document.getElementById("test-ices-form") as HTMLInputElement).value;
+    let check_ices_raw = (document.getElementById("check-ices-form") as HTMLInputElement).value;
+
+    let houses_labels = (document.getElementById("houses-labels-form") as HTMLInputElement).checked;
+    let test_ice_labels = (document.getElementById("test-ice-labels-form") as HTMLInputElement).checked;
+    let check_ice_labels = (document.getElementById("check-ice-labels-form") as HTMLInputElement).checked;
 
     // convert to int
-    let radius = parseInt(lake_radius_form.value);
-    let icon_size = parseInt(icon_size_form.value);
-    let circumference = parseInt(circumference_form.value);
-    let start_angle = (parseInt(start_angle_degree_form.value) * Math.PI) / 180;
+    let radius = parseInt(lake_radius_raw);
+    let icon_size = parseInt(icon_size_raw);
+    let circumference = parseInt(circumference_raw);
+    let start_angle = (parseInt(start_angle_degree_raw) * Math.PI) / 180;
 
     // convert to int arrays
-    let houses_str = !houses_form.value ? [] : houses_form.value.split(" ");
+    let houses_str = !houses_raw ? [] : houses_raw.split(" ");
     let houses: number[] = [];
     for (let idx = 0; idx < houses_str.length; idx++) {
         let address = parseInt(houses_str[idx]);
@@ -240,7 +252,7 @@ function update_settings(): void {
         }
         houses.push(address);
     }
-    let test_ices_str = !test_ices_form.value ? [] : test_ices_form.value.split(" ");
+    let test_ices_str = !test_ices_raw ? [] : test_ices_raw.split(" ");
     let test_ices: number[] = [];
     for (let idx = 0; idx < test_ices_str.length; idx++) {
         let address = parseInt(test_ices_str[idx]);
@@ -250,7 +262,7 @@ function update_settings(): void {
         }
         test_ices.push(address);
     }
-    let check_ices_str = !check_ices_form.value ? [] : check_ices_form.value.split(" ");
+    let check_ices_str = !check_ices_raw ? [] : check_ices_raw.split(" ");
     let check_ices: number[] = [];
     for (let idx = 0; idx < check_ices_str.length; idx++) {
         let address = parseInt(check_ices_str[idx]);
@@ -267,16 +279,17 @@ function update_settings(): void {
     }
 
     lake.update_positions(houses, test_ices, check_ices);
-    lake.resize(radius, icon_size, start_angle, circumference);
+    lake.update(radius, icon_size, start_angle, circumference, houses_labels, test_ice_labels, check_ice_labels);
     render();
 }
 
-function download(): void {
+function download(open_in_new_tab: boolean = false): void {
     let image_url = lake_canvas.toDataURL("lake.png");
 
     // create temporary link
     let tmp_link = document.createElement("a");
-    tmp_link.download = "lake.png";
+    if (open_in_new_tab) tmp_link.target = "_blank";
+    else tmp_link.download = "lake.png";
     tmp_link.href = image_url;
     document.body.appendChild(tmp_link);
     tmp_link.click();
