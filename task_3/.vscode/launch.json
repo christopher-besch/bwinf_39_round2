@@ -5,11 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Launch localhost",
+            "url": "http://localhost:5500/visualizer",
+            "webRoot": "${workspaceFolder}/visualizer",
+            "pathMappings": [
+                {
+                    "url": "http://localhost:5500",
+                    "path": "${workspaceFolder}"
+                }
+            ]
+        },
+        {
             "name": "Debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug-linux-x86_64/task_3",
-            "args": ["examples/eisbuden1.txt"],
+            "args": [
+                "examples/eisbuden1.txt"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
