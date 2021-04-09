@@ -1,17 +1,17 @@
 \babel@toc {ngerman}{}
 \contentsline {section}{\numberline {1}Ein Wort \IeC {\"u}ber die Graphiken}{1}{section.1}%
 \contentsline {section}{\numberline {2}L\IeC {\"o}sungsidee}{1}{section.2}%
-\contentsline {section}{\numberline {3}Umsetzung}{2}{section.3}%
-\contentsline {paragraph}{\nonumberline Einlese der Eingabedatei}{2}{section*.5}%
+\contentsline {section}{\numberline {3}Umsetzung}{3}{section.3}%
+\contentsline {paragraph}{\nonumberline Einlese der Eingabedatei}{3}{section*.6}%
 \contentsline {section}{\numberline {4}Beispiele}{3}{section.4}%
-\contentsline {paragraph}{\nonumberline eisbuden1.txt}{3}{section*.6}%
-\contentsline {paragraph}{\nonumberline eisbuden2.txt}{3}{section*.7}%
-\contentsline {paragraph}{\nonumberline eisbuden3.txt}{3}{section*.8}%
-\contentsline {paragraph}{\nonumberline eisbuden4.txt}{3}{section*.9}%
-\contentsline {paragraph}{\nonumberline eisbuden5.txt}{3}{section*.10}%
-\contentsline {paragraph}{\nonumberline eisbuden6.txt}{4}{section*.11}%
-\contentsline {paragraph}{\nonumberline eisbuden7.txt}{4}{section*.12}%
-\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{4}{subsection.4.1}%
-\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{4}{section*.13}%
-\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{4}{section*.14}%
-\contentsline {section}{\numberline {5}Quellcode}{4}{section.5}%
+\contentsline {paragraph}{\nonumberline eisbuden1.txt}{3}{section*.7}%
+\contentsline {paragraph}{\nonumberline eisbuden2.txt}{3}{section*.8}%
+\contentsline {paragraph}{\nonumberline eisbuden3.txt}{4}{section*.9}%
+\contentsline {paragraph}{\nonumberline eisbuden4.txt}{4}{section*.10}%
+\contentsline {paragraph}{\nonumberline eisbuden5.txt}{4}{section*.11}%
+\contentsline {paragraph}{\nonumberline eisbuden6.txt}{5}{section*.12}%
+\contentsline {paragraph}{\nonumberline eisbuden7.txt}{5}{section*.13}%
+\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{5}{subsection.4.1}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{5}{section*.14}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{5}{section*.15}%
+\contentsline {section}{\numberline {5}Quellcode}{5}{section.5}%

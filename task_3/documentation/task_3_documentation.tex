@@ -100,7 +100,6 @@ Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Sy
     \item Der See ist als schwarzer Kreis dargestellt.
     \item Die Häuser sind verschieden gefärbte Rechtecke, deren Adresse außerhalb des Kreises stehen:
           \begin{itemize}
-              \item Schwarz: Es liegt keine besondere Bedeutung vor.
               \item Rot: Das Haus stimmt gegen eine Verlegung der Eisdielen.
               \item Grün: Es stimmt für eine Verlegung.
               \item Andere Farben werden verwendet, um bestimmte Häuser herauszuheben.
@@ -154,7 +153,7 @@ Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspri
     \end{subfigure}
 \end{figure}
 Die durchschnittliche Eisbudendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
-Je höher er ist, desto unwahrscheinlicher wird eine Veränderung durchgesetzt.
+Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
 Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_borken_example} gezeigt wird.
 \begin{figure}[ht]
@@ -164,7 +163,54 @@ Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangem
     \label{fig:04_borken_example}
 \end{figure}
 Hieraus geht hervor, dass die durchschnittliche Eisbudendistanz nur eine Näherungslösung liefert.
-Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus aus Stabilität überprüft werden.
+Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
+
+\medskip
+Um die Stabilität eines Test-Arrangements zu berechnen, müssen alle möglichen Check-Arrangements durchgegangen werden.
+Es wird nur eine einziges Check-Arrangement gesucht, das das Test-Arrangement schlagen kann.
+Daher können zwei Optimierungen getroffen werden:
+\begin{enumerate}
+    \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier aufeinanderliegender Eisdielen die Eisbudendistanz keines Häuses vergrößert wird.
+    \item Alle Dopplungen sind unnötig, da die Reihenfolge der Eisdielen für die Stimmen der Häuser irrelevant sind.
+\end{enumerate}
+Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
+Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\linewidth]{05_sectors.png}
+    \caption{Einteilung in Sektoren}
+    \label{fig:05_sectors}
+\end{figure}
+
+Um nun alle Position durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden (Die verschiedenen Optionen für diese müssen in einem übergeordneten Schritte durchgegangen werden) und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
+Somit ist die Größe und Position des ersten Sektor bei vielen Durchläufen gleich.
+
+Nun zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
+Dies lässt sich dadurch begründen, dass die Eisdielendistanzen dieser Häuser nur dann nicht verkürzt werden, wenn sich eine Eisdiele des Test-Arrangements in dem Sektor befindet.
+Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die Eisbudendistanz ohne Test-Eisdielen innerhalb des Sektors nicht verkürzt wird.
+
+\medskip
+In der Implementation wird auf viele Optimierungen eingegangen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
