@@ -1,10 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <array>
-#include <math.h>
 #include <string>
 
 #ifdef DEBUG
@@ -21,36 +18,28 @@
     }
 #endif
 
-void inline checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
-{
-    if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
-        raise_error("File Parsing Error: More lines required!");
-}
-
-int inline checked_stoi(std::string str)
-{
-    try
-    {
-        return std::stoi(str);
-    }
-    catch (std::invalid_argument ex)
-    {
-        raise_error("File Parsing Error: Can't convert \"" << str << "\" to int!");
-    }
-}
-
-template <typename T>
-void inline insert(std::vector<T> &list, T &value)
-{
-    // get location of first element that is not less than value
-    typename std::vector<T>::iterator it = std::lower_bound(list.begin(), list.end(), value);
-    list.insert(it, value);
-}
-
 enum class Direction
 {
     left,
     right
+};
+
+struct Arrangement
+{
+    int place_a;
+    int place_b;
+    int place_c;
+    // the smaller the better
+    int score;
+
+    bool operator<(const Arrangement &other) const
+    {
+        return score < other.score;
+    }
+    bool operator>(const Arrangement &other) const
+    {
+        return score > other.score;
+    }
 };
 
 struct House
@@ -66,8 +55,10 @@ struct Lake
     // minimum amount of no-votes required to not replace the locations
     int min_nos;
     // not using bool to prevent space-efficient specialization
-    // allows multiple houses in same location
+    // index represents address; 1 -> house exists; 2 -> house doesn't exist
     std::vector<uint8_t> houses_map;
+
+    std::vector<Arrangement> best_arrangements;
 
     // debug
     void print_houses() const
@@ -113,40 +104,34 @@ struct Lake
     }
 };
 
-struct Arrangement
-{
-    int place_a;
-    int place_b;
-    int place_c;
-
-    float score;
-
-    bool operator<(const Arrangement &other) const
-    {
-        return score < other.score;
-    }
-    bool operator>(const Arrangement &other) const
-    {
-        return score > other.score;
-    }
-};
-
 std::ostream &operator<<(std::ostream &os, Arrangement const &arrangement)
 {
     return os << arrangement.place_a << ' ' << arrangement.place_b << ' ' << arrangement.place_c;
 }
 
-int get_shortest_distance(int circumference, int place_a, int place_b)
+inline void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
 {
-    int direct_distance = std::abs(place_a - place_b);
-    // take shortest way, direct or the other direction
-    return std::min(direct_distance, circumference - direct_distance);
+    if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
+        raise_error("File Parsing Error: not enough elements found!");
 }
 
-int get_closest_route(Lake &lake, Arrangement &arrangement, int location)
+inline int checked_stoi(std::string str)
 {
-    int distance_a = get_shortest_distance(lake.circumference, location, arrangement.place_a);
-    int distance_b = get_shortest_distance(lake.circumference, location, arrangement.place_b);
-    int distance_c = get_shortest_distance(lake.circumference, location, arrangement.place_c);
-    return std::min(distance_a, std::min(distance_b, distance_c));
+    try
+    {
+        return std::stoi(str);
+    }
+    catch (std::invalid_argument ex)
+    {
+        raise_error("File Parsing Error: Can't convert \"" << str << "\" to int!");
+    }
+}
+
+// insert element in correct location in ordered std::vector
+template <typename T>
+inline void insert(std::vector<T> &list, T &value)
+{
+    // get location of first element that is not less than value
+    typename std::vector<T>::iterator it = std::lower_bound(list.begin(), list.end(), value);
+    list.insert(it, value);
 }

@@ -27,6 +27,8 @@
 
 % for images
 \usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{subcaption}
 
 % for tables
 \usepackage{tabularx}
@@ -92,22 +94,77 @@
 
 \vspace{0.5cm}
 
+\section{Ein Wort über die Graphiken}
+Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Symbole:
+\begin{itemize}
+    \item Der See ist als schwarzer Kreis dargestellt.
+    \item Die Häuser sind verschieden gefärbte Rechtecke, deren Adresse außerhalb des Kreises stehen:
+          \begin{itemize}
+              \item Schwarz: Es liegt keine besondere Bedeutung vor.
+              \item Rot: Das Haus stimmt gegen eine Verlegung der Eisdielen.
+              \item Grün: Es stimmt für eine Verlegung.
+              \item Andere Farben werden verwendet, um bestimmte Häuser herauszuheben.
+                    Die jeweiligen Bedeutungen werden darstellungsspezifisch angegeben.
+          \end{itemize}
+    \item Die Adressen sind aufsteigend im Uhrzeigersinn angeordnet.
+          Adresse $0$, die Dorfkirche befindet sich oben.
+    \item Blaue Kreuze stellen die Positionen des Test-Arrangements dar und
+    \item blaue Kreise die des Check-Arrangements.
+          In beiden Fällen stehen die Adressen innerhalb des Kreises.
+\end{itemize}
+
 \section{Lösungsidee}
 % Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
-Es werden alle Positionen gesucht, die gegen alle anderen Position in der Abstimmung nicht verlieren würden.
-Daher werden alle Positionen durchgegangen und überprüft.
-Bei jeder Überprüfung werden alle möglichen Positionen durchgegangen diese werden andere Position genannt und überprüft ob die zu testende Position in einer Abstimmung gegen diese andere Position verlieren und abgelöst werden würde.
-Ist dies der Fall, ist die zu testende Position keine stabile Position.
-Für die Überprüfung der Abstimmung wird der Abstand von der jeweiligen Position mit allen Häusern berechnet und verglichen.
-Wenn der Abstand durch die andere Position im Vergleich zum Abstand zur zu testenden Position verkürzt werden würde, stimmt das Haus gegen die zu testende Position.
-Wenn nun mehr Häuser gegen die zu testende Postion stimmen als für, verliert sie die Abstimmung.
-Dadurch hat die zu testende Position zwei Vorteile:
-\begin{enumerate}
-    \item Wenn beide Positionen gleich weit von einem Haus entfernt sind, stimmt das betroffene Haus für die zu testende Position, da sie die aktuelle Position ist und nur abgelöst werden kann.
-    \item Wenn die Anzahl an Stimmen gegen die zu testende Position der Anzahl für diese entspricht, gewinnt die zu testende Position die Abstimmung.
-\end{enumerate}
+Das Ziel ist es, ein Arrangement bestehend aus drei Positionen für Eisdielen zu generieren, das in einer Abstimmung durch kein anderes Arrangement abgelöst werden kann.
+Diese Arrangements werden stabil genannt.
+Hierzu darf die Eisbudendistanz, die Strecke zwischen einem beliebigen Haus und der nächsten Eisbude, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
+Wäre dies der Fall, würde die Ablösung mehr Ja- als Nein-Stimmen erhalten.
+Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements (Diese werden Test-Arrangement genannt.) auf Stabilität überprüft werden müssen.
+Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (Check-Arrangement genannt) verglichen werden.
+Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
+Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
 
-Auf diese Weise ergibt sich die Menge aller stabile Positionen.
+\medskip
+Als Versuch der Optimierung werden bevor sie getestet werden alle Arrangement sortiert.
+Hierzu wird für jedes mögliche Arrangement ein Score berechnet.
+Dieser entspricht der durchschnittlichen Eisbudendistanz aller Häuser.
+Nun stellt sich heraus, dass stabile Arrangements einen der niedrigsten Scores aller Arrangements aufweisen.
+Dies lässt sich damit erklären, dass je kleiner die Eisbudendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangement existieren, die eine noch geringere Eisbudendistanz für das Haus generieren.
+Wenn die Eisbudendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisbudendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisbudendistanz immer gegen einen Wechsel stimmt.
+Dies ist in \autoref{fig:01_hapy_house} gezeigt.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\linewidth]{01_happy_house.png}
+    \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisbudendistanz beträgt $0$.}
+    \label{fig:01_hapy_house}
+\end{figure}
+Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisbudendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
+\begin{figure}[ht]
+    \centering
+    \caption{Unzufriedene Häuser}
+    \begin{subfigure}[t]{0.4\linewidth}
+        \includegraphics[width=\linewidth]{02_unhappy_house.png}
+        \caption{Das Haus ist maximal unzufrieden, weshalb es für fast jede Verlegung stimmt. Jeder Kreis repräsentiert eine anderes Check-Arrangement, die alle von dem Haus angenommen werden.}
+        \label{fig:02_unhappy_house}
+    \end{subfigure}
+    \begin{subfigure}[t]{0.4\linewidth}
+        \includegraphics[width=\linewidth]{03_slightly_happy_house.png}
+        \caption{Dies ist der einzige Fall, in dem das Haus trotz seiner extremen Unzufriedenheit gegen eine Verlegung stimmt.}
+        \label{fig:03_slightly_happy_house}
+    \end{subfigure}
+\end{figure}
+Die durchschnittliche Eisbudendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
+Je höher er ist, desto unwahrscheinlicher wird eine Veränderung durchgesetzt.
+
+Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_borken_example} gezeigt wird.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.4\linewidth]{04_broken_example.png}
+    \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisbudendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
+    \label{fig:04_borken_example}
+\end{figure}
+Hieraus geht hervor, dass die durchschnittliche Eisbudendistanz nur eine Näherungslösung liefert.
+Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus aus Stabilität überprüft werden.
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
@@ -121,25 +178,6 @@ Dieses Makro wird ebenfalls für alle Methoden aller Klassen verwendet, um z.b. 
 
 Es wird die Menge der Adressen aller Häuser in einem std::vector<int> und der Umfang des Sees in einem int gespeichert.
 
-\paragraph{Bestimmung der stabilen Positionen}
-Die Funktion \textbf{is\_stable} geht alle möglichen Positionen durch und überprüft sie mit der Funktion \textbf{is\_stable}.
-Alle gefundenen stabilen Positionen werden in einem std::vector gespeichert und zurückgegeben.
-
-Die Funktion \textbf{is\_stable} nimmt die Menge aller Häuser entgegen und eine zu testende Position.
-Es werden alle möglichen Positionen durchgegangen und überprüft, ob diese andere Position in einer Abstimmung gegen die zu testende Position gewinnen würde.
-Hierzu werden alle Häuser durchgegangen und mit der Funktion \textbf{vote} überprüft, ob dieses Haus gegen die zu testende Position stimmen würden, wenn als andere Option die andere Position gegeben ist.
-
-Wenn die andere Position eine Mehrheit erhält, bricht die Funktion ab und es wird false zurückgegeben.
-Nur wenn nachdem alle anderen Postionen durchgegangen wurden und die zu testende Position nie eine Abstimmung verliert, wird true zurückgegeben.
-
-Die Funktion \textbf{vote} vergleicht die Abstände eines Hauses mit zwei Positionen.
-Hierzu wird die Funktion \textbf{get\_distance} verwendet.
-Wenn der Abstände zur ersten Position kürzer als zur zweiten Position ist, wird true zurückgegeben, sonst false.
-
-Zuletzt gibt die Funktion \textbf{get\_distance} den Abstand zwischen zwei Positionen zurück.
-Hierzu wird der Betrag der Differenz der Adressen der beiden Positionen, dieser Wert wird direkte Distanz genannt, mit der Differenz aus Umfang und der direkten Distanz verglichen.
-Der kleinere Wert wird zurückgegeben.
-So entscheidet das Programm, welcher Weg um den See kürzer ist, im oder gegen den Uhrzeigersinn.
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
