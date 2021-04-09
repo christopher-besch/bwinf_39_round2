@@ -1,3 +1,6 @@
 [submodule "task_3/visualizer/out/vendor/bootstrap"]
 	path = task_3/visualizer/out/vendor/bootstrap
 	url = https://github.com/christopher-besch/bootstrap_fork.git
+[submodule "task_3/visualizer"]
+	path = task_3/visualizer
+	url = https://github.com/christopher-besch/lake_visualizer.git
