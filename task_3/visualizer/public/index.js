@@ -1,64 +1,38 @@
-abstract class Shape {
-    x: number;
-    y: number;
-    constructor(x: number, y: number) {
+"use strict";
+class Shape {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    abstract is_hit_by(x: number, y: number): boolean;
 }
-
 class Circle extends Shape {
-    radius: number;
-    constructor(x: number, y: number, radius: number) {
+    constructor(x, y, radius) {
         super(x, y);
         this.radius = radius;
     }
-
-    is_hit_by(x: number, y: number): boolean {
-        let distance: number = Math.sqrt((this.x - x) ** 2 + (this.y - y) ** 2);
+    is_hit_by(x, y) {
+        let distance = Math.sqrt(Math.pow((this.x - x), 2) + Math.pow((this.y - y), 2));
         return distance <= this.radius;
     }
 }
-
 class Rectangle extends Shape {
-    width: number;
-    height: number;
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x, y, width, height) {
         super(x, y);
         this.width = width;
         this.height = height;
     }
-
-    is_hit_by(x: number, y: number): boolean {
+    is_hit_by(x, y) {
         return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
     }
 }
-
-abstract class Position {
-    protected ctx: CanvasRenderingContext2D;
-    protected middle_x: number;
-    protected middle_y: number;
-    // position on circle
-    protected address: number;
-    protected color: string;
-    protected radius = 0;
-    protected circumference = 0;
-    protected icon_size = 0;
-    // relative to icon_size
-    protected text_y_location_rel: number;
-    protected text_y_location = 0;
-    protected start_angle = 0;
-    protected labels = false;
-
-    constructor(
-        ctx: CanvasRenderingContext2D,
-        middle_x: number,
-        middle_y: number,
-        address: number,
-        color: string,
-        text_y_location_rel: number
-    ) {
+class Position {
+    constructor(ctx, middle_x, middle_y, address, color, text_y_location_rel) {
+        this.radius = 0;
+        this.circumference = 0;
+        this.icon_size = 0;
+        this.text_y_location = 0;
+        this.start_angle = 0;
+        this.labels = false;
         this.ctx = ctx;
         this.middle_x = middle_x;
         this.middle_y = middle_y;
@@ -66,8 +40,7 @@ abstract class Position {
         this.color = color;
         this.text_y_location_rel = text_y_location_rel;
     }
-
-    update(radius: number, icon_size: number, start_angle: number, circumference: number, labels: boolean): void {
+    update(radius, icon_size, start_angle, circumference, labels) {
         this.radius = radius;
         this.circumference = circumference;
         this.icon_size = icon_size;
@@ -75,51 +48,40 @@ abstract class Position {
         this.start_angle = start_angle;
         this.labels = labels;
     }
-
-    // icon should be scalable with icon_size
-    abstract draw_icon(): void;
-
-    draw_label(): void {
+    draw_label() {
         this.ctx.font = `${this.icon_size * 3}px Sans`;
         this.ctx.textAlign = "center";
         this.ctx.fillStyle = this.color;
         this.ctx.fillText(this.address.toString(), 0, this.icon_size / 2);
     }
-
     // draw representation
-    draw(): void {
+    draw() {
         let angle_per_address = (Math.PI * 2) / this.circumference;
         // angle of this position
         let rotation = angle_per_address * this.address - this.start_angle;
         // location of this position
         let x = this.middle_x + Math.cos(rotation) * this.radius;
         let y = this.middle_y + Math.sin(rotation) * this.radius;
-
         // draw with certain rotation in certain location
         this.ctx.save();
         this.ctx.translate(x, y);
         // up for draw_icon should be away from the circle
         this.ctx.rotate(rotation - Math.PI / 2);
-
         this.draw_icon();
-
         if (this.labels) {
             // further away from lake but horizontally rotated
             this.ctx.translate(0, this.text_y_location);
             this.ctx.rotate(-rotation + Math.PI / 2);
             this.draw_label();
         }
-
         this.ctx.restore();
     }
 }
-
 class TestIceCream extends Position {
-    constructor(ctx: CanvasRenderingContext2D, middle_x: number, middle_y: number, address: number) {
+    constructor(ctx, middle_x, middle_y, address) {
         super(ctx, middle_x, middle_y, address, "blue", -4);
     }
-
-    draw_icon(): void {
+    draw_icon() {
         this.ctx.beginPath();
         this.ctx.moveTo(-this.icon_size, -this.icon_size);
         this.ctx.lineTo(this.icon_size, this.icon_size);
@@ -130,13 +92,11 @@ class TestIceCream extends Position {
         this.ctx.stroke();
     }
 }
-
 class CheckIceCream extends Position {
-    constructor(ctx: CanvasRenderingContext2D, middle_x: number, middle_y: number, address: number) {
+    constructor(ctx, middle_x, middle_y, address) {
         super(ctx, middle_x, middle_y, address, "blue", -4);
     }
-
-    draw_icon(): void {
+    draw_icon() {
         this.ctx.beginPath();
         this.ctx.arc(0, 0, this.icon_size, 0, Math.PI * 2);
         this.ctx.strokeStyle = this.color;
@@ -144,48 +104,31 @@ class CheckIceCream extends Position {
         this.ctx.stroke();
     }
 }
-
 class House extends Position {
-    constructor(ctx: CanvasRenderingContext2D, middle_x: number, middle_y: number, address: number) {
+    constructor(ctx, middle_x, middle_y, address) {
         super(ctx, middle_x, middle_y, address, "black", 4);
     }
-
-    draw_icon(): void {
+    draw_icon() {
         this.ctx.fillStyle = this.color;
         this.ctx.fillRect(-this.icon_size / 2, -this.icon_size, this.icon_size, this.icon_size * 2);
     }
 }
-
 class Lake {
-    private ctx: CanvasRenderingContext2D;
-    private radius = 0;
-    private x: number;
-    private y: number;
-    // used to check if the addresses have been updated
-    private house_addresses: number[] = [];
-    private test_ices_addresses: number[] = [];
-    private check_ice_addresses: number[] = [];
-    private houses: House[] = [];
-    private test_ices: TestIceCream[] = [];
-    private check_ices: CheckIceCream[] = [];
-
-    constructor(ctx: CanvasRenderingContext2D) {
+    constructor(ctx) {
+        this.radius = 0;
+        // used to check if the addresses have been updated
+        this.house_addresses = [];
+        this.test_ices_addresses = [];
+        this.check_ice_addresses = [];
+        this.houses = [];
+        this.test_ices = [];
+        this.check_ices = [];
         this.ctx = ctx;
         this.x = ctx.canvas.width / 2;
         this.y = ctx.canvas.height / 2;
     }
-
-    update(
-        radius: number,
-        icon_size: number,
-        start_angle: number,
-        circumference: number,
-        house_labels: boolean,
-        test_ice_label: boolean,
-        check_ice_labels: boolean
-    ): void {
+    update(radius, icon_size, start_angle, circumference, house_labels, test_ice_label, check_ice_labels) {
         this.radius = radius;
-
         this.houses.forEach((position) => {
             position.update(radius, icon_size, start_angle, circumference, house_labels);
         });
@@ -196,8 +139,7 @@ class Lake {
             position.update(radius, icon_size, start_angle, circumference, check_ice_labels);
         });
     }
-
-    update_positions(house_addresses: number[], test_ice_addresses: number[], check_ice_addresses: number[]): void {
+    update_positions(house_addresses, test_ice_addresses, check_ice_addresses) {
         // overwrite if addresses have been updated
         if (house_addresses != this.house_addresses) {
             this.houses = [];
@@ -221,8 +163,7 @@ class Lake {
         this.test_ices_addresses = test_ice_addresses;
         this.check_ice_addresses = check_ice_addresses;
     }
-
-    draw(): void {
+    draw() {
         // draw lake
         this.ctx.beginPath();
         this.ctx.arc(this.ctx.canvas.width / 2, this.ctx.canvas.height / 2, this.radius, 0, Math.PI * 2);
@@ -231,7 +172,6 @@ class Lake {
         this.ctx.lineWidth = 1;
         this.ctx.strokeStyle = "0d0d0d";
         this.ctx.stroke();
-
         // draw objects
         this.houses.forEach((position) => {
             position.draw();
@@ -244,16 +184,12 @@ class Lake {
         });
     }
 }
-
 class Tools {
-    private ctx: CanvasRenderingContext2D;
-    private current_color = "";
-    private color_palette: string[] = ["red", "green", "orange"];
-
-    constructor(ctx: CanvasRenderingContext2D) {
+    constructor(ctx) {
+        this.current_color = "";
+        this.color_palette = ["red", "green", "orange"];
         this.ctx = ctx;
     }
-
     draw() {
         // draw color pallette
         this.ctx.strokeStyle = "black";
@@ -265,50 +201,42 @@ class Tools {
         }
     }
 }
-
 // global variables
-let lake_canvas = document.getElementById("lake-canvas") as HTMLCanvasElement;
-let lake_ctx = lake_canvas.getContext("2d") as CanvasRenderingContext2D;
+let lake_canvas = document.getElementById("lake-canvas");
+let lake_ctx = lake_canvas.getContext("2d");
 lake_canvas.width = lake_canvas.scrollWidth;
 lake_canvas.height = lake_canvas.scrollHeight;
 let lake = new Lake(lake_ctx);
-
-let tools_canvas = document.getElementById("tools-canvas") as HTMLCanvasElement;
-let tools_ctx = tools_canvas.getContext("2d") as CanvasRenderingContext2D;
+let tools_canvas = document.getElementById("tools-canvas");
+let tools_ctx = tools_canvas.getContext("2d");
 tools_canvas.width = tools_canvas.scrollWidth;
 tools_canvas.height = tools_canvas.scrollHeight;
 let tools = new Tools(tools_ctx);
 tools.draw();
-
-function render(): void {
+function render() {
     lake_ctx.clearRect(0, 0, lake_ctx.canvas.width, lake_ctx.canvas.height);
     lake.draw();
 }
-
-function update_settings(): void {
+function update_settings() {
     // read form
-    let lake_radius_raw = (document.getElementById("lake-radius-form") as HTMLInputElement).value;
-    let icon_size_raw = (document.getElementById("icon-size-form") as HTMLInputElement).value;
-    let start_angle_degree_raw = (document.getElementById("start-angle-degree-form") as HTMLInputElement).value;
-    let circumference_raw = (document.getElementById("circumference-form") as HTMLInputElement).value;
-
-    let houses_raw = (document.getElementById("houses-form") as HTMLInputElement).value;
-    let test_ices_raw = (document.getElementById("test-ices-form") as HTMLInputElement).value;
-    let check_ices_raw = (document.getElementById("check-ices-form") as HTMLInputElement).value;
-
-    let houses_labels = (document.getElementById("houses-labels-form") as HTMLInputElement).checked;
-    let test_ice_labels = (document.getElementById("test-ice-labels-form") as HTMLInputElement).checked;
-    let check_ice_labels = (document.getElementById("check-ice-labels-form") as HTMLInputElement).checked;
-
+    let lake_radius_raw = document.getElementById("lake-radius-form").value;
+    let icon_size_raw = document.getElementById("icon-size-form").value;
+    let start_angle_degree_raw = document.getElementById("start-angle-degree-form").value;
+    let circumference_raw = document.getElementById("circumference-form").value;
+    let houses_raw = document.getElementById("houses-form").value;
+    let test_ices_raw = document.getElementById("test-ices-form").value;
+    let check_ices_raw = document.getElementById("check-ices-form").value;
+    let houses_labels = document.getElementById("houses-labels-form").checked;
+    let test_ice_labels = document.getElementById("test-ice-labels-form").checked;
+    let check_ice_labels = document.getElementById("check-ice-labels-form").checked;
     // convert to int
     let radius = parseInt(lake_radius_raw);
     let icon_size = parseInt(icon_size_raw);
     let circumference = parseInt(circumference_raw);
     let start_angle = (parseInt(start_angle_degree_raw) * Math.PI) / 180;
-
     // convert to int arrays
     let houses_str = !houses_raw ? [] : houses_raw.split(" ");
-    let houses: number[] = [];
+    let houses = [];
     for (let idx = 0; idx < houses_str.length; idx++) {
         let address = parseInt(houses_str[idx]);
         if (isNaN(address)) {
@@ -318,7 +246,7 @@ function update_settings(): void {
         houses.push(address);
     }
     let test_ices_str = !test_ices_raw ? [] : test_ices_raw.split(" ");
-    let test_ices: number[] = [];
+    let test_ices = [];
     for (let idx = 0; idx < test_ices_str.length; idx++) {
         let address = parseInt(test_ices_str[idx]);
         if (isNaN(address)) {
@@ -328,7 +256,7 @@ function update_settings(): void {
         test_ices.push(address);
     }
     let check_ices_str = !check_ices_raw ? [] : check_ices_raw.split(" ");
-    let check_ices: number[] = [];
+    let check_ices = [];
     for (let idx = 0; idx < check_ices_str.length; idx++) {
         let address = parseInt(check_ices_str[idx]);
         if (isNaN(address)) {
@@ -337,26 +265,25 @@ function update_settings(): void {
         }
         check_ices.push(address);
     }
-
     if (isNaN(radius) || isNaN(icon_size) || isNaN(circumference) || isNaN(start_angle) || houses.length == 0) {
         alert("Invalid Input!");
         return;
     }
-
     lake.update_positions(houses, test_ices, check_ices);
     lake.update(radius, icon_size, start_angle, circumference, houses_labels, test_ice_labels, check_ice_labels);
     render();
 }
-
-function download(open_in_new_tab: boolean = false): void {
+function download(open_in_new_tab = false) {
     let image_url = lake_canvas.toDataURL("lake.png");
-
     // create temporary link
     let tmp_link = document.createElement("a");
-    if (open_in_new_tab) tmp_link.target = "_blank";
-    else tmp_link.download = "lake.png";
+    if (open_in_new_tab)
+        tmp_link.target = "_blank";
+    else
+        tmp_link.download = "lake.png";
     tmp_link.href = image_url;
     document.body.appendChild(tmp_link);
     tmp_link.click();
     document.body.removeChild(tmp_link);
 }
+//# sourceMappingURL=index.js.map
