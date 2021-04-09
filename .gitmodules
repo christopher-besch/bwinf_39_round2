@@ -1,6 +1,3 @@
 [submodule "task_3/visualizer/out/vendor/bootstrap"]
 	path = task_3/visualizer/out/vendor/bootstrap
 	url = https://github.com/christopher-besch/bootstrap_fork.git
-[submodule "task_3/visualizer/public/vendor/bootstrap"]
-	path = task_3/visualizer/public/vendor/bootstrap
-	url = https://github.com/christopher-besch/bootstrap_fork.git
