@@ -251,6 +251,7 @@ class House extends Position {
 class Lake {
     private ctx: CanvasRenderingContext2D;
     private tools: Tools;
+    private cursor_size = 0;
     private radius = 0;
     private x: number;
     private y: number;
@@ -270,6 +271,7 @@ class Lake {
     }
 
     update(
+        cursor_size: number,
         radius: number,
         icon_size: number,
         start_angle: number,
@@ -278,6 +280,7 @@ class Lake {
         test_ice_label: boolean,
         check_ice_labels: boolean
     ): void {
+        this.cursor_size = cursor_size;
         this.radius = radius;
 
         this.houses.forEach((position) => {
@@ -293,19 +296,19 @@ class Lake {
 
     update_positions(house_addresses: number[], test_ice_addresses: number[], check_ice_addresses: number[]): void {
         // overwrite if addresses have been updated
-        if (house_addresses != this.house_addresses) {
+        if (JSON.stringify(house_addresses) !== JSON.stringify(this.house_addresses)) {
             this.houses = [];
             house_addresses.forEach((address) => {
                 this.houses.push(new House(this.ctx, this.x, this.y, address));
             });
         }
-        if (test_ice_addresses != this.test_ices_addresses) {
+        if (JSON.stringify(test_ice_addresses) !== JSON.stringify(this.test_ices_addresses)) {
             this.test_ices = [];
             test_ice_addresses.forEach((address) => {
                 this.test_ices.push(new TestIceCream(this.ctx, this.x, this.y, address));
             });
         }
-        if (check_ice_addresses != this.check_ice_addresses) {
+        if (JSON.stringify(check_ice_addresses) !== JSON.stringify(this.check_ice_addresses)) {
             this.check_ices = [];
             check_ice_addresses.forEach((address) => {
                 this.check_ices.push(new CheckIceCream(this.ctx, this.x, this.y, address));
@@ -340,7 +343,7 @@ class Lake {
 
     // when the mouse is clicked inside the canvas and gets dragged
     on_mouse_drag(e: MouseEvent): void {
-        let cursor = new Circle(this.ctx, e.offsetX, e.offsetY, 50, "yellow", 0.5);
+        let cursor = new Circle(this.ctx, e.offsetX, e.offsetY, this.cursor_size, this.tools.get_color(), 0.1);
         cursor.draw();
         this.houses.forEach((position) => {
             if (cursor.is_hit(position.get_x(), position.get_y())) position.change_color(this.tools.get_color());
@@ -437,6 +440,7 @@ function update_settings(): void {
     let lake_radius_raw = (document.getElementById("lake-radius-form") as HTMLInputElement).value;
     let icon_size_raw = (document.getElementById("icon-size-form") as HTMLInputElement).value;
     let start_angle_degree_raw = (document.getElementById("start-angle-degree-form") as HTMLInputElement).value;
+    let cursor_size_raw = (document.getElementById("cursor-size-form") as HTMLInputElement).value;
     let circumference_raw = (document.getElementById("circumference-form") as HTMLInputElement).value;
 
     let houses_raw = (document.getElementById("houses-form") as HTMLInputElement).value;
@@ -450,8 +454,9 @@ function update_settings(): void {
     // convert to int
     let radius = parseInt(lake_radius_raw);
     let icon_size = parseInt(icon_size_raw);
-    let circumference = parseInt(circumference_raw);
     let start_angle = (parseInt(start_angle_degree_raw) * Math.PI) / 180;
+    let cursor_size = parseInt(cursor_size_raw);
+    let circumference = parseInt(circumference_raw);
 
     // convert to int arrays
     let houses_str = !houses_raw ? [] : houses_raw.split(" ");
@@ -485,13 +490,29 @@ function update_settings(): void {
         check_ices.push(address);
     }
 
-    if (isNaN(radius) || isNaN(icon_size) || isNaN(circumference) || isNaN(start_angle) || houses.length == 0) {
+    if (
+        isNaN(radius) ||
+        isNaN(icon_size) ||
+        isNaN(start_angle) ||
+        isNaN(cursor_size) ||
+        isNaN(circumference) ||
+        houses.length == 0
+    ) {
         alert("Invalid Input!");
         return;
     }
 
     lake.update_positions(houses, test_ices, check_ices);
-    lake.update(radius, icon_size, start_angle, circumference, houses_labels, test_ice_labels, check_ice_labels);
+    lake.update(
+        cursor_size,
+        radius,
+        icon_size,
+        start_angle,
+        circumference,
+        houses_labels,
+        test_ice_labels,
+        check_ice_labels
+    );
     render_lake();
 }
 
