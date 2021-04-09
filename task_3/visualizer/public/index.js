@@ -1,27 +1,70 @@
 "use strict";
 class Shape {
-    constructor(x, y) {
+    constructor(ctx, x, y, color, alpha, border_color = "") {
+        this.ctx = ctx;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.alpha = alpha;
+        this.border_color = border_color;
+    }
+    get_color() {
+        return this.color;
+    }
+    change_color(color) {
+        this.color = color;
+    }
+    change_border_color(border_color) {
+        this.border_color = border_color;
+    }
+    relocate(x, y) {
         this.x = x;
         this.y = y;
     }
 }
 class Circle extends Shape {
-    constructor(x, y, radius) {
-        super(x, y);
+    constructor(ctx, x, y, radius, color, alpha, border_color = "") {
+        super(ctx, x, y, color, alpha, border_color);
         this.radius = radius;
     }
-    is_hit_by(x, y) {
+    draw() {
+        this.ctx.globalAlpha = this.alpha;
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        if (this.color) {
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill();
+        }
+        if (this.border_color) {
+            this.ctx.strokeStyle = this.border_color;
+            this.ctx.stroke();
+        }
+        this.ctx.globalAlpha = 1;
+    }
+    is_hit(x, y) {
         let distance = Math.sqrt(Math.pow((this.x - x), 2) + Math.pow((this.y - y), 2));
         return distance <= this.radius;
     }
 }
 class Rectangle extends Shape {
-    constructor(x, y, width, height) {
-        super(x, y);
+    constructor(ctx, x, y, width, height, color, alpha, border_color = "") {
+        super(ctx, x, y, color, alpha, border_color);
         this.width = width;
         this.height = height;
     }
-    is_hit_by(x, y) {
+    draw() {
+        this.ctx.globalAlpha = this.alpha;
+        if (this.color) {
+            this.ctx.fillStyle = this.color;
+            this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+        if (this.border_color) {
+            this.ctx.strokeStyle = this.border_color;
+            this.ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
+        this.ctx.globalAlpha = 1;
+    }
+    is_hit(x, y) {
         return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
     }
 }
@@ -33,12 +76,22 @@ class Position {
         this.text_y_location = 0;
         this.start_angle = 0;
         this.labels = false;
+        // location of this element
+        this.rotation = 0;
+        this.x = 0;
+        this.y = 0;
         this.ctx = ctx;
         this.middle_x = middle_x;
         this.middle_y = middle_y;
         this.address = address;
         this.color = color;
         this.text_y_location_rel = text_y_location_rel;
+    }
+    get_x() {
+        return this.x;
+    }
+    get_y() {
+        return this.y;
     }
     update(radius, icon_size, start_angle, circumference, labels) {
         this.radius = radius;
@@ -47,6 +100,12 @@ class Position {
         this.text_y_location = this.text_y_location_rel * icon_size;
         this.start_angle = start_angle;
         this.labels = labels;
+        let angle_per_address = (Math.PI * 2) / this.circumference;
+        // angle of this position
+        this.rotation = angle_per_address * this.address - this.start_angle;
+        // location of this position
+        this.x = this.middle_x + Math.cos(this.rotation) * this.radius;
+        this.y = this.middle_y + Math.sin(this.rotation) * this.radius;
     }
     draw_label() {
         this.ctx.font = `${this.icon_size * 3}px Sans`;
@@ -56,25 +115,22 @@ class Position {
     }
     // draw representation
     draw() {
-        let angle_per_address = (Math.PI * 2) / this.circumference;
-        // angle of this position
-        let rotation = angle_per_address * this.address - this.start_angle;
-        // location of this position
-        let x = this.middle_x + Math.cos(rotation) * this.radius;
-        let y = this.middle_y + Math.sin(rotation) * this.radius;
         // draw with certain rotation in certain location
         this.ctx.save();
-        this.ctx.translate(x, y);
+        this.ctx.translate(this.x, this.y);
         // up for draw_icon should be away from the circle
-        this.ctx.rotate(rotation - Math.PI / 2);
+        this.ctx.rotate(this.rotation - Math.PI / 2);
         this.draw_icon();
         if (this.labels) {
             // further away from lake but horizontally rotated
             this.ctx.translate(0, this.text_y_location);
-            this.ctx.rotate(-rotation + Math.PI / 2);
+            this.ctx.rotate(-this.rotation + Math.PI / 2);
             this.draw_label();
         }
         this.ctx.restore();
+    }
+    change_color(color) {
+        this.color = color;
     }
 }
 class TestIceCream extends Position {
@@ -114,7 +170,7 @@ class House extends Position {
     }
 }
 class Lake {
-    constructor(ctx) {
+    constructor(ctx, tools) {
         this.radius = 0;
         // used to check if the addresses have been updated
         this.house_addresses = [];
@@ -124,6 +180,7 @@ class Lake {
         this.test_ices = [];
         this.check_ices = [];
         this.ctx = ctx;
+        this.tools = tools;
         this.x = ctx.canvas.width / 2;
         this.y = ctx.canvas.height / 2;
     }
@@ -183,37 +240,85 @@ class Lake {
             position.draw();
         });
     }
+    // when the mouse is clicked inside the canvas and gets dragged
+    on_mouse_drag(e) {
+        let cursor = new Circle(this.ctx, e.offsetX, e.offsetY, 50, "yellow", 0.5);
+        cursor.draw();
+        this.houses.forEach((position) => {
+            if (cursor.is_hit(position.get_x(), position.get_y()))
+                position.change_color(this.tools.get_color());
+        });
+        this.draw();
+    }
 }
 class Tools {
     constructor(ctx) {
-        this.current_color = "";
-        this.color_palette = ["red", "green", "orange"];
+        this.selected_color = "";
         this.ctx = ctx;
-    }
-    draw() {
-        // draw color pallette
-        this.ctx.strokeStyle = "black";
-        for (let idx = 0; idx < this.color_palette.length; ++idx) {
-            let start_x = 50 + 50 * idx;
-            this.ctx.fillStyle = this.color_palette[idx];
-            this.ctx.fillRect(50, start_x, 30, 30);
-            this.ctx.strokeRect(50, start_x, 30, 30);
+        // create rectangles for color pallette
+        this.color_palette = [];
+        let colors = ["red", "green", "orange", "blue", "black"];
+        for (let i = 0; i < colors.length; ++i) {
+            this.color_palette.push(new Rectangle(ctx, 20 + 50 * i, 20, 30, 30, colors[i], 1, "grey"));
+            this.color_palette[i].draw();
         }
+        // activate hit detection
+        ctx.canvas.addEventListener("click", this.register_hit.bind(this));
+        // preselect first color
+        this.select_color(0);
+    }
+    get_color() {
+        return this.selected_color;
+    }
+    select_color(color_idx) {
+        this.selected_color = this.color_palette[color_idx].get_color();
+        for (let i = 0; i < this.color_palette.length; ++i) {
+            if (i === color_idx)
+                this.color_palette[i].change_border_color("black");
+            else
+                this.color_palette[i].change_border_color("grey");
+            this.color_palette[i].draw();
+        }
+    }
+    register_hit(event) {
+        for (let i = 0; i < this.color_palette.length; ++i)
+            if (this.color_palette[i].is_hit(event.offsetX, event.offsetY)) {
+                this.select_color(i);
+                return;
+            }
     }
 }
 // global variables
-let lake_canvas = document.getElementById("lake-canvas");
-let lake_ctx = lake_canvas.getContext("2d");
-lake_canvas.width = lake_canvas.scrollWidth;
-lake_canvas.height = lake_canvas.scrollHeight;
-let lake = new Lake(lake_ctx);
+// tools
 let tools_canvas = document.getElementById("tools-canvas");
 let tools_ctx = tools_canvas.getContext("2d");
 tools_canvas.width = tools_canvas.scrollWidth;
 tools_canvas.height = tools_canvas.scrollHeight;
 let tools = new Tools(tools_ctx);
-tools.draw();
-function render() {
+// lake
+let lake_canvas = document.getElementById("lake-canvas");
+let lake_ctx = lake_canvas.getContext("2d");
+lake_canvas.width = lake_canvas.scrollWidth;
+lake_canvas.height = lake_canvas.scrollHeight;
+let lake = new Lake(lake_ctx, tools);
+// cursor
+lake_canvas.addEventListener("mousedown", (down_event) => {
+    function drag(e) {
+        lake.on_mouse_drag(e);
+    }
+    function leave_drag(e) {
+        lake_canvas.removeEventListener("mousemove", drag);
+        render_lake();
+    }
+    // execute once
+    drag(down_event);
+    // add listener
+    lake_canvas.addEventListener("mousemove", drag);
+    // remove listener
+    lake_canvas.addEventListener("mouseup", leave_drag);
+    lake_canvas.addEventListener("mouseout", leave_drag);
+});
+function render_lake() {
     lake_ctx.clearRect(0, 0, lake_ctx.canvas.width, lake_ctx.canvas.height);
     lake.draw();
 }
@@ -271,7 +376,7 @@ function update_settings() {
     }
     lake.update_positions(houses, test_ices, check_ices);
     lake.update(radius, icon_size, start_angle, circumference, houses_labels, test_ice_labels, check_ice_labels);
-    render();
+    render_lake();
 }
 function download(open_in_new_tab = false) {
     let image_url = lake_canvas.toDataURL("lake.png");

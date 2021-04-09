@@ -1,36 +1,112 @@
 abstract class Shape {
-    x: number;
-    y: number;
-    constructor(x: number, y: number) {
+    protected ctx: CanvasRenderingContext2D;
+    protected x: number;
+    protected y: number;
+    // when "" invisible
+    protected color: string;
+    protected alpha: number;
+    // when "" no border gets drawn
+    protected border_color: string;
+
+    constructor(ctx: CanvasRenderingContext2D, x: number, y: number, color: string, alpha: number, border_color = "") {
+        this.ctx = ctx;
+        this.x = x;
+        this.y = y;
+        this.color = color;
+        this.alpha = alpha;
+        this.border_color = border_color;
+    }
+
+    get_color(): string {
+        return this.color;
+    }
+
+    abstract draw(): void;
+
+    change_color(color: string): void {
+        this.color = color;
+    }
+
+    change_border_color(border_color: string): void {
+        this.border_color = border_color;
+    }
+
+    relocate(x: number, y: number): void {
         this.x = x;
         this.y = y;
     }
-    abstract is_hit_by(x: number, y: number): boolean;
+
+    abstract is_hit(x: number, y: number): boolean;
 }
 
 class Circle extends Shape {
-    radius: number;
-    constructor(x: number, y: number, radius: number) {
-        super(x, y);
+    private radius: number;
+    constructor(
+        ctx: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        radius: number,
+        color: string,
+        alpha: number,
+        border_color = ""
+    ) {
+        super(ctx, x, y, color, alpha, border_color);
         this.radius = radius;
     }
 
-    is_hit_by(x: number, y: number): boolean {
+    draw(): void {
+        this.ctx.globalAlpha = this.alpha;
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        if (this.color) {
+            this.ctx.fillStyle = this.color;
+            this.ctx.fill();
+        }
+        if (this.border_color) {
+            this.ctx.strokeStyle = this.border_color;
+            this.ctx.stroke();
+        }
+        this.ctx.globalAlpha = 1;
+    }
+
+    is_hit(x: number, y: number): boolean {
         let distance: number = Math.sqrt((this.x - x) ** 2 + (this.y - y) ** 2);
         return distance <= this.radius;
     }
 }
 
 class Rectangle extends Shape {
-    width: number;
-    height: number;
-    constructor(x: number, y: number, width: number, height: number) {
-        super(x, y);
+    private width: number;
+    private height: number;
+    constructor(
+        ctx: CanvasRenderingContext2D,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        color: string,
+        alpha: number,
+        border_color = ""
+    ) {
+        super(ctx, x, y, color, alpha, border_color);
         this.width = width;
         this.height = height;
     }
 
-    is_hit_by(x: number, y: number): boolean {
+    draw(): void {
+        this.ctx.globalAlpha = this.alpha;
+        if (this.color) {
+            this.ctx.fillStyle = this.color;
+            this.ctx.fillRect(this.x, this.y, this.width, this.height);
+        }
+        if (this.border_color) {
+            this.ctx.strokeStyle = this.border_color;
+            this.ctx.strokeRect(this.x, this.y, this.width, this.height);
+        }
+        this.ctx.globalAlpha = 1;
+    }
+
+    is_hit(x: number, y: number): boolean {
         return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
     }
 }
@@ -51,6 +127,11 @@ abstract class Position {
     protected start_angle = 0;
     protected labels = false;
 
+    // location of this element
+    protected rotation = 0;
+    protected x = 0;
+    protected y = 0;
+
     constructor(
         ctx: CanvasRenderingContext2D,
         middle_x: number,
@@ -67,6 +148,13 @@ abstract class Position {
         this.text_y_location_rel = text_y_location_rel;
     }
 
+    get_x(): number {
+        return this.x;
+    }
+    get_y(): number {
+        return this.y;
+    }
+
     update(radius: number, icon_size: number, start_angle: number, circumference: number, labels: boolean): void {
         this.radius = radius;
         this.circumference = circumference;
@@ -74,6 +162,13 @@ abstract class Position {
         this.text_y_location = this.text_y_location_rel * icon_size;
         this.start_angle = start_angle;
         this.labels = labels;
+
+        let angle_per_address = (Math.PI * 2) / this.circumference;
+        // angle of this position
+        this.rotation = angle_per_address * this.address - this.start_angle;
+        // location of this position
+        this.x = this.middle_x + Math.cos(this.rotation) * this.radius;
+        this.y = this.middle_y + Math.sin(this.rotation) * this.radius;
     }
 
     // icon should be scalable with icon_size
@@ -88,29 +183,26 @@ abstract class Position {
 
     // draw representation
     draw(): void {
-        let angle_per_address = (Math.PI * 2) / this.circumference;
-        // angle of this position
-        let rotation = angle_per_address * this.address - this.start_angle;
-        // location of this position
-        let x = this.middle_x + Math.cos(rotation) * this.radius;
-        let y = this.middle_y + Math.sin(rotation) * this.radius;
-
         // draw with certain rotation in certain location
         this.ctx.save();
-        this.ctx.translate(x, y);
+        this.ctx.translate(this.x, this.y);
         // up for draw_icon should be away from the circle
-        this.ctx.rotate(rotation - Math.PI / 2);
+        this.ctx.rotate(this.rotation - Math.PI / 2);
 
         this.draw_icon();
 
         if (this.labels) {
             // further away from lake but horizontally rotated
             this.ctx.translate(0, this.text_y_location);
-            this.ctx.rotate(-rotation + Math.PI / 2);
+            this.ctx.rotate(-this.rotation + Math.PI / 2);
             this.draw_label();
         }
 
         this.ctx.restore();
+    }
+
+    change_color(color: string): void {
+        this.color = color;
     }
 }
 
@@ -158,6 +250,7 @@ class House extends Position {
 
 class Lake {
     private ctx: CanvasRenderingContext2D;
+    private tools: Tools;
     private radius = 0;
     private x: number;
     private y: number;
@@ -169,8 +262,9 @@ class Lake {
     private test_ices: TestIceCream[] = [];
     private check_ices: CheckIceCream[] = [];
 
-    constructor(ctx: CanvasRenderingContext2D) {
+    constructor(ctx: CanvasRenderingContext2D, tools: Tools) {
         this.ctx = ctx;
+        this.tools = tools;
         this.x = ctx.canvas.width / 2;
         this.y = ctx.canvas.height / 2;
     }
@@ -243,44 +337,97 @@ class Lake {
             position.draw();
         });
     }
+
+    // when the mouse is clicked inside the canvas and gets dragged
+    on_mouse_drag(e: MouseEvent): void {
+        let cursor = new Circle(this.ctx, e.offsetX, e.offsetY, 50, "yellow", 0.5);
+        cursor.draw();
+        this.houses.forEach((position) => {
+            if (cursor.is_hit(position.get_x(), position.get_y())) position.change_color(this.tools.get_color());
+        });
+        this.draw();
+    }
 }
 
 class Tools {
     private ctx: CanvasRenderingContext2D;
-    private current_color = "";
-    private color_palette: string[] = ["red", "green", "orange"];
+    private selected_color = "";
+    private color_palette: Shape[];
 
     constructor(ctx: CanvasRenderingContext2D) {
         this.ctx = ctx;
+
+        // create rectangles for color pallette
+        this.color_palette = [];
+        let colors = ["red", "green", "orange", "blue", "black"];
+        for (let i = 0; i < colors.length; ++i) {
+            this.color_palette.push(new Rectangle(ctx, 20 + 50 * i, 20, 30, 30, colors[i], 1, "grey"));
+            this.color_palette[i].draw();
+        }
+
+        // activate hit detection
+        ctx.canvas.addEventListener("click", this.register_hit.bind(this));
+        // preselect first color
+        this.select_color(0);
     }
 
-    draw() {
-        // draw color pallette
-        this.ctx.strokeStyle = "black";
-        for (let idx = 0; idx < this.color_palette.length; ++idx) {
-            let start_x = 50 + 50 * idx;
-            this.ctx.fillStyle = this.color_palette[idx];
-            this.ctx.fillRect(50, start_x, 30, 30);
-            this.ctx.strokeRect(50, start_x, 30, 30);
+    get_color(): string {
+        return this.selected_color;
+    }
+
+    select_color(color_idx: number): void {
+        this.selected_color = this.color_palette[color_idx].get_color();
+        for (let i = 0; i < this.color_palette.length; ++i) {
+            if (i === color_idx) this.color_palette[i].change_border_color("black");
+            else this.color_palette[i].change_border_color("grey");
+            this.color_palette[i].draw();
         }
+    }
+
+    register_hit(event: MouseEvent): void {
+        for (let i = 0; i < this.color_palette.length; ++i)
+            if (this.color_palette[i].is_hit(event.offsetX, event.offsetY)) {
+                this.select_color(i);
+                return;
+            }
     }
 }
 
 // global variables
-let lake_canvas = document.getElementById("lake-canvas") as HTMLCanvasElement;
-let lake_ctx = lake_canvas.getContext("2d") as CanvasRenderingContext2D;
-lake_canvas.width = lake_canvas.scrollWidth;
-lake_canvas.height = lake_canvas.scrollHeight;
-let lake = new Lake(lake_ctx);
-
+// tools
 let tools_canvas = document.getElementById("tools-canvas") as HTMLCanvasElement;
 let tools_ctx = tools_canvas.getContext("2d") as CanvasRenderingContext2D;
 tools_canvas.width = tools_canvas.scrollWidth;
 tools_canvas.height = tools_canvas.scrollHeight;
 let tools = new Tools(tools_ctx);
-tools.draw();
 
-function render(): void {
+// lake
+let lake_canvas = document.getElementById("lake-canvas") as HTMLCanvasElement;
+let lake_ctx = lake_canvas.getContext("2d") as CanvasRenderingContext2D;
+lake_canvas.width = lake_canvas.scrollWidth;
+lake_canvas.height = lake_canvas.scrollHeight;
+let lake = new Lake(lake_ctx, tools);
+
+// cursor
+lake_canvas.addEventListener("mousedown", (down_event) => {
+    function drag(e: MouseEvent) {
+        lake.on_mouse_drag(e);
+    }
+    function leave_drag(e: MouseEvent) {
+        lake_canvas.removeEventListener("mousemove", drag);
+        render_lake();
+    }
+
+    // execute once
+    drag(down_event);
+    // add listener
+    lake_canvas.addEventListener("mousemove", drag);
+    // remove listener
+    lake_canvas.addEventListener("mouseup", leave_drag);
+    lake_canvas.addEventListener("mouseout", leave_drag);
+});
+
+function render_lake(): void {
     lake_ctx.clearRect(0, 0, lake_ctx.canvas.width, lake_ctx.canvas.height);
     lake.draw();
 }
@@ -345,7 +492,7 @@ function update_settings(): void {
 
     lake.update_positions(houses, test_ices, check_ices);
     lake.update(radius, icon_size, start_angle, circumference, houses_labels, test_ice_labels, check_ice_labels);
-    render();
+    render_lake();
 }
 
 function download(open_in_new_tab: boolean = false): void {
