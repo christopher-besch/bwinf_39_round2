@@ -36,6 +36,9 @@
 % for algorithms
 \usepackage{algpseudocode}
 
+% for indented block
+\usepackage{scrextend}
+
 % for source code
 \usepackage{listings}
 \usepackage{color}
@@ -118,29 +121,30 @@ Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Sy
 % Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
 Das Ziel ist es, ein Arrangement bestehend aus drei Positionen für Eisdielen zu generieren, das in einer Abstimmung durch kein anderes Arrangement abgelöst werden kann.
 Diese Arrangements werden stabil genannt.
-Hierzu darf die Eisbudendistanz, die Strecke zwischen einem beliebigen Haus und der nächsten Eisbude, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
+Hierzu darf die Eisdielendistanz, die Strecke zwischen einem beliebigen Haus und der nächsten Eisdiele, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
 Wäre dies der Fall, würde die Ablösung mehr Ja- als Nein-Stimmen erhalten.
 Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements (Diese werden Test-Arrangement genannt.) auf Stabilität überprüft werden müssen.
 Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (Check-Arrangement genannt) verglichen werden.
 Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
 Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
 
-\medskip
+\subsection{Sortierung der Arrangements}
+\label{sec:Sortierung_der_Arrangements}
 Als Versuch der Optimierung werden bevor sie getestet werden alle Arrangement sortiert.
 Hierzu wird für jedes mögliche Arrangement ein Score berechnet.
-Dieser entspricht der durchschnittlichen Eisbudendistanz aller Häuser.
+Dieser entspricht der durchschnittlichen Eisdielendistanz aller Häuser.
 Nun stellt sich heraus, dass stabile Arrangements einen der niedrigsten Scores aller Arrangements aufweisen.
-Dies lässt sich damit erklären, dass je kleiner die Eisbudendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangement existieren, die eine noch geringere Eisbudendistanz für das Haus generieren.
-Wenn die Eisbudendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisbudendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisbudendistanz immer gegen einen Wechsel stimmt.
+Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangement existieren, die eine noch geringere Eisdielendistanz für das Haus generieren.
+Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen einen Wechsel stimmt.
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
-\begin{figure}[ht]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=\imageWidth]{01_happy_house.png}
-    \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisbudendistanz beträgt $0$.}
+    \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisdielendistanz beträgt $0$.}
     \label{fig:01_hapy_house}
+    \includegraphics[width=\imageWidth]{01_happy_house.png}
 \end{figure}
-Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisbudendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
-\begin{figure}[ht]
+Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
+\begin{figure}[h!]
     \centering
     \caption{Unzufriedene Häuser}
     \begin{subfigure}[t]{\imageWidth}
@@ -154,39 +158,42 @@ Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspri
         \label{fig:03_slightly_happy_house}
     \end{subfigure}
 \end{figure}
-Die durchschnittliche Eisbudendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
+Die durchschnittliche Eisdielendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
 Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
 Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_broken_example} gezeigt wird.
-\begin{figure}[ht]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=\imageWidth]{04_broken_example.png}
-    \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisbudendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
+    \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisdielendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
     \label{fig:04_broken_example}
+    \includegraphics[width=\imageWidth]{04_broken_example.png}
 \end{figure}
-Hieraus geht hervor, dass die durchschnittliche Eisbudendistanz nur eine Näherungslösung liefert.
+Hieraus geht hervor, dass die durchschnittliche Eisdielendistanz nur eine Näherungslösung liefert.
 Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
 
-\medskip
+\subsection{Bestimmung der Stabilität}
+\label{sec:Bestimmung_der_Stabilität}
 Um die Stabilität eines Test-Arrangements zu berechnen, müssen alle möglichen Check-Arrangements durchgegangen werden.
 Es wird nur eine einziges Check-Arrangement gesucht, das das Test-Arrangement schlagen kann.
 Daher können zwei Optimierungen getroffen werden:
 \begin{enumerate}
-    \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier aufeinanderliegender Eisdielen die Eisbudendistanz keines Häuses vergrößert wird.
+    \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier aufeinanderliegender Eisdielen die Eisdielendistanz keines Häuses vergrößert wird.
     \item Alle Dopplungen sind unnötig, da die Reihenfolge der Eisdielen für die Stimmen der Häuser irrelevant sind.
 \end{enumerate}
 Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
 Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
-\begin{figure}[ht]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=\imageWidth]{05_sectors.png}
     \caption{Einteilung in Sektoren}
     \label{fig:05_sectors}
+    \includegraphics[width=\imageWidth]{05_sectors.png}
 \end{figure}
 
+\subsubsection{Auszählung der Stimmen}
+\label{sec:Auszählung_der_Stimmen}
 Es zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
 \begin{itemize}
-    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die ehemalige Eisbudendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
+    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die ehemalige Eisdielendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
     \item Genauso ist für jedes Haus im Sektor eine der Sektorgrenzen immer die nächste Check-Eisdiele.
           Dementsprechend ist die Position der dritten Check-Eisdiele ebenfalls irrelevant. da immer nur die Eisdielendistanz betrachtet wird.
 \end{itemize}
@@ -194,8 +201,8 @@ Aus diesen beiden Punkten geht hervor, dass ausschließlich die Ränder des Sekt
 
 \medskip
 Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
-Es existieren nur drei verschiedene Möglichkeiten für die Anordnung der Test-Eisdielen in einem Sektor,
-\begin{figure}[ht]
+In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehr Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
+\begin{figure}[h!]
     \centering
     \caption{Test-Eisdielen Anordnung im Sektor}
     \begin{subfigure}[t]{\imageWidth}
@@ -214,6 +221,7 @@ Es existieren nur drei verschiedene Möglichkeiten für die Anordnung der Test-E
         \label{fig:08_two_test_ice}
     \end{subfigure}
 \end{figure}
+
 In dem letzten Fall von mehr als zwei Test-Eisdielen im Sektor, müssen nur die Äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
 Dies geht aus der Definition eines Sektors hervor.
 Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge and Test-Eisdielen.
@@ -239,186 +247,153 @@ Somit kann in diesem Fall die Suche nach Positionen für die dritte Check-Eisdie
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
 Die Lösungsidee wird in C++ implementiert.
-Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt,
+Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt:
 \begin{itemize}
     \item \textbf{main.cpp} liest die Eingabe und gibt die Ergebnisse aus,
     \item \textbf{utils.h} enthält verwendete Structs und generell anwendbare Funktionen und Makros und
     \item \textbf{calculate\_stable.h} enthält die eigentlichen Funktionen zur Bestimmung der stabilen Arrangements.
 \end{itemize}
 
-\paragraph{Einlese der Eingabedatei}
+\subsection{Einlese der Eingabedatei}
+\label{sec:Einlese_der_Eingabedatei}
 Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
 Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht wird das Programm abgebrochen.
 Hierzu wird ein Makro \textbf{raise\_error()} verwendet, das die Ausführung des Programms abbricht und eine möglichst informative Fehlermeldung zurückgibt.
 
+Schlussendlich wird eine Instanz des \textbf{Lake} Structs erstellt.
+Dieses enthält:
+\begin{itemize}
+    \item den Umfang des Sees,
+    \item ein std::vector aller Häuser (repräsentiert durch \textbf{House} Instanzen, die jeweils die Adresse und Platz für die jeweilig notwendige Eisdielendistanz enthält),
+    \item eine Karte des Sees, ein std::vector mit einem uint8\_t pro Adresse.
+          Wenn ein Haus bei dieser Adresse existiert, ist das entsprechende Element $1$, sonst ist es $0$.
+          Diese Karte wird zur optimierten Zählung der Häuser in einem Bereich verwendet.
+          Statt ein bool pro Element zu verwenden, wird ein uint8\_t benutzt, da so die Speicherplatzspezifische Optimierung eines std::vector<bool> umgangen wird, was die Laufzeit verbessert.
+    \item Und ein std::vector aller besten Arrangements, die jeweils als \textbf{Arrangement} Instanzen repräsentiert sind.
+          Diese enthalten jeweils die Positionen der Eisdielen und den Score des Arrangements.
+\end{itemize}
 
+\subsection{Scored Search}
+\label{sec:Scored_Search}
+Der erste Schritt ist die Berechnung der Arrangements mit den besten Scores.
+Hierzu wird die Funktion \textbf{do\_scored\_search} verwendet.
+In ihr werden in drei verschachtelten Schleifen alle Test-Arrangements durchgegangen.
+Zu beachten ist, dass die erste Position angefangen von $0$ hochzählt, während die zweite Position eine Adresse nach der ersten Position anfängt.
+Gleichen gilt für die dritte Position.
+Hierdurch werden die in \autoref{sec:Bestimmung_der_Stabilität} aufgezählten Optimierungen umgesetzt, die genauso für Test-Arrangements gelten können als auch für Check-Arrangements.
+Die Adressen der Eisdielen werden in einer neuen \textbf{Arrangement} Instanz gespeichert.
 
+Für jedes Arrangement wird die Eisdielendistanz jedes Hauses mit \textbf{get\_ice\_cream\_distance} berechnet und zusammenaddiert.
+In \autoref{sec:Sortierung_der_Arrangements} wird zwar die durchschnittliche Eisdielendistanz berechnet, wofür die Summe durch die Menge an Häusern geteilt werden müsste.
+Allerdings werden im folgenden Code die Scores nur miteinander verglichen, weshalb die Berechnung des absoluten Wertes unnötig ist.
+Sie wird für die Optimierung weggelassen.
 
+\medskip
+\begin{addmargin}[3em]{4em}
+    \textbf{get\_ice\_cream\_distance} berechnet mithilfe von \textbf{get\_shortest\_distance} die Entfernung von Einem Haus zu allen Eisdielen des Arrangements und wählt die kürzeste aus.
+\end{addmargin}
 
+\medskip
+\begin{addmargin}[3em]{4em}
+    \textbf{get\_shortest\_distance} berechnet die direkte und Entfernung zwischen zwei Adressen und die indirekte, wobei die direkte Entfernung von dem Umfang des Sees abgezogen wird.
+    Schlussendlich gibt es die kürzere Entfernung zurück.
+\end{addmargin}
 
+\medskip
+Dieser Score wird in der \textbf{Arrangement} Instanzen gespeichert.
+Um die Arrangements effizient zu sortieren, wird zuerst der std::vector in der \textbf{Lake} Instanz, der die besten Arrangements enthalten soll, mit so vielen Dummy Arrangements gefüllt, wie beste Arrangements gefordert sind.
+Wenn eine weitere \textbf{Arrangement} Instanz erstellt wurde, wird diese mit der Funktion \textbf{insert} an der richtigen Stelle in den std::vector eingefügt.
+Anschließend wird das letzte Element, das mit dem schlechtesten Score, entfernt.
+Diese vorgehensweise hat den Vorteil, dass der std::vector zu jedem Zeitpunkt sortiert ist.
 
+Der Score der Dummy Arrangements entspricht dem Produkt aus Umfang und Menge an Häusern.
+Dieser Score ist schlechter als alle möglichen Scores, weshalb ein Dummy gegen jegliche Test-Arrangements ersetzt wird.
 
+\subsection{Überprüfung der Stabilität}
+\label{sec:Überprüfung_der_Stabilität}
+Wenn die besten Test-Arrangements berechnet wurden, werden sie anschließend alle mit der Funktion \textbf{is\_stable} auf Stabilität überprüft.
+Diese nimmt ein Test-Arrangement entgegen und geht alle möglichen Check-Arrangements durch, bis entweder ein Check-Arrangement gefunden wurde, dass gegen das Test-Arrangements in einer Abstimmung gewinnen und es ablösen würde, oder entdeckt wird, dass kein derartiges Check-Arrangement vorliegen kann.
 
+\medskip
+Hierzu wird anfänglich für jedes Haus die Eisdielendistanz in dem Test-Arrangement berechnet und in den jeweiligen \textbf{House} Instanzen gespeichert.
+Genau wie in \autoref{sec:Scored_Search} werden die in \autoref{sec:Bestimmung_der_Stabilität} genannten Optimierungen implementiert.
+Der einzige Unterschied ist dass, wenn die ersten beiden Positionen gewählt wurden, die Suche nach einer Dritten nicht begonnen wird, wenn wie in \autoref{sec:Auszählung_der_Stimmen} gezeigt bereits zu viele Stimmen gegen eine Verlegung in dem ersten Bereich gefunden werden.
 
+\subsubsection{Nein-Stimmenzählung in einem Sektor}
+\label{sec:Stimmenzählung_in_einem_Sektor}
+Um die Menge an Nein-Stimmen im Sektor zwischen den ersten beiden Eisdielen zu berechnen, wird die Funktion \textbf{count\_sector\_nos} eingesetzt.
+Diese berechnet zuerst die nächste Test-Eisdiele innerhalb des Sektors von der linken Seite.
+Dafür wird \textbf{get\_abs\_distance} eingesetzt und mit der geringstern Entfernung weitergerechnet.
 
+\medskip
+\begin{addmargin}[3em]{4em}
+    \textbf{get\_abs\_distance} wird durch eine Instanze der Enum Class \textbf{Direction} auf Links- oder Rechtssuche eingestellt.
+    Dementsprechend wird zurerst die direkte Distanz zwischen dem Startpunkt und dem Endpunkt berechnet.
+    Wenn die direkte Distanz negativ ist, wird stattdessen die indirekte zurückgegeben.
+    Hierdurch wird immer ein nicht-negativer Wert zurückgegeben.
+\end{addmargin}
 
+\medskip
+Um zu detektieren, dass sich keine Test-Eisdiele in dem Sektor befindet, wird überprüft, ob die Breite des Sektors geringer als die Distanz zur nächsten Test-Eisdiele ist.
+Wenn dies der Fall ist, ist selbst die nächste Test-Eisdiele nicht im Sektor enthalten und Alle Häuser in dem Sektor stimmen für eine Verlegung, weshalb sofort $0$ zurückgegeben wird.
 
+Ist dies nicht der Fall, wird nach einer zweiten Test-Eisdiele in dem Sektor gesucht.
+Hierfür wird das selbe Verfahren angewendet, mit dem Unterschied, dass statt in die rechte Richtung, die Entfernung in die linke Richtung und statt der linken Grenze des Sektors, die rechte verwendet wird.
+So werden die beiden äußeren Test-Eisdielen berechnet, die die selbe sein können, wenn nur eine Test-Eisdiele im Sektor vorhanden ist.
 
+\medskip
+Nun werden die in \autoref{sec:Auszählung_der_Stimmen} vorgestellten Mitten berechnet und die Häuser in den beschriebenen Nein-stimmenden Bereichen gezählt.
 
+\medskip
+\begin{addmargin}[3em]{4em}
+    Diese Aufgabe übernimmt die Funktion \textbf{count\_houses}, die die in der \textbf{Lake} Instanz gespeicherte Karte verwendet.
+    Sie geht alle Adressen von dem Startwert bis zu der Adresse vor dem Endwert durch und addiert die in der Karte enthaltenen Elemente.
+    In einer Schleife wird hierdurch von einer Entfernung zum Anfangswert von $0$ bis zu der Distanz zu dem Endwerte die Karte durchgegangen.
+    Um ausgehend von der Entfernung zum Anfangswert die Adresse zu berechnen wird die Entfernung auf die Adresse des Anfangswertes addiert und der Rest der Division durch den Umfang des Sees verwendet.
+\end{addmargin}
 
+\medskip
+So ergibt sich die Menge an Häusern in den festgelegten Bereichen, die zusammenaddiert zurückgegen werden.
 
+\subsubsection{Simulation der Abstimmung}
+Wenn im ersten Sektor nicht zu viele Nein-Stimmen enthalten sind, kann die selbe Funktion benutzt werden, um ebenfalls die Menge an Nein-Stimmen in den anderen beiden Sektoren zu berechnen.
+Allerdings stellt sich heraus, dass die Simulation der Abstimmung eine bessere Laufzeit aufweist.
+Hierfür wird die Funktion \textbf{is\_better} verwendet.
+Sie geht alle Häuser durch und vergleicht die Eisdielendistanz mit dem Check-Arrangement eines Hauses mit dessen gespeicherte Eisdielendistanz.
+Diese wurde am Anfang von \textbf{is\_stable} für das Test-Arrangement berechnet, damit sie nicht für jedes Check-Arrangement neu berechnet werden muss.
+Hierdurch wird die Stimme des Hauses bestimmt.
+Die Ja-Stimmen werden zusammenaddiert und mit der Menge an Nein-Stimmen, die der Differenz zwischen Anzahl an Häusern und Ja-Stimmen entspricht, verglichen.
 
-
-
-
-
-
-
-
-
-
-
-
-
+\medskip
+Sind mehr Ja- als Nein-Stimmen vorhanden, wird die Suche nach einem Check-Arrangement abgebrochen und false ausgegeben, da die Instabilität bewiesen wurde.
+Nur in dem Fall, in dem die Suche alle möglichen Check-Arrangements durchlaufen hat und nicht abgebrochen wurde, ist das Test-Arrangement stabil.
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
 Nun wird das Programm mit allen Beispieldateien ausgeführt.
 
 \paragraph{eisbuden1.txt}
-Mit der Eingabe
-
-20 7
-
-0 2 3 8 12 14 15
-
-gibt das Programm aus, dass es keine stabilen Positionen gibt.
 
 \paragraph{eisbuden2.txt}
-Mit der Eingabe
-
-50 15
-
-3 6 7 9 24 27 36 37 38 39 40 45 46 48 49
-
-gibt das Programm die Menge an stabilen Positionen aus:
-
-45
 
 \paragraph{eisbuden3.txt}
-Mit der Eingabe
-
-50 16
-
-2 7 9 12 13 15 17 23 24 35 38 42 44 45 48 49
-
-gibt das Programm die Menge an stabilen Positionen aus:
-
-2, 3, 4, 5, 6 und 7
 
 \paragraph{eisbuden4.txt}
-Mit der Eingabe
-
-100 19
-
-6 12 23 25 26 28 31 34 36 40 41 52 66 67 71 75 80 91 92
-
-gibt das Programm die Menge an stabilen Positionen aus:
-
-34
 
 \paragraph{eisbuden5.txt}
-Mit der Eingabe
-
-247 24
-
-2 5 37 43 72 74 83 87 93 97 101 110 121 124 126 136 150 161 185 200 201 230 234 241
-
-gibt das Programm die Menge an stabilen Positionen aus:
-
-93, 94, 95, 96 und 97
 
 \paragraph{eisbuden6.txt}
-Mit der Eingabe
-
-437 36
-
-4 12 17 23 58 61 67 76 93 103 145 154 166 170 192 194 209 213 221 225 239 250 281 299 312 323 337 353 383 385 388 395 405 407 412 429
-
-gibt das Programm aus, dass es keine stabilen Positionen gibt.
 
 \paragraph{eisbuden7.txt}
 
 \subsection{Eigene Beispiele}
 
 \paragraph{myeisbuden0.txt}
-Mit der Eingabe
-
-12 4
-
-0 3 6 9
-
-gibt das Programm die Menge an stabilen Positionen aus:
-
-0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 und 11
-
-Dies ergibt Sinn, da die Häuser gleichmäßig verteilt sind, womit nie eine Mehrheit gegen jegliche Positionen gefunden werden kann.
-
-\paragraph{myeisbuden0.txt}
-Mit der Eingabe
-
-10 0
-
-
-0, 1, 2, 3, 4, 5, 6, 7, 8 und 9
-
-Dies ergibt Sinn, da keine Häuser vorhanden sind, die für eine Umlegung stimmen könnten.
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
 Dies sind die wichtigsten Funktionen:
 \begin{lstlisting}
-int get_distance(int circumference, int place_a, int place_b)
-{
-    int direct_distance = std::abs(place_a - place_b);
-    // take shortest way, direct or the othe rdirection
-    return std::min(direct_distance, circumference - direct_distance);
-}
-
-bool vote(int circumference, int house_place, int old_place, int new_place)
-{
-    // is new place better?
-    if (get_distance(circumference, house_place, new_place) <
-    get_distance(circumference, house_place, old_place))
-        return true;
-    return false;
-}
-
-bool is_stable(int circumference, std::vector<int> &houses, int test_place)
-{
-    // would any other place win an election against test_place?
-    for (int other_place = 0; other_place < circumference; other_place++)
-    {
-        int trues = 0;
-        for (int house : houses)
-            if (vote(circumference, house, test_place, other_place))
-                trues++;
-
-        if (trues > houses.size() - trues)
-            return false;
-    }
-    return true;
-}
-
-std::vector<int> get_stabel_places(int circumference, std::vector<int> &houses)
-{
-    // go thorugh all possible places
-    std::vector<int> result;
-    for (int test_place = 0; test_place < circumference; test_place++)
-        if (is_stable(circumference, houses, test_place))
-            result.push_back(test_place);
-    return result;
-}
 \end{lstlisting}
 
 \end{document}

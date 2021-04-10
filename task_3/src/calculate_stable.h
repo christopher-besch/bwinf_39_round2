@@ -15,6 +15,14 @@ inline int get_abs_distance(int circumference, int this_place, int other_place, 
     return direct_distance < 0 ? indirect_distance : direct_distance;
 }
 
+inline int get_shortest_distance(int circumference, int place_a, int place_b)
+{
+    int direct_distance = std::abs(place_a - place_b);
+    int indirect_distance = circumference - direct_distance;
+    // take shortest way, direct or indirect
+    return std::min(direct_distance, indirect_distance);
+}
+
 // count all houses from include_left inclusively to exclude_right exclusively
 inline int count_houses(Lake &lake, int include_left, int exclude_right)
 {
@@ -25,7 +33,7 @@ inline int count_houses(Lake &lake, int include_left, int exclude_right)
 }
 
 // count no-votes between check ice cream parlors left_side and right_side
-// indirect -> take longer route around lake <- necessary example when left_side > right_side
+// indirect -> take longer route around lake <- necessary example when left_side == right_side and the direct route of length 0 is not the desired one
 // exclude possible no-vote from house on left_side
 // include possible no-vote form house on right_side
 inline int count_sector_nos(Lake &lake, Arrangement &test_arrangement, int left_side, int right_side, bool indirect = false)
@@ -72,13 +80,6 @@ inline int count_sector_nos(Lake &lake, Arrangement &test_arrangement, int left_
     right_nos_exclude += min_to_left_distance == 0;
 
     return count_houses(lake, left_nos, right_nos_exclude);
-}
-
-inline int get_shortest_distance(int circumference, int place_a, int place_b)
-{
-    int direct_distance = std::abs(place_a - place_b);
-    // take shortest way, direct or the other direction
-    return std::min(direct_distance, circumference - direct_distance);
 }
 
 inline int get_ice_cream_distance(Lake &lake, Arrangement &arrangement, int location)

@@ -1,17 +1,23 @@
 \babel@toc {ngerman}{}
 \contentsline {section}{\numberline {1}Ein Wort \IeC {\"u}ber die Graphiken}{1}{section.1}%
-\contentsline {section}{\numberline {2}L\IeC {\"o}sungsidee}{1}{section.2}%
-\contentsline {section}{\numberline {3}Umsetzung}{4}{section.3}%
-\contentsline {paragraph}{\nonumberline Einlese der Eingabedatei}{5}{section*.7}%
-\contentsline {section}{\numberline {4}Beispiele}{5}{section.4}%
-\contentsline {paragraph}{\nonumberline eisbuden1.txt}{5}{section*.8}%
-\contentsline {paragraph}{\nonumberline eisbuden2.txt}{5}{section*.9}%
-\contentsline {paragraph}{\nonumberline eisbuden3.txt}{5}{section*.10}%
-\contentsline {paragraph}{\nonumberline eisbuden4.txt}{5}{section*.11}%
-\contentsline {paragraph}{\nonumberline eisbuden5.txt}{5}{section*.12}%
-\contentsline {paragraph}{\nonumberline eisbuden6.txt}{5}{section*.13}%
-\contentsline {paragraph}{\nonumberline eisbuden7.txt}{5}{section*.14}%
-\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{5}{subsection.4.1}%
-\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{5}{section*.15}%
-\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{6}{section*.16}%
-\contentsline {section}{\numberline {5}Quellcode}{6}{section.5}%
+\contentsline {section}{\numberline {2}L\IeC {\"o}sungsidee}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Sortierung der Arrangements}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Bestimmung der Stabilit\IeC {\"a}t}{2}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Ausz\IeC {\"a}hlung der Stimmen}{4}{subsubsection.2.2.1}%
+\contentsline {section}{\numberline {3}Umsetzung}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Einlese der Eingabedatei}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Scored Search}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}\IeC {\"U}berpr\IeC {\"u}fung der Stabilit\IeC {\"a}t}{6}{subsection.3.3}%
+\contentsline {subsubsection}{\numberline {3.3.1}Nein-Stimmenz\IeC {\"a}hlung in einem Sektor}{6}{subsubsection.3.3.1}%
+\contentsline {subsubsection}{\numberline {3.3.2}Simulation der Abstimmung}{7}{subsubsection.3.3.2}%
+\contentsline {section}{\numberline {4}Beispiele}{7}{section.4}%
+\contentsline {paragraph}{\nonumberline eisbuden1.txt}{7}{section*.7}%
+\contentsline {paragraph}{\nonumberline eisbuden2.txt}{7}{section*.8}%
+\contentsline {paragraph}{\nonumberline eisbuden3.txt}{7}{section*.9}%
+\contentsline {paragraph}{\nonumberline eisbuden4.txt}{7}{section*.10}%
+\contentsline {paragraph}{\nonumberline eisbuden5.txt}{7}{section*.11}%
+\contentsline {paragraph}{\nonumberline eisbuden6.txt}{7}{section*.12}%
+\contentsline {paragraph}{\nonumberline eisbuden7.txt}{7}{section*.13}%
+\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{7}{subsection.4.1}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{7}{section*.14}%
+\contentsline {section}{\numberline {5}Quellcode}{7}{section.5}%
