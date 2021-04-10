@@ -24,7 +24,7 @@ inline int get_shortest_distance(int circumference, int place_a, int place_b)
 }
 
 // count all houses from include_left inclusively to exclude_right exclusively
-inline int count_houses(Lake &lake, int include_left, int exclude_right)
+inline int count_houses(const Lake &lake, int include_left, int exclude_right)
 {
     int houses = 0;
     for (int idx = 0; idx < get_abs_distance(lake.circumference, include_left, exclude_right, Direction::right); ++idx)
@@ -36,7 +36,7 @@ inline int count_houses(Lake &lake, int include_left, int exclude_right)
 // indirect -> take longer route around lake <- necessary example when left_side == right_side and the direct route of length 0 is not the desired one
 // exclude possible no-vote from house on left_side
 // include possible no-vote form house on right_side
-inline int count_sector_nos(Lake &lake, Arrangement &test_arrangement, int left_side, int right_side, bool indirect = false)
+inline int count_sector_nos(const Lake &lake, const Arrangement &test_arrangement, int left_side, int right_side, bool indirect = false)
 {
 // optimization: not used in this version
 #ifdef DEBUG
@@ -82,29 +82,29 @@ inline int count_sector_nos(Lake &lake, Arrangement &test_arrangement, int left_
     return count_houses(lake, left_nos, right_nos_exclude);
 }
 
-inline int get_ice_cream_distance(Lake &lake, Arrangement &arrangement, int location)
+inline int get_score(int circumference, const Arrangement &arrangement, int location)
 {
-    int distance_a = get_shortest_distance(lake.circumference, location, arrangement.place_a);
-    int distance_b = get_shortest_distance(lake.circumference, location, arrangement.place_b);
-    int distance_c = get_shortest_distance(lake.circumference, location, arrangement.place_c);
+    int distance_a = get_shortest_distance(circumference, location, arrangement.place_a);
+    int distance_b = get_shortest_distance(circumference, location, arrangement.place_b);
+    int distance_c = get_shortest_distance(circumference, location, arrangement.place_c);
     return std::min(distance_a, std::min(distance_b, distance_c));
 }
 
-inline bool is_better(Lake &lake, Arrangement &check_arrangement)
+inline bool is_better(const Lake &lake, std::vector<int> &ice_cream_distances, const Arrangement &check_arrangement)
 {
     int yes = 0;
-    for (auto house : lake.houses)
+    for (int i = 0; i < lake.houses.size(); ++i)
         // makes route shorter?
-        yes += get_ice_cream_distance(lake, check_arrangement, house.location) < house.closest_route;
+        yes += get_score(lake.circumference, check_arrangement, lake.houses[i]) < ice_cream_distances[i];
     // more yes than nos?
     return yes > (lake.houses.size() - yes);
 }
 
-inline bool is_stable(Lake &lake, Arrangement &test_arrangement)
+inline bool is_stable(const Lake &lake, std::vector<int> ice_cream_distances, const Arrangement &test_arrangement)
 {
     // best routes for test-arrangement
-    for (auto &house : lake.houses)
-        house.closest_route = get_ice_cream_distance(lake, test_arrangement, house.location);
+    for (int i = 0; i < lake.houses.size(); ++i)
+        ice_cream_distances[i] = get_score(lake.circumference, test_arrangement, lake.houses[i]);
 
     // get all other possible locations
     // multiple ice cream parlors in same location are a waste
@@ -118,7 +118,7 @@ inline bool is_stable(Lake &lake, Arrangement &test_arrangement)
                 break;
             // test all possible locations for third ice
             for (check_arrangement.place_c = check_arrangement.place_b + 1; check_arrangement.place_c < lake.circumference; ++check_arrangement.place_c)
-                if (is_better(lake, check_arrangement))
+                if (is_better(lake, ice_cream_distances, check_arrangement))
                     return false;
             // alternative: calculate nos with count_sector_nos between place_b and place_c, place_c and place_a
             // <- not used <- is actually slower
@@ -130,12 +130,6 @@ inline bool is_stable(Lake &lake, Arrangement &test_arrangement)
 // result gets stored in lake
 inline void do_scored_search(Lake &lake, int max_arrangements)
 {
-    Arrangement dummy{};
-    // worst possible score
-    dummy.score = lake.circumference * lake.houses.size();
-    lake.best_arrangements.reserve(max_arrangements + 1);
-    lake.best_arrangements.insert(lake.best_arrangements.begin(), max_arrangements, dummy);
-
     // go through all possible test-arrangements
     // optimization: two ice creams on the same location are a waste
     for (int place_a = 0; place_a < lake.circumference; ++place_a)
@@ -146,9 +140,26 @@ inline void do_scored_search(Lake &lake, int max_arrangements)
                 // calculate score
                 // optimization: sum of closest routes instead of average shortest route <- only relative value important
                 for (const auto &house : lake.houses)
-                    test_arrangement.score += get_ice_cream_distance(lake, test_arrangement, house.location);
+                    test_arrangement.score += get_score(lake.circumference, test_arrangement, house);
                 // keep std::vector sorted at all time
                 insert(lake.best_arrangements, test_arrangement);
                 lake.best_arrangements.pop_back();
             }
+}
+
+// from offset length amount of arrangements get checked
+void test_arrangements(const Lake &lake, size_t offset, size_t length)
+{
+    std::vector<int> ice_cream_distances;
+    ice_cream_distances.resize(lake.houses.size());
+    // offset and length have to be correct
+    for (int i = offset; i < offset + length; ++i)
+    {
+        const Arrangement &arrangement = lake.best_arrangements[i];
+        if (is_stable(lake, ice_cream_distances, arrangement))
+        {
+            auto lock = std::unique_lock<std::mutex>(lake.print_lock);
+            std::cout << "\t" << i << ". place:\t" << arrangement.place_a << " " << arrangement.place_b << " " << arrangement.place_c << std::endl;
+        }
+    }
 }

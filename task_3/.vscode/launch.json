@@ -23,7 +23,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/Debug-linux-x86_64/task_3",
-            "args": ["examples/eisbuden3.txt"],
+            "args": ["examples/eisbuden1.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

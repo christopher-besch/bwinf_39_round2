@@ -26,3 +26,8 @@ project "task_3"
     files {
         "src/**.h", "src/**.cpp"
     }
+
+    -- what the fuck, linux?
+    links {
+        "pthread"
+    }

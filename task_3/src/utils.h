@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <mutex>
 
 #ifdef DEBUG
 #define raise_error(msg)                                                                                                  \
@@ -42,22 +43,19 @@ struct Arrangement
     }
 };
 
-struct House
-{
-    int location;
-    int closest_route;
-};
-
 struct Lake
 {
     int circumference;
-    std::vector<House> houses;
+    // addresses of houses
+    std::vector<int> houses;
     // minimum amount of no-votes required to not replace the locations
     int min_nos;
     // not using bool to prevent space-efficient specialization
     // index represents address; 1 -> house exists; 0 -> house doesn't exist
     std::vector<uint8_t> houses_map;
     std::vector<Arrangement> best_arrangements;
+
+    mutable std::mutex print_lock;
 };
 
 inline void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
