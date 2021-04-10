@@ -99,11 +99,11 @@ inline bool is_better(Lake &lake, Arrangement &check_arrangement)
     return yes > (lake.houses.size() - yes);
 }
 
-inline bool is_stable(Lake &lake, Arrangement &arrangement)
+inline bool is_stable(Lake &lake, Arrangement &test_arrangement)
 {
     // best routes for test-arrangement
     for (auto &house : lake.houses)
-        house.closest_route = get_ice_cream_distance(lake, arrangement, house.location);
+        house.closest_route = get_ice_cream_distance(lake, test_arrangement, house.location);
 
     // get all other possible locations
     // multiple ice cream parlors in same location are a waste
@@ -113,7 +113,7 @@ inline bool is_stable(Lake &lake, Arrangement &arrangement)
         {
             // when there are already so many no-votes between place_a and place_b,
             // the location of place_c won't change anything -> this arrangement won't beat the test-arrangement
-            if (count_sector_nos(lake, arrangement, check_arrangement.place_a, check_arrangement.place_b, false) >= lake.min_nos)
+            if (count_sector_nos(lake, test_arrangement, check_arrangement.place_a, check_arrangement.place_b, false) >= lake.min_nos)
                 break;
             // test all possible locations for third ice
             for (check_arrangement.place_c = check_arrangement.place_b + 1; check_arrangement.place_c < lake.circumference; ++check_arrangement.place_c)

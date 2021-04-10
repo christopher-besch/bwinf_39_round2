@@ -80,6 +80,8 @@
     keywordstyle=\color{blue}
 }
 
+\newcommand{\imageWidth}{0.3\linewidth}
+
 % title
 \title{\textbf{\Huge\Aufgabe}}
 \author{\LARGE Teilnahme-ID: \LARGE \TeilnahmeId \\\\
@@ -133,7 +135,7 @@ Wenn die Eisbudendistanz beispielsweise $0$ beträgt, existiert kein einziges Ch
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.4\linewidth]{01_happy_house.png}
+    \includegraphics[width=\imageWidth]{01_happy_house.png}
     \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisbudendistanz beträgt $0$.}
     \label{fig:01_hapy_house}
 \end{figure}
@@ -141,12 +143,12 @@ Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspri
 \begin{figure}[ht]
     \centering
     \caption{Unzufriedene Häuser}
-    \begin{subfigure}[t]{0.4\linewidth}
+    \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{02_unhappy_house.png}
         \caption{Das Haus ist maximal unzufrieden, weshalb es für fast jede Verlegung stimmt. Jeder Kreis repräsentiert eine anderes Check-Arrangement, die alle von dem Haus angenommen werden.}
         \label{fig:02_unhappy_house}
     \end{subfigure}
-    \begin{subfigure}[t]{0.4\linewidth}
+    \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{03_slightly_happy_house.png}
         \caption{Dies ist der einzige Fall, in dem das Haus trotz seiner extremen Unzufriedenheit gegen eine Verlegung stimmt.}
         \label{fig:03_slightly_happy_house}
@@ -155,12 +157,12 @@ Wenn die Eisbudendistanz den maximalen Wert, dem halben Umfang des Sees, entspri
 Die durchschnittliche Eisbudendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
 Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
-Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_borken_example} gezeigt wird.
+Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_broken_example} gezeigt wird.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.4\linewidth]{04_broken_example.png}
+    \includegraphics[width=\imageWidth]{04_broken_example.png}
     \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisbudendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
-    \label{fig:04_borken_example}
+    \label{fig:04_broken_example}
 \end{figure}
 Hieraus geht hervor, dass die durchschnittliche Eisbudendistanz nur eine Näherungslösung liefert.
 Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
@@ -177,52 +179,106 @@ Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größe
 Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.4\linewidth]{05_sectors.png}
+    \includegraphics[width=\imageWidth]{05_sectors.png}
     \caption{Einteilung in Sektoren}
     \label{fig:05_sectors}
 \end{figure}
 
-Um nun alle Position durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden (Die verschiedenen Optionen für diese müssen in einem übergeordneten Schritte durchgegangen werden) und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
-Somit ist die Größe und Position des ersten Sektor bei vielen Durchläufen gleich.
-
-Nun zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
-Dies lässt sich dadurch begründen, dass die Eisdielendistanzen dieser Häuser nur dann nicht verkürzt werden, wenn sich eine Eisdiele des Test-Arrangements in dem Sektor befindet.
-Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die Eisbudendistanz ohne Test-Eisdielen innerhalb des Sektors nicht verkürzt wird.
+Es zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
+\begin{itemize}
+    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die ehemalige Eisbudendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
+    \item Genauso ist für jedes Haus im Sektor eine der Sektorgrenzen immer die nächste Check-Eisdiele.
+          Dementsprechend ist die Position der dritten Check-Eisdiele ebenfalls irrelevant. da immer nur die Eisdielendistanz betrachtet wird.
+\end{itemize}
+Aus diesen beiden Punkten geht hervor, dass ausschließlich die Ränder des Sektors und die sich im Sektor befindlichen Test-Eisdielen Einfluss auf die Stimme eines Hauses in dem Sektor hat.
 
 \medskip
-In der Implementation wird auf viele Optimierungen eingegangen
+Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
+Es existieren nur drei verschiedene Möglichkeiten für die Anordnung der Test-Eisdielen in einem Sektor,
+\begin{figure}[ht]
+    \centering
+    \caption{Test-Eisdielen Anordnung im Sektor}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{06_no_test_ice.png}
+        \caption{Keine Test-Eisdiele}
+        \label{fig:06_no_test_ice}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{07_one_test_ice.png}
+        \caption{Eine Test-Eisdiele}
+        \label{fig:07_one_test_ice}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{08_two_test_ice.png}
+        \caption{Zwei oder mehr Test-Eisdielen (nur die Äußersten dargestellt)}
+        \label{fig:08_two_test_ice}
+    \end{subfigure}
+\end{figure}
+In dem letzten Fall von mehr als zwei Test-Eisdielen im Sektor, müssen nur die Äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
+Dies geht aus der Definition eines Sektors hervor.
+Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge and Test-Eisdielen.
 
+Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen wird müssen zwei verschiedene Methoden verwendet werden:
+\begin{itemize}
+    \item Wenn sich keine Test-Eisdiele in dem Sektor befindet, stimmt kein Haus gegen eine Verlegung.
+    \item In allen anderen Fällen befinden sich die einzigen Ja-stimmenden Häuser in den beiden Bereichen zwischen einem Rand un der nächsten Test-Eisdiele.
+          Wenn diese Bereiche in der Mitte geteilt wird, befinden sich alle Ja-stimmenden Häuser in der Hälfte, die näher am Rand ist.
+          Alle Nein-stimmenden Häuser liegen in der anderen Hälfte.
+          Bei einer ungeraden Anzahl an Adressen in diesem Bereich wird der Nein-stimmenden Hälfte eine Adresse mehr zugeteilt, da bei gleichbleibender Eisdielendistanz das Haus Nein stimmen.
+\end{itemize}
+Auf diese Weise können effizient die Bereiche berechnet werden, in denen alle sich befindlichen Häuser Nein stimmen.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\medskip
+Es ergibt sich ein weiterer Vorteil:
+Um alle Position für die Check-Eisdielen durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
+Die verschiedenen Optionen für die ersten beiden Check-Eisdielen müssen in einem übergeordneten Schritt durchgegangen werden.
+Somit ist die Größe und Position des ersten Sektors bei vielen Durchläufen gleich.
+Wenn bereits mindestenz die Hälfte der Häuser sich in diesem Sektor befinden und gegen eine Veränderung stimmen, ist das Check-Arrangement unfähig, das Test-Arrangement abzulösen.
+Somit kann in diesem Fall die Suche nach Positionen für die dritte Check-Eisdiele übersprungen werden und die Wahl der ersten beiden Check-Eisdielen sofort geändert werden.
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
 Die Lösungsidee wird in C++ implementiert.
+Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt,
+\begin{itemize}
+    \item \textbf{main.cpp} liest die Eingabe und gibt die Ergebnisse aus,
+    \item \textbf{utils.h} enthält verwendete Structs und generell anwendbare Funktionen und Makros und
+    \item \textbf{calculate\_stable.h} enthält die eigentlichen Funktionen zur Bestimmung der stabilen Arrangements.
+\end{itemize}
 
 \paragraph{Einlese der Eingabedatei}
 Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
 Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht wird das Programm abgebrochen.
-Hierzu wird ein Makro \textbf{raise\_error()} verwendet, dass die Ausführung des Programmes abbricht und eine möglichst informative Fehlermeldung zurückgibt.
-Dieses Makro wird ebenfalls für alle Methoden aller Klassen verwendet, um z.b. Segmentation Faults zu verhindern.
+Hierzu wird ein Makro \textbf{raise\_error()} verwendet, das die Ausführung des Programms abbricht und eine möglichst informative Fehlermeldung zurückgibt.
 
-Es wird die Menge der Adressen aller Häuser in einem std::vector<int> und der Umfang des Sees in einem int gespeichert.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \section{Beispiele}
