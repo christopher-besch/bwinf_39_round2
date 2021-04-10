@@ -137,14 +137,14 @@ Nun stellt sich heraus, dass stabile Arrangements einen der niedrigsten Scores a
 Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangement existieren, die eine noch geringere Eisdielendistanz für das Haus generieren.
 Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen einen Wechsel stimmt.
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisdielendistanz beträgt $0$.}
     \label{fig:01_hapy_house}
     \includegraphics[width=\imageWidth]{01_happy_house.png}
 \end{figure}
 Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \caption{Unzufriedene Häuser}
     \begin{subfigure}[t]{\imageWidth}
@@ -162,7 +162,7 @@ Die durchschnittliche Eisdielendistanz lässt sich dementsprechend als \glqq Zuf
 Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
 Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_broken_example} gezeigt wird.
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisdielendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
     \label{fig:04_broken_example}
@@ -182,7 +182,7 @@ Daher können zwei Optimierungen getroffen werden:
 \end{enumerate}
 Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
 Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \caption{Einteilung in Sektoren}
     \label{fig:05_sectors}
@@ -202,7 +202,7 @@ Aus diesen beiden Punkten geht hervor, dass ausschließlich die Ränder des Sekt
 \medskip
 Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
 In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehr Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
-\begin{figure}[h!]
+\begin{figure}[ht]
     \centering
     \caption{Test-Eisdielen Anordnung im Sektor}
     \begin{subfigure}[t]{\imageWidth}
@@ -393,23 +393,49 @@ Die Laufzeit ist erheblich größer, wenn alle stabilen Arrangements gefordert s
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
 Nun wird das Programm mit allen Beispieldateien ausgeführt.
 
-\paragraph{eisbuden1.txt}
-
-\paragraph{eisbuden2.txt}
-
-\paragraph{eisbuden3.txt}
-
-\paragraph{eisbuden4.txt}
-
-\paragraph{eisbuden5.txt}
-
-\paragraph{eisbuden6.txt}
-
-\paragraph{eisbuden7.txt}
+\begin{figure}[ht]
+    \centering
+    \setcounter{figure}{8}
+    \caption{Beispiele vom BWINF}
+    \label{fig:BWINF_Beispiele}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden1.png}
+        \caption{eisbuden1.txt}
+        \label{fig:eisbuden1}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden2.png}
+        \caption{eisbuden2.txt}
+        \label{fig:eisbuden2}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden3.png}
+        \caption{eisbuden3.txt}
+        \label{fig:eisbuden3}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden4.png}
+        \caption{eisbuden4.txt}
+        \label{fig:eisbuden4}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden5.png}
+        \caption{eisbuden5.txt}
+        \label{fig:eisbuden5}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden6.png}
+        \caption{eisbuden6.txt}
+        \label{fig:eisbuden6}
+    \end{subfigure}
+    \begin{subfigure}[t]{\imageWidth}
+        \includegraphics[width=\linewidth]{eisbuden7.png}
+        \caption{eisbuden7.txt}
+        \label{fig:eisbuden7}
+    \end{subfigure}
+\end{figure}
 
 \subsection{Eigene Beispiele}
-
-\paragraph{myeisbuden0.txt}
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
