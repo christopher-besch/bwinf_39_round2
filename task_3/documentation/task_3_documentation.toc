@@ -10,14 +10,15 @@
 \contentsline {subsection}{\numberline {3.3}\IeC {\"U}berpr\IeC {\"u}fung der Stabilit\IeC {\"a}t}{6}{subsection.3.3}%
 \contentsline {subsubsection}{\numberline {3.3.1}Nein-Stimmenz\IeC {\"a}hlung in einem Sektor}{6}{subsubsection.3.3.1}%
 \contentsline {subsubsection}{\numberline {3.3.2}Simulation der Abstimmung}{7}{subsubsection.3.3.2}%
-\contentsline {section}{\numberline {4}Beispiele}{7}{section.4}%
+\contentsline {section}{\numberline {4}Zugest\IeC {\"a}ndnisse}{7}{section.4}%
+\contentsline {section}{\numberline {5}Beispiele}{7}{section.5}%
 \contentsline {paragraph}{\nonumberline eisbuden1.txt}{7}{section*.7}%
 \contentsline {paragraph}{\nonumberline eisbuden2.txt}{7}{section*.8}%
 \contentsline {paragraph}{\nonumberline eisbuden3.txt}{7}{section*.9}%
 \contentsline {paragraph}{\nonumberline eisbuden4.txt}{7}{section*.10}%
 \contentsline {paragraph}{\nonumberline eisbuden5.txt}{7}{section*.11}%
-\contentsline {paragraph}{\nonumberline eisbuden6.txt}{7}{section*.12}%
-\contentsline {paragraph}{\nonumberline eisbuden7.txt}{7}{section*.13}%
-\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{7}{subsection.4.1}%
-\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{7}{section*.14}%
-\contentsline {section}{\numberline {5}Quellcode}{7}{section.5}%
+\contentsline {paragraph}{\nonumberline eisbuden6.txt}{8}{section*.12}%
+\contentsline {paragraph}{\nonumberline eisbuden7.txt}{8}{section*.13}%
+\contentsline {subsection}{\numberline {5.1}Eigene Beispiele}{8}{subsection.5.1}%
+\contentsline {paragraph}{\nonumberline myeisbuden0.txt}{8}{section*.14}%
+\contentsline {section}{\numberline {6}Quellcode}{8}{section.6}%

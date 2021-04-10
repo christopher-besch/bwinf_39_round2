@@ -253,6 +253,11 @@ Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt:
     \item \textbf{utils.h} enthält verwendete Structs und generell anwendbare Funktionen und Makros und
     \item \textbf{calculate\_stable.h} enthält die eigentlichen Funktionen zur Bestimmung der stabilen Arrangements.
 \end{itemize}
+Die einzigen Eingaben, die das Programm benötigt ist der Pfad der Eingabedatei und die optionale Angabe der Menge an besten Arrangements, die auf Stabilität überprüft werden sollen.
+Je geringer dieser Wert ist, desto kürzer ist die Laufzeit.
+Allerdings ist ein zu niedriger Wert problemtisch, da wie bereits in \autoref{fig:04_broken_example} gezeigt, die stabilen Arrangements nicht zwingendermaßen die geringste Eisdielendistanz aufweisen.
+Wenn kein Wert angegeben wird, werde die $600$ besten Arrangements überprüft.
+Dieser Wert ist eine gute Wahl für die Beispieldateien.
 
 \subsection{Einlese der Eingabedatei}
 \label{sec:Einlese_der_Eingabedatei}
@@ -367,6 +372,22 @@ Die Ja-Stimmen werden zusammenaddiert und mit der Menge an Nein-Stimmen, die der
 \medskip
 Sind mehr Ja- als Nein-Stimmen vorhanden, wird die Suche nach einem Check-Arrangement abgebrochen und false ausgegeben, da die Instabilität bewiesen wurde.
 Nur in dem Fall, in dem die Suche alle möglichen Check-Arrangements durchlaufen hat und nicht abgebrochen wurde, ist das Test-Arrangement stabil.
+Alle stabilen Ergebnisse werden in der Konsole ausgegeben.
+
+\section{Zugeständnisse}
+Das Programm besteht aus zwei Teilen.
+Der eine, die Funktion \textbf{is\_stable}, produziert bewiesenermaßen stabile Arrangements, ist allerdings zu langsam, um auf alle möglichen Arrangements angewendet zu werden.
+Auf der anderen Seite steht die Suche nach den besten Arrangements durch die durchschnittliche Eisdielendistanz, \textbf{do\_scored\_search}.
+Diese lässt sich nur empirisch beweisen und ist damit kein Garant für eine perfekte Lösung.
+Dafür ist sie äußerst schnell, weshalb es kein Problem ist, hiermit alle möglichen Arrangements durchzugehen.
+
+Die Kombination dieser beiden Teile führt dazu, dass wenn das Programm ein stabiles Arrangement ausgibt, dieses definitiv stabil ist.
+Wenn das Programm allerdings kein stabiles Arrangement findet, besteht immer noch die Möglichkeit, dass es doch ein stabiles Arrangements gibt, dass nur eine hohe durchschnittliche Eisdielendistanz aufweist und daher noch nicht auf Stabilität geprüft wurde.
+Deshalb sollte die Menge an Arrangements, die überprüft werden soll, möglichst groß gewählt werden, um die Wahrscheinlichkeit, dass ein stabiles Arrangement nicht gefunden wird, minimiert wird.
+Dadurch ist dieses Programm nicht als perfekte Lösung des Problems zu betrachten.
+
+Zudem ist an dem Programm auszusetzten, dass die Laufzeit stark von der Eingabedatei abhängt, während für \textit{eisbuden1.txt} bereits nach etwa $200\mu s$ das erste stabile Ergebnis gefunden wird, benötigt es für \textit{eisbuden7} $11s$.
+Die Laufzeit ist erheblich größer, wenn alle stabilen Arrangements gefordert sind ($1,5ms$ beziehungsweise $115s$).
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
