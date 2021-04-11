@@ -148,11 +148,11 @@ inline void do_scored_search(Lake &lake, int max_arrangements)
 }
 
 // from offset length amount of arrangements get checked
-void test_arrangements(const Lake &lake, size_t offset, size_t length)
+void test_arrangements(const Lake &lake, size_t offset, size_t length, int &amount)
 {
     std::vector<int> ice_cream_distances;
     ice_cream_distances.resize(lake.houses.size());
-    // offset and length have to be correct
+    // offset and length have to be correct <- otherwise seg fault
     for (int i = offset; i < offset + length; ++i)
     {
         const Arrangement &arrangement = lake.best_arrangements[i];
@@ -160,6 +160,7 @@ void test_arrangements(const Lake &lake, size_t offset, size_t length)
         {
             auto lock = std::unique_lock<std::mutex>(lake.print_lock);
             std::cout << "\t" << i << ". place:\t" << arrangement.place_a << " " << arrangement.place_b << " " << arrangement.place_c << std::endl;
+            ++amount;
         }
     }
 }

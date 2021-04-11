@@ -41,11 +41,11 @@ int main(int argc, char *argv[])
         raise_error("Please specify the input file as the first console parameter.");
 
     // how many arrangements will be checked?
-    int max_arrangements = 184;
+    int max_arrangements = 600;
     if (argc > 2)
         max_arrangements = checked_stoi(argv[2]);
     // how many threads shall be used?
-    int thread_amount = 64;
+    int thread_amount = max_arrangements;
     if (argc > 3)
         thread_amount = checked_stoi(argv[3]);
     Lake lake;
@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
     ///////////////////
     do_scored_search(lake, max_arrangements);
 
-    std::cout << "running stability check on " << thread_amount << "..." << std::endl;
+    std::cout << "running stability check with " << thread_amount << " threads..." << std::endl;
     /////////////////////
     // stability check //
     /////////////////////
@@ -78,6 +78,7 @@ int main(int argc, char *argv[])
     // these have to be evenly handed to the threads
     int arrangements_rest = max_arrangements % thread_amount;
     int rest_arrangements_left = arrangements_rest;
+    int stable_amount = 0;
     for (int i = 0; i < thread_amount; ++i)
     {
         int offset = i * arrangements_per_thread + arrangements_rest - rest_arrangements_left;
@@ -90,8 +91,8 @@ int main(int argc, char *argv[])
         }
         else
             length = arrangements_per_thread;
-
-        thread_pool[i] = std::thread(&test_arrangements, std::ref(lake), offset, length);
+        std::cout << offset << " " << length << std::endl;
+        thread_pool[i] = std::thread(&test_arrangements, std::ref(lake), offset, length, std::ref(stable_amount));
     }
     for (int i = 0; i < thread_amount; ++i)
         // let's all be happy together
@@ -99,6 +100,7 @@ int main(int argc, char *argv[])
 
     // final report
     auto end = std::chrono::high_resolution_clock::now();
+    std::cout << "found " << stable_amount << " stable arrangements in ";
     long long delta_time = (end - begin).count();
     if (delta_time > 1e9)
         std::cout << std::to_string(delta_time / 1e9f) << " seconds";
@@ -109,5 +111,7 @@ int main(int argc, char *argv[])
     else
         std::cout << std::to_string(delta_time) << " nanoseconds";
     std::cout << std::endl;
+    if (stable_amount == 0)
+        std::cout << "This is not proof that there is no perfect arrangement; a bigger search may lead to one." << std::endl;
     return 0;
 }

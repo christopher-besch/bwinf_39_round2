@@ -107,11 +107,10 @@ Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Sy
           \begin{itemize}
               \item Rot: Das Haus stimmt gegen eine Verlegung der Eisdielen.
               \item Grün: Es stimmt für eine Verlegung.
-              \item Andere Farben werden verwendet, um bestimmte Häuser herauszuheben.
-                    Die jeweiligen Bedeutungen werden darstellungsspezifisch angegeben.
+              \item Andere Farben werden verwendet, um bestimmte Häuser hervorzuheben.
           \end{itemize}
     \item Die Adressen sind aufsteigend im Uhrzeigersinn angeordnet.
-          Adresse $0$, die Dorfkirche befindet sich oben.
+          Adresse $0$, die Dorfkirche, befindet sich oben.
     \item Blaue Kreuze stellen die Positionen des Test-Arrangements dar und
     \item blaue Kreise die des Check-Arrangements.
           In beiden Fällen stehen die Adressen innerhalb des Kreises.
@@ -123,8 +122,10 @@ Das Ziel ist es, ein Arrangement bestehend aus drei Positionen für Eisdielen zu
 Diese Arrangements werden stabil genannt.
 Hierzu darf die Eisdielendistanz, die Strecke zwischen einem beliebigen Haus und der nächsten Eisdiele, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
 Wäre dies der Fall, würde die Ablösung mehr Ja- als Nein-Stimmen erhalten.
-Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements (Diese werden Test-Arrangement genannt.) auf Stabilität überprüft werden müssen.
-Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (Check-Arrangement genannt) verglichen werden.
+
+Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements auf Stabilität überprüft werden müssen.
+Diese werden Test-Arrangement genannt.
+Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (Check-Arrangements genannt) verglichen werden.
 Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
 Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
 
@@ -133,16 +134,18 @@ Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller mö
 Als Versuch der Optimierung werden bevor sie getestet werden alle Arrangement sortiert.
 Hierzu wird für jedes mögliche Arrangement ein Score berechnet.
 Dieser entspricht der durchschnittlichen Eisdielendistanz aller Häuser.
-Nun stellt sich heraus, dass stabile Arrangements einen der niedrigsten Scores aller Arrangements aufweisen.
-Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangement existieren, die eine noch geringere Eisdielendistanz für das Haus generieren.
+Nun stellt sich heraus, dass stabile Arrangements auch die niedrigsten Scores aller Arrangements aufweisen.
+Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangements existieren, die eine noch geringere Eisdielendistanz für das Haus generieren.
 Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen einen Wechsel stimmt.
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
+
 \begin{figure}[ht]
     \centering
     \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisdielendistanz beträgt $0$.}
     \label{fig:01_hapy_house}
     \includegraphics[width=\imageWidth]{01_happy_house.png}
 \end{figure}
+
 Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
 \begin{figure}[ht]
     \centering
@@ -169,7 +172,7 @@ Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangem
     \includegraphics[width=\imageWidth]{04_broken_example.png}
 \end{figure}
 Hieraus geht hervor, dass die durchschnittliche Eisdielendistanz nur eine Näherungslösung liefert.
-Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
+Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements, den $x$ Arrangements mti der geringsten durchschnittlichen Eisdielendistanz, verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
 
 \subsection{Bestimmung der Stabilität}
 \label{sec:Bestimmung_der_Stabilität}
