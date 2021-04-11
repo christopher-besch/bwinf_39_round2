@@ -37,14 +37,14 @@ void read_file(const char *file_path, Lake &lake)
 
 int main(int argc, char *argv[])
 {
+    //////////////////
+    // read console //
+    //////////////////
     if (argc < 2)
         raise_error("Please specify the input file as the first console parameter.");
-
-    // how many arrangements will be checked?
     int max_arrangements = 600;
     if (argc > 2)
         max_arrangements = checked_stoi(argv[2]);
-    // how many threads shall be used?
     int thread_amount = max_arrangements;
     if (argc > 3)
         thread_amount = checked_stoi(argv[3]);
@@ -53,25 +53,22 @@ int main(int argc, char *argv[])
 
     // take time of calculation
     auto begin = std::chrono::high_resolution_clock::now();
-    // scored search
-    std::cout << "calculating " << max_arrangements << " best arrangements..." << std::endl;
-
-    // fill best arrangements
-    Arrangement dummy{};
-    // worst possible score
-    dummy.score = lake.circumference * lake.houses.size();
-    lake.best_arrangements.reserve(max_arrangements + 1);
-    lake.best_arrangements.insert(lake.best_arrangements.begin(), max_arrangements, dummy);
 
     ///////////////////
     // scored search //
     ///////////////////
+    std::cout << "calculating " << max_arrangements << " best arrangements..." << std::endl;
+    Arrangement dummy{};
+    // fill best arrangements with worse than possible score
+    dummy.score = lake.circumference * lake.houses.size();
+    lake.best_arrangements.reserve(max_arrangements + 1);
+    lake.best_arrangements.insert(lake.best_arrangements.begin(), max_arrangements, dummy);
     do_scored_search(lake, max_arrangements);
 
-    std::cout << "running stability check with " << thread_amount << " threads..." << std::endl;
     /////////////////////
     // stability check //
     /////////////////////
+    std::cout << "running stability check with " << thread_amount << " threads..." << std::endl;
     std::vector<std::thread> thread_pool;
     thread_pool.resize(thread_amount);
     int arrangements_per_thread = max_arrangements / thread_amount;
@@ -91,14 +88,15 @@ int main(int argc, char *argv[])
         }
         else
             length = arrangements_per_thread;
-        std::cout << offset << " " << length << std::endl;
         thread_pool[i] = std::thread(&test_arrangements, std::ref(lake), offset, length, std::ref(stable_amount));
     }
+    // let's all be happy together
     for (int i = 0; i < thread_amount; ++i)
-        // let's all be happy together
         thread_pool[i].join();
 
-    // final report
+    //////////////////
+    // final report //
+    //////////////////
     auto end = std::chrono::high_resolution_clock::now();
     std::cout << "found " << stable_amount << " stable arrangements in ";
     long long delta_time = (end - begin).count();

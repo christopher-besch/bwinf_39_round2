@@ -1,16 +1,16 @@
 \babel@toc {ngerman}{}
-\contentsline {section}{\numberline {1}Ein Wort \IeC {\"u}ber die Graphiken}{1}{section.1}%
-\contentsline {section}{\numberline {2}L\IeC {\"o}sungsidee}{2}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Sortierung der Arrangements}{2}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Bestimmung der Stabilit\IeC {\"a}t}{2}{subsection.2.2}%
-\contentsline {subsubsection}{\numberline {2.2.1}Ausz\IeC {\"a}hlung der Stimmen}{3}{subsubsection.2.2.1}%
-\contentsline {section}{\numberline {3}Umsetzung}{5}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Einlese der Eingabedatei}{5}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Scored Search}{5}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}\IeC {\"U}berpr\IeC {\"u}fung der Stabilit\IeC {\"a}t}{6}{subsection.3.3}%
-\contentsline {subsubsection}{\numberline {3.3.1}Nein-Stimmenz\IeC {\"a}hlung in einem Sektor}{6}{subsubsection.3.3.1}%
-\contentsline {subsubsection}{\numberline {3.3.2}Simulation der Abstimmung}{7}{subsubsection.3.3.2}%
-\contentsline {section}{\numberline {4}Zugest\IeC {\"a}ndnisse}{7}{section.4}%
-\contentsline {section}{\numberline {5}Beispiele}{7}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Eigene Beispiele}{7}{subsection.5.1}%
-\contentsline {section}{\numberline {6}Quellcode}{7}{section.6}%
+\contentsline {section}{\numberline {1}L\IeC {\"o}sungsidee}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Ein Wort \IeC {\"u}ber die Graphiken}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Sortierung der Arrangements}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Bestimmung der Stabilit\IeC {\"a}t}{2}{subsection.1.3}%
+\contentsline {subsubsection}{\numberline {1.3.1}Ausz\IeC {\"a}hlung der Stimmen}{3}{subsubsection.1.3.1}%
+\contentsline {section}{\numberline {2}Umsetzung}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Einlese der Eingabedatei}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Scored Search}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}\IeC {\"U}berpr\IeC {\"u}fung der Stabilit\IeC {\"a}t}{6}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Nein-Stimmenz\IeC {\"a}hlung in einem Sektor}{6}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Simulation der Abstimmung}{7}{subsubsection.2.3.2}%
+\contentsline {section}{\numberline {3}Zugest\IeC {\"a}ndnisse}{7}{section.3}%
+\contentsline {section}{\numberline {4}Beispiele}{8}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{8}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Quellcode}{8}{section.5}%

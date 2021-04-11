@@ -82,7 +82,7 @@ inline int count_sector_nos(const Lake &lake, const Arrangement &test_arrangemen
     return count_houses(lake, left_nos, right_nos_exclude);
 }
 
-inline int get_score(int circumference, const Arrangement &arrangement, int location)
+inline int get_ice_cream_distance(int circumference, const Arrangement &arrangement, int location)
 {
     int distance_a = get_shortest_distance(circumference, location, arrangement.place_a);
     int distance_b = get_shortest_distance(circumference, location, arrangement.place_b);
@@ -95,7 +95,7 @@ inline bool is_better(const Lake &lake, std::vector<int> &ice_cream_distances, c
     int yes = 0;
     for (int i = 0; i < lake.houses.size(); ++i)
         // makes route shorter?
-        yes += get_score(lake.circumference, check_arrangement, lake.houses[i]) < ice_cream_distances[i];
+        yes += get_ice_cream_distance(lake.circumference, check_arrangement, lake.houses[i]) < ice_cream_distances[i];
     // more yes than nos?
     return yes > (lake.houses.size() - yes);
 }
@@ -104,7 +104,7 @@ inline bool is_stable(const Lake &lake, std::vector<int> ice_cream_distances, co
 {
     // best routes for test-arrangement
     for (int i = 0; i < lake.houses.size(); ++i)
-        ice_cream_distances[i] = get_score(lake.circumference, test_arrangement, lake.houses[i]);
+        ice_cream_distances[i] = get_ice_cream_distance(lake.circumference, test_arrangement, lake.houses[i]);
 
     // get all other possible locations
     // multiple ice cream parlors in same location are a waste
@@ -140,7 +140,7 @@ inline void do_scored_search(Lake &lake, int max_arrangements)
                 // calculate score
                 // optimization: sum of closest routes instead of average shortest route <- only relative value important
                 for (const auto &house : lake.houses)
-                    test_arrangement.score += get_score(lake.circumference, test_arrangement, house);
+                    test_arrangement.score += get_ice_cream_distance(lake.circumference, test_arrangement, house);
                 // keep std::vector sorted at all time
                 insert(lake.best_arrangements, test_arrangement);
                 lake.best_arrangements.pop_back();
@@ -159,7 +159,8 @@ void test_arrangements(const Lake &lake, size_t offset, size_t length, int &amou
         if (is_stable(lake, ice_cream_distances, arrangement))
         {
             auto lock = std::unique_lock<std::mutex>(lake.print_lock);
-            std::cout << "\t" << i << ". place:\t" << arrangement.place_a << " " << arrangement.place_b << " " << arrangement.place_c << std::endl;
+            // users probably want to start counting ant 1
+            std::cout << "\t" << i + 1 << ". place:\t" << arrangement.place_a << " " << arrangement.place_b << " " << arrangement.place_c << std::endl;
             ++amount;
         }
     }

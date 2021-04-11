@@ -1,4 +1,4 @@
-\documentclass[a4paper,10pt,ngerman]{scrartcl}
+\documentclass[a4paper,10pt,ngerman,captions=figureheading]{scrartcl}
 \usepackage{babel}
 \usepackage[T1]{fontenc}
 \usepackage[utf8x]{inputenc}
@@ -99,7 +99,20 @@
 
 \vspace{0.5cm}
 
-\section{Ein Wort über die Graphiken}
+\section{Lösungsidee}
+% Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
+Das Ziel ist es, ein Arrangement bestehend aus drei Positionen für Eisdielen zu generieren, das in einer Abstimmung durch kein anderes Arrangement abgelöst werden kann.
+Diese Arrangements werden \emph{stabil} genannt.
+Hierzu darf die \emph{Eisdielendistanz}, die Strecke zwischen einem beliebigen Haus und der nächsten Eisdiele, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
+Wäre dies der Fall, würde die Ablösung mehr Ja- als Nein-Stimmen erhalten.
+
+Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements auf Stabilität überprüft werden müssen.
+Diese werden \emph{Test-Arrangement} genannt.
+Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (\emph{Check-Arrangements} genannt) verglichen werden.
+Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
+Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
+
+\subsection{Ein Wort über die Graphiken}
 Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Symbole:
 \begin{itemize}
     \item Der See ist als schwarzer Kreis dargestellt.
@@ -115,19 +128,6 @@ Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Sy
     \item blaue Kreise die des Check-Arrangements.
           In beiden Fällen stehen die Adressen innerhalb des Kreises.
 \end{itemize}
-
-\section{Lösungsidee}
-% Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
-Das Ziel ist es, ein Arrangement bestehend aus drei Positionen für Eisdielen zu generieren, das in einer Abstimmung durch kein anderes Arrangement abgelöst werden kann.
-Diese Arrangements werden stabil genannt.
-Hierzu darf die Eisdielendistanz, die Strecke zwischen einem beliebigen Haus und der nächsten Eisdiele, von nicht mehr als der Hälfte der Hauser durch ein anderes Arrangement verkürzt werden.
-Wäre dies der Fall, würde die Ablösung mehr Ja- als Nein-Stimmen erhalten.
-
-Hieraus geht hervor, dass für eine optimale Lösung alle möglichen Arrangements auf Stabilität überprüft werden müssen.
-Diese werden Test-Arrangement genannt.
-Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (Check-Arrangements genannt) verglichen werden.
-Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
-Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
 
 \subsection{Sortierung der Arrangements}
 \label{sec:Sortierung_der_Arrangements}
@@ -147,6 +147,7 @@ Dies ist in \autoref{fig:01_hapy_house} gezeigt.
 \end{figure}
 
 Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
+
 \begin{figure}[ht]
     \centering
     \caption{Unzufriedene Häuser}
@@ -161,18 +162,21 @@ Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspr
         \label{fig:03_slightly_happy_house}
     \end{subfigure}
 \end{figure}
+
 Die durchschnittliche Eisdielendistanz lässt sich dementsprechend als \glqq Zufriedenheitsgrad\grqq{} des Dorfes interpretieren.
 Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
 Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_broken_example} gezeigt wird.
+
 \begin{figure}[ht]
     \centering
     \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisdielendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
     \label{fig:04_broken_example}
     \includegraphics[width=\imageWidth]{04_broken_example.png}
 \end{figure}
+
 Hieraus geht hervor, dass die durchschnittliche Eisdielendistanz nur eine Näherungslösung liefert.
-Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements, den $x$ Arrangements mti der geringsten durchschnittlichen Eisdielendistanz, verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
+Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements, den $x$ Arrangements mit der geringsten durchschnittlichen Eisdielendistanz, verwendet werden, die anschließend von dem bereits genannten Algorithmus auf Stabilität überprüft werden.
 
 \subsection{Bestimmung der Stabilität}
 \label{sec:Bestimmung_der_Stabilität}
@@ -180,11 +184,12 @@ Um die Stabilität eines Test-Arrangements zu berechnen, müssen alle möglichen
 Es wird nur eine einziges Check-Arrangement gesucht, das das Test-Arrangement schlagen kann.
 Daher können zwei Optimierungen getroffen werden:
 \begin{enumerate}
-    \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier aufeinanderliegender Eisdielen die Eisdielendistanz keines Häuses vergrößert wird.
+    \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier Aufeinanderliegender die Eisdielendistanz keines Häuses vergrößert wird.
     \item Alle Dopplungen sind unnötig, da die Reihenfolge der Eisdielen für die Stimmen der Häuser irrelevant sind.
 \end{enumerate}
 Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
-Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
+Hieraus folgt, dass der See immer in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
+
 \begin{figure}[ht]
     \centering
     \caption{Einteilung in Sektoren}
@@ -196,15 +201,16 @@ Hieraus folgt, dass der See in drei Sektoren unterteilt ist (\autoref{fig:05_sec
 \label{sec:Auszählung_der_Stimmen}
 Es zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
 \begin{itemize}
-    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die ehemalige Eisdielendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
+    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die Eisdielendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
     \item Genauso ist für jedes Haus im Sektor eine der Sektorgrenzen immer die nächste Check-Eisdiele.
           Dementsprechend ist die Position der dritten Check-Eisdiele ebenfalls irrelevant. da immer nur die Eisdielendistanz betrachtet wird.
 \end{itemize}
-Aus diesen beiden Punkten geht hervor, dass ausschließlich die Ränder des Sektors und die sich im Sektor befindlichen Test-Eisdielen Einfluss auf die Stimme eines Hauses in dem Sektor hat.
+Aus diesen beiden Tatsachen geht hervor, dass ausschließlich die Ränder des Sektors und die sich im Sektor befindlichen Test-Eisdielen Einfluss auf die Stimme eines Hauses in dem Sektor haben.
 
 \medskip
 Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
-In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehr Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
+In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehrere Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
+
 \begin{figure}[ht]
     \centering
     \caption{Test-Eisdielen Anordnung im Sektor}
@@ -225,23 +231,23 @@ In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\aut
     \end{subfigure}
 \end{figure}
 
-In dem letzten Fall von mehr als zwei Test-Eisdielen im Sektor, müssen nur die Äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
+In dem letzten Fall, von mehr als zwei Test-Eisdielen im Sektor, müssen nur die äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
 Dies geht aus der Definition eines Sektors hervor.
-Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge and Test-Eisdielen.
+Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge an Test-Eisdielen.
 
-Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen wird müssen zwei verschiedene Methoden verwendet werden:
+Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen, werden zwei verschiedene Methoden verwendet werden:
 \begin{itemize}
-    \item Wenn sich keine Test-Eisdiele in dem Sektor befindet, stimmt kein Haus gegen eine Verlegung.
+    \item Wenn sich keine Test-Eisdiele in dem Sektor befindet, stimmen alle Häuser für eine Verlegung.
     \item In allen anderen Fällen befinden sich die einzigen Ja-stimmenden Häuser in den beiden Bereichen zwischen einem Rand un der nächsten Test-Eisdiele.
           Wenn diese Bereiche in der Mitte geteilt wird, befinden sich alle Ja-stimmenden Häuser in der Hälfte, die näher am Rand ist.
           Alle Nein-stimmenden Häuser liegen in der anderen Hälfte.
-          Bei einer ungeraden Anzahl an Adressen in diesem Bereich wird der Nein-stimmenden Hälfte eine Adresse mehr zugeteilt, da bei gleichbleibender Eisdielendistanz das Haus Nein stimmen.
+          Dies lässt sich gut in \autoref{fig:08_two_test_ice} erkennen.
+          Bei einer ungeraden Anzahl an Adressen in diesem Bereich wird der Nein-stimmenden Hälfte eine Adresse mehr zugeteilt, da bei gleichbleibender Eisdielendistanz das Haus Nein stimmt.
 \end{itemize}
 Auf diese Weise können effizient die Bereiche berechnet werden, in denen alle sich befindlichen Häuser Nein stimmen.
 
 \medskip
-Es ergibt sich ein weiterer Vorteil:
-Um alle Position für die Check-Eisdielen durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
+Um alle Positionen für die Check-Eisdielen durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
 Die verschiedenen Optionen für die ersten beiden Check-Eisdielen müssen in einem übergeordneten Schritt durchgegangen werden.
 Somit ist die Größe und Position des ersten Sektors bei vielen Durchläufen gleich.
 Wenn bereits mindestenz die Hälfte der Häuser sich in diesem Sektor befinden und gegen eine Veränderung stimmen, ist das Check-Arrangement unfähig, das Test-Arrangement abzulösen.
@@ -256,29 +262,39 @@ Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt:
     \item \textbf{utils.h} enthält verwendete Structs und generell anwendbare Funktionen und Makros und
     \item \textbf{calculate\_stable.h} enthält die eigentlichen Funktionen zur Bestimmung der stabilen Arrangements.
 \end{itemize}
-Die einzigen Eingaben, die das Programm benötigt ist der Pfad der Eingabedatei und die optionale Angabe der Menge an besten Arrangements, die auf Stabilität überprüft werden sollen.
-Je geringer dieser Wert ist, desto kürzer ist die Laufzeit.
+Die einzigen Eingaben, die das Programm benötigt, ist:
+\begin{itemize}
+    \item der Pfad der Eingabedatei und
+    \item die optionale Angabe der Menge zu verwendender Threads und
+    \item besten Arrangements, die auf Stabilität überprüft werden sollen.
+\end{itemize}
+
+Je geringer die Menge and besten Arrangements ist, desto kürzer ist die Laufzeit.
 Allerdings ist ein zu niedriger Wert problemtisch, da wie bereits in \autoref{fig:04_broken_example} gezeigt, die stabilen Arrangements nicht zwingendermaßen die geringste Eisdielendistanz aufweisen.
 Wenn kein Wert angegeben wird, werde die $600$ besten Arrangements überprüft.
 Dieser Wert ist eine gute Wahl für die Beispieldateien.
 
+Die Menge an Threads sollte nie die Menge an besten Arrangements überschreiten und wird standartmäßig auf eben diese Menge gesetzt.
+Dieser Wert erwies sich für die Beispieldateien mit einem AMD Ryzen 5 2600 auf Ubuntu als der mit der geringsten Laufzeit.
+
 \subsection{Einlese der Eingabedatei}
 \label{sec:Einlese_der_Eingabedatei}
 Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
-Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht wird das Programm abgebrochen.
+Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht; wenn nicht wird das Programm abgebrochen.
 Hierzu wird ein Makro \textbf{raise\_error()} verwendet, das die Ausführung des Programms abbricht und eine möglichst informative Fehlermeldung zurückgibt.
 
 Schlussendlich wird eine Instanz des \textbf{Lake} Structs erstellt.
 Dieses enthält:
 \begin{itemize}
     \item den Umfang des Sees,
-    \item ein std::vector aller Häuser (repräsentiert durch \textbf{House} Instanzen, die jeweils die Adresse und Platz für die jeweilig notwendige Eisdielendistanz enthält),
+    \item ein std::vector aller Adressen der Häuser,
     \item eine Karte des Sees, ein std::vector mit einem uint8\_t pro Adresse.
           Wenn ein Haus bei dieser Adresse existiert, ist das entsprechende Element $1$, sonst ist es $0$.
           Diese Karte wird zur optimierten Zählung der Häuser in einem Bereich verwendet.
           Statt ein bool pro Element zu verwenden, wird ein uint8\_t benutzt, da so die Speicherplatzspezifische Optimierung eines std::vector<bool> umgangen wird, was die Laufzeit verbessert.
-    \item Und ein std::vector aller besten Arrangements, die jeweils als \textbf{Arrangement} Instanzen repräsentiert sind.
+    \item Und ein std::vector aller besten Arrangements, die jeweils durch \textbf{Arrangement} Instanzen repräsentiert sind.
           Diese enthalten jeweils die Positionen der Eisdielen und den Score des Arrangements.
+    \item Zudem enthält es ein Thread Lock, das für die Ausgabe der Ergebnisse in die Konsole verwendet wird.
 \end{itemize}
 
 \subsection{Scored Search}
@@ -287,23 +303,23 @@ Der erste Schritt ist die Berechnung der Arrangements mit den besten Scores.
 Hierzu wird die Funktion \textbf{do\_scored\_search} verwendet.
 In ihr werden in drei verschachtelten Schleifen alle Test-Arrangements durchgegangen.
 Zu beachten ist, dass die erste Position angefangen von $0$ hochzählt, während die zweite Position eine Adresse nach der ersten Position anfängt.
-Gleichen gilt für die dritte Position.
+Gleiches gilt für die dritte Position.
 Hierdurch werden die in \autoref{sec:Bestimmung_der_Stabilität} aufgezählten Optimierungen umgesetzt, die genauso für Test-Arrangements gelten können als auch für Check-Arrangements.
 Die Adressen der Eisdielen werden in einer neuen \textbf{Arrangement} Instanz gespeichert.
 
 Für jedes Arrangement wird die Eisdielendistanz jedes Hauses mit \textbf{get\_ice\_cream\_distance} berechnet und zusammenaddiert.
 In \autoref{sec:Sortierung_der_Arrangements} wird zwar die durchschnittliche Eisdielendistanz berechnet, wofür die Summe durch die Menge an Häusern geteilt werden müsste.
-Allerdings werden im folgenden Code die Scores nur miteinander verglichen, weshalb die Berechnung des absoluten Wertes unnötig ist.
+Allerdings werden im folgenden Code die Scores nur miteinander verglichen, weshalb die Berechnung des absoluten Wertes, der Division, unnötig ist.
 Sie wird für die Optimierung weggelassen.
 
 \medskip
 \begin{addmargin}[3em]{4em}
-    \textbf{get\_ice\_cream\_distance} berechnet mithilfe von \textbf{get\_shortest\_distance} die Entfernung von Einem Haus zu allen Eisdielen des Arrangements und wählt die kürzeste aus.
+    \textbf{get\_ice\_cream\_distance} berechnet mithilfe von \textbf{get\_shortest\_distance} die Entfernung von einem Haus zu allen Eisdielen des Arrangements und wählt die kürzeste aus.
 \end{addmargin}
 
 \medskip
 \begin{addmargin}[3em]{4em}
-    \textbf{get\_shortest\_distance} berechnet die direkte und Entfernung zwischen zwei Adressen und die indirekte, wobei die direkte Entfernung von dem Umfang des Sees abgezogen wird.
+    \textbf{get\_shortest\_distance} berechnet die direkte Entfernung zwischen zwei Adressen und die indirekte, wobei die direkte Entfernung von dem Umfang des Sees abgezogen wird.
     Schlussendlich gibt es die kürzere Entfernung zurück.
 \end{addmargin}
 
@@ -322,10 +338,16 @@ Dieser Score ist schlechter als alle möglichen Scores, weshalb ein Dummy gegen 
 Wenn die besten Test-Arrangements berechnet wurden, werden sie anschließend alle mit der Funktion \textbf{is\_stable} auf Stabilität überprüft.
 Diese nimmt ein Test-Arrangement entgegen und geht alle möglichen Check-Arrangements durch, bis entweder ein Check-Arrangement gefunden wurde, dass gegen das Test-Arrangements in einer Abstimmung gewinnen und es ablösen würde, oder entdeckt wird, dass kein derartiges Check-Arrangement vorliegen kann.
 
+Diese Funktion wird in \textbf{test\_arrangements} auf einen bestimmten Teil der besten Arrangements ausgeführt.
+Dies ist der einzige multithreaded Teil des Programms, jeder Thread führt \textbf{test\_arrangements} einmalig aus.
+Die besten Arrangements werden gleichmäßig auf alle Threads verteilt.
+Es lässt sich erkennen, dass es keinen Vorteil bringt, mehr Threads als beste Arrangements zu verwenden.
+
 \medskip
-Hierzu wird anfänglich für jedes Haus die Eisdielendistanz in dem Test-Arrangement berechnet und in den jeweiligen \textbf{House} Instanzen gespeichert.
+Hierzu wird anfänglich für jedes Haus die Eisdielendistanz in dem Test-Arrangement berechnet und in einem std::vector pro Thread gespeichert.
+Auf diese Weise muss nicht für jedes neue Test-Arrangement neuer Speicherplatz im Heap zugewiesen werden.
 Genau wie in \autoref{sec:Scored_Search} werden die in \autoref{sec:Bestimmung_der_Stabilität} genannten Optimierungen implementiert.
-Der einzige Unterschied ist dass, wenn die ersten beiden Positionen gewählt wurden, die Suche nach einer Dritten nicht begonnen wird, wenn wie in \autoref{sec:Auszählung_der_Stimmen} gezeigt bereits zu viele Stimmen gegen eine Verlegung in dem ersten Bereich gefunden werden.
+Der einzige Unterschied ist, dass wenn die ersten beiden Positionen gewählt wurden, die Suche nach einer Dritten nicht begonnen wird, wenn wie in \autoref{sec:Auszählung_der_Stimmen} gezeigt bereits zu viele Stimmen gegen eine Verlegung in dem ersten Bereich gefunden werden.
 
 \subsubsection{Nein-Stimmenzählung in einem Sektor}
 \label{sec:Stimmenzählung_in_einem_Sektor}
@@ -338,12 +360,12 @@ Dafür wird \textbf{get\_abs\_distance} eingesetzt und mit der geringstern Entfe
     \textbf{get\_abs\_distance} wird durch eine Instanze der Enum Class \textbf{Direction} auf Links- oder Rechtssuche eingestellt.
     Dementsprechend wird zurerst die direkte Distanz zwischen dem Startpunkt und dem Endpunkt berechnet.
     Wenn die direkte Distanz negativ ist, wird stattdessen die indirekte zurückgegeben.
-    Hierdurch wird immer ein nicht-negativer Wert zurückgegeben.
+    Hierdurch ergibt sich immer ein nicht-negativer Wert.
 \end{addmargin}
 
 \medskip
 Um zu detektieren, dass sich keine Test-Eisdiele in dem Sektor befindet, wird überprüft, ob die Breite des Sektors geringer als die Distanz zur nächsten Test-Eisdiele ist.
-Wenn dies der Fall ist, ist selbst die nächste Test-Eisdiele nicht im Sektor enthalten und Alle Häuser in dem Sektor stimmen für eine Verlegung, weshalb sofort $0$ zurückgegeben wird.
+Wenn dies der Fall ist, ist selbst die nächste Test-Eisdiele nicht im Sektor enthalten und alle Häuser in dem Sektor stimmen für eine Verlegung, weshalb sofort $0$ zurückgegeben wird.
 
 Ist dies nicht der Fall, wird nach einer zweiten Test-Eisdiele in dem Sektor gesucht.
 Hierfür wird das selbe Verfahren angewendet, mit dem Unterschied, dass statt in die rechte Richtung, die Entfernung in die linke Richtung und statt der linken Grenze des Sektors, die rechte verwendet wird.
@@ -355,19 +377,22 @@ Nun werden die in \autoref{sec:Auszählung_der_Stimmen} vorgestellten Mitten ber
 \medskip
 \begin{addmargin}[3em]{4em}
     Diese Aufgabe übernimmt die Funktion \textbf{count\_houses}, die die in der \textbf{Lake} Instanz gespeicherte Karte verwendet.
-    Sie geht alle Adressen von dem Startwert bis zu der Adresse vor dem Endwert durch und addiert die in der Karte enthaltenen Elemente.
-    In einer Schleife wird hierdurch von einer Entfernung zum Anfangswert von $0$ bis zu der Distanz zu dem Endwerte die Karte durchgegangen.
-    Um ausgehend von der Entfernung zum Anfangswert die Adresse zu berechnen wird die Entfernung auf die Adresse des Anfangswertes addiert und der Rest der Division durch den Umfang des Sees verwendet.
+    Sie geht alle Adressen von der Startadresse bis zu der Adresse vor der Endadresse durch und addiert die in der Karte enthaltenen Elemente.
+    In einer Schleife wird hierfür von einer Entfernung zur Startadresse von $0$ bis zu der Distanz zu der Endadresse die Karte durchgegangen.
+    Um ausgehend von der Entfernung zur Startadresse die aktuelle Adresse zu berechnen, wird die Entfernung auf die Startadresse addiert und der Rest der Division durch den Umfang des Sees verwendet.
 \end{addmargin}
 
 \medskip
-So ergibt sich die Menge an Häusern in den festgelegten Bereichen, die zusammenaddiert zurückgegen werden.
+So ergibt sich die Menge an Häusern in den festgelegten Nein-stimmenden Bereichen, die zusammenaddiert zurückgegen werden.
 
 \subsubsection{Simulation der Abstimmung}
 Wenn im ersten Sektor nicht zu viele Nein-Stimmen enthalten sind, kann die selbe Funktion benutzt werden, um ebenfalls die Menge an Nein-Stimmen in den anderen beiden Sektoren zu berechnen.
 Allerdings stellt sich heraus, dass die Simulation der Abstimmung eine bessere Laufzeit aufweist.
-Hierfür wird die Funktion \textbf{is\_better} verwendet.
-Sie geht alle Häuser durch und vergleicht die Eisdielendistanz mit dem Check-Arrangement eines Hauses mit dessen gespeicherte Eisdielendistanz.
+Daher sind einige Bereiche von \textbf{count\_sector\_nos} in Release Builds nicht enthalten, da sie nur notwendig sind, wenn die Adresse $0$ innerhalb und nicht am Rand oder außerhalb des Sektors ist.
+Der erste Sektor benötigt diese Teile nie.
+
+Für die Simulation wird die Funktion \textbf{is\_better} verwendet.
+Sie geht alle Häuser durch und vergleicht die Eisdielendistanz mit dem Check-Arrangement eines Hauses mit der für dieses Haus in dem std::vector des Threads gespeicherten Eisdielendistanz.
 Diese wurde am Anfang von \textbf{is\_stable} für das Test-Arrangement berechnet, damit sie nicht für jedes Check-Arrangement neu berechnet werden muss.
 Hierdurch wird die Stimme des Hauses bestimmt.
 Die Ja-Stimmen werden zusammenaddiert und mit der Menge an Nein-Stimmen, die der Differenz zwischen Anzahl an Häusern und Ja-Stimmen entspricht, verglichen.
@@ -375,26 +400,31 @@ Die Ja-Stimmen werden zusammenaddiert und mit der Menge an Nein-Stimmen, die der
 \medskip
 Sind mehr Ja- als Nein-Stimmen vorhanden, wird die Suche nach einem Check-Arrangement abgebrochen und false ausgegeben, da die Instabilität bewiesen wurde.
 Nur in dem Fall, in dem die Suche alle möglichen Check-Arrangements durchlaufen hat und nicht abgebrochen wurde, ist das Test-Arrangement stabil.
-Alle stabilen Ergebnisse werden in der Konsole ausgegeben.
+Alle stabilen Ergebnisse werden anschließend in der Konsole ausgegeben, wobei std::cout zuerst mit einem Thread Lock blockiert wird, damit sich die Ergebnisse der einzelnen Threads nicht überschneiden.
+Zudem schützt dieses Lock einen globalen Counter, der von allen Threads pro gefundene stabiles Arrangement um $1$ erhöht wird.
+
+\medskip
+Schlussendlich wird die Anzahl an gefundenen stabilen Arrangements und die benötigte Laufzeit in der Konsole ausgegeben.
 
 \section{Zugeständnisse}
 Das Programm besteht aus zwei Teilen.
 Der eine, die Funktion \textbf{is\_stable}, produziert bewiesenermaßen stabile Arrangements, ist allerdings zu langsam, um auf alle möglichen Arrangements angewendet zu werden.
+Diese Funktion lässt sich allerdings leicht parallelisieren und auf mehreren Threads ausführen.
 Auf der anderen Seite steht die Suche nach den besten Arrangements durch die durchschnittliche Eisdielendistanz, \textbf{do\_scored\_search}.
 Diese lässt sich nur empirisch beweisen und ist damit kein Garant für eine perfekte Lösung.
 Dafür ist sie äußerst schnell, weshalb es kein Problem ist, hiermit alle möglichen Arrangements durchzugehen.
 
 Die Kombination dieser beiden Teile führt dazu, dass wenn das Programm ein stabiles Arrangement ausgibt, dieses definitiv stabil ist.
 Wenn das Programm allerdings kein stabiles Arrangement findet, besteht immer noch die Möglichkeit, dass es doch ein stabiles Arrangements gibt, dass nur eine hohe durchschnittliche Eisdielendistanz aufweist und daher noch nicht auf Stabilität geprüft wurde.
-Deshalb sollte die Menge an Arrangements, die überprüft werden soll, möglichst groß gewählt werden, um die Wahrscheinlichkeit, dass ein stabiles Arrangement nicht gefunden wird, minimiert wird.
+Diese Situation kommt in den Beispielen vom BWINF mit $600$ besten Arrangements nicht vor.
+Deshalb sollte die Menge an Arrangements, die überprüft werden soll, möglichst groß gewählt werden, um die Wahrscheinlichkeit, dass ein stabiles Arrangement nicht gefunden wird, zu minimieren.
 Dadurch ist dieses Programm nicht als perfekte Lösung des Problems zu betrachten.
-
-Zudem ist an dem Programm auszusetzten, dass die Laufzeit stark von der Eingabedatei abhängt, während für \textit{eisbuden1.txt} bereits nach etwa $200\mu s$ das erste stabile Ergebnis gefunden wird, benötigt es für \textit{eisbuden7} $11s$.
-Die Laufzeit ist erheblich größer, wenn alle stabilen Arrangements gefordert sind ($1,5ms$ beziehungsweise $115s$).
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
 Nun wird das Programm mit allen Beispieldateien ausgeführt.
+Für jedes Beispiel wird die für die Generation des dargestellten Arrangements minimal nötige Laufzeit in dem genannten System angegeben.
+Dies wird für die Beispiele ohne stabile Arrangements nicht getan.
 
 \begin{figure}[ht]
     \centering
@@ -403,7 +433,7 @@ Nun wird das Programm mit allen Beispieldateien ausgeführt.
     \label{fig:BWINF_Beispiele}
     \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{eisbuden1.png}
-        \caption{eisbuden1.txt}
+        \caption{eisbuden1.txt ($350\mu s$)}
         \label{fig:eisbuden1}
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
@@ -413,7 +443,7 @@ Nun wird das Programm mit allen Beispieldateien ausgeführt.
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{eisbuden3.png}
-        \caption{eisbuden3.txt}
+        \caption{eisbuden3.txt ($21ms$)}
         \label{fig:eisbuden3}
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
@@ -423,7 +453,7 @@ Nun wird das Programm mit allen Beispieldateien ausgeführt.
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{eisbuden5.png}
-        \caption{eisbuden5.txt}
+        \caption{eisbuden5.txt ($405ms$)}
         \label{fig:eisbuden5}
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
@@ -433,7 +463,7 @@ Nun wird das Programm mit allen Beispieldateien ausgeführt.
     \end{subfigure}
     \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{eisbuden7.png}
-        \caption{eisbuden7.txt}
+        \caption{eisbuden7.txt ($10s$)}
         \label{fig:eisbuden7}
     \end{subfigure}
 \end{figure}
