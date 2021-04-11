@@ -398,7 +398,7 @@ Hierdurch wird die Stimme des Hauses bestimmt.
 Die Ja-Stimmen werden zusammenaddiert und mit der Menge an Nein-Stimmen, die der Differenz zwischen Anzahl an Häusern und Ja-Stimmen entspricht, verglichen.
 
 \medskip
-Sind mehr Ja- als Nein-Stimmen vorhanden, wird die Suche nach einem Check-Arrangement abgebrochen und false ausgegeben, da die Instabilität bewiesen wurde.
+Sind mehr Ja- als Nein-Stimmen vorhanden, wird die Suche nach einem Check-Arrangement abgebrochen und $false$ ausgegeben, da die Instabilität bewiesen wurde.
 Nur in dem Fall, in dem die Suche alle möglichen Check-Arrangements durchlaufen hat und nicht abgebrochen wurde, ist das Test-Arrangement stabil.
 Alle stabilen Ergebnisse werden anschließend in der Konsole ausgegeben, wobei std::cout zuerst mit einem Thread Lock blockiert wird, damit sich die Ergebnisse der einzelnen Threads nicht überschneiden.
 Zudem schützt dieses Lock einen globalen Counter, der von allen Threads pro gefundene stabiles Arrangement um $1$ erhöht wird.

@@ -61,7 +61,7 @@ struct Lake
 inline void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
 {
     if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
-        raise_error("File Parsing Error: not enough elements found!");
+        raise_error("File Parsing Error: Not enough elements found!");
 }
 
 inline int checked_stoi(std::string str)

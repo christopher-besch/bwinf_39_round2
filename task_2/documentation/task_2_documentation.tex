@@ -94,79 +94,92 @@
 
 \section{Lösungsidee}
 % Die Idee der Lösung sollte hieraus vollkommen ersichtlich werden, ohne dass auf die eigentliche Implementierung Bezug genommen wird.
-Die von Donald beobachteten Spieße lassen sich wie folgt darstellen:
+Die von Donald beobachteten Spieße lassen sich in \autoref{tab:alle_Spiesse} darstellen.
 
-\begin{center}
-\begin{tabular}{l|l}
-    \textbf{Schüsseln} & \textbf{Früchte} \\
-    \hline
-    1, 4, 5 & Apfel, Banane, Brombeere \\
-    3, 5, 6 & Banane, Pflaume, Weintraube \\
-    1, 2, 4 & Apfel, Brombeere, Erdbeere \\
-    2, 6 & Erdbeere, Pflaume
-\end{tabular}
-\end{center}
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabular}{l|l}
+            \textbf{Schüsseln} & \textbf{Früchte}            \\
+            \hline
+            1, 4, 5            & Apfel, Banane, Brombeere    \\
+            3, 5, 6            & Banane, Pflaume, Weintraube \\
+            1, 2, 4            & Apfel, Brombeere, Erdbeere  \\
+            2, 6               & Erdbeere, Pflaume
+        \end{tabular}
+        \caption{Auflistung aller Spieße}
+        \label{tab:alle_Spiesse}
+    \end{center}
+\end{table}
 
-\paragraph{Bestimmung der legalen Früchte}
-Nun wird in einer Tabelle jede Schüssel mit den Früchten der Spieße, die diese Schüssel verwendeten, aufgelistet (eine Spalte pro Spieß).
+\subsection{Bestimmung der legalen Früchte}
+Nun wird in \autoref{tab:alle_Schüsseln} jede Schüssel mit den Früchten der Spieße, die diese Schüssel verwenden, aufgelistet (eine Spalte pro Spieß).
 Zudem werden in einer weiteren Spalte alle Früchte notiert, die in Spießen vorkommen, die nicht diese Schüssel verwenden, sie werden verbotene Früchte genannt.
 Diese Früchte können nicht von dieser Schüssel sein.
 
-\begin{center}
-\begin{tabularx}{\linewidth}{l|X|X|X}
-    \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} & & \textbf{Verbotene Früchte} \\
-    \hline
-    1 & Apfel, Banane, Brombeere & Apfel, Brombeere, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
-    \hline
-    2 & Apfel, Brombeere, Erdbeere & Erdbeere, Pflaume & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
-    \hline
-    3 & Banane, Pflaume, Weintraube & & Banane, Apfel, Brombeere, Erdbeere, Pflaume \\
-    \hline
-    4 & Apfel, Banane, Brombeere & Apfel, Brombeere, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
-    \hline
-    5 & Apfel, Banane, Brombeere & Banane, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume \\
-    \hline
-    6 & Banane, Pflaume, Weintraube & Erdbeere, Pflaume & Banane, Apfel, Brombeere, Erdbeere
-\end{tabularx}
-\end{center}
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabularx}{\linewidth}{l|X|X|X}
+            \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} &                             & \textbf{Verbotene Früchte}                    \\
+            \hline
+            1                 & Apfel, Banane, Brombeere            & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \hline
+            2                 & Apfel, Brombeere, Erdbeere          & Erdbeere, Pflaume           & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+            \hline
+            3                 & Banane, Pflaume, Weintraube         &                             & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
+            \hline
+            4                 & Apfel, Banane, Brombeere            & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \hline
+            5                 & Apfel, Banane, Brombeere            & Banane, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume           \\
+            \hline
+            6                 & Banane, Pflaume, Weintraube         & Erdbeere, Pflaume           & Banane, Apfel, Brombeere, Erdbeere
+        \end{tabularx}
+        \caption{Auflistung aller Schüsseln}
+        \label{tab:alle_Schüsseln}
+    \end{center}
+\end{table}
 
-Nun werden für jede Schüssel alle möglicherweise vorliegenden Früchte gesucht, diese werden im Folgenden legale Früchte genannt.
-An jede Schüssel liegt eine Frucht aus der Menge der legalen Früchte für diese Schüssel.
+Nun werden für jede Schüssel alle möglicherweise vorliegenden Früchte gesucht; diese werden im Folgenden legale Früchte genannt.
+In jeder Schüssel liegt eine Frucht aus der Menge der legalen Früchte für diese Schüssel.
 
 Alle legalen Früchte für eine bestimmte Schüssel müssen zwei Voraussetzungen erfüllen:
 \begin{enumerate}
     \item Die Frucht muss in allen Spießen vorkommen, die diese Schüssel benutzen.
     \item Die Frucht darf für diese Schüssel nicht verboten sein.
 \end{enumerate}
-Alle legalen Früchte werden nun markiert:
+Alle legalen Früchte werden in \autoref{tab:alle_Schüsseln_legal} markiert.
 
-\begin{center}
-\begin{tabularx}{\linewidth}{l|X|X|X}
-    \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} & & \textbf{Verbotene Früchte} \\
-    \hline
-    1 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
-    \hline
-    2 & Apfel, Brombeere, \underline{Erdbeere} & \underline{Erdbeere}, Pflaume & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
-    \hline
-    3 & Banane, Pflaume, \underline{Weintraube} & & Banane, Apfel, Brombeere, Erdbeere, Pflaume \\
-    \hline
-    4 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume \\
-    \hline
-    5 & Apfel, \underline{Banane}, Brombeere & \underline{Banane}, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume \\
-    \hline
-    6 & Banane, \underline{Pflaume}, Weintraube & Erdbeere, \underline{Pflaume} & Banane, Apfel, Brombeere, Erdbeere
-\end{tabularx}
-\end{center}
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabularx}{\linewidth}{l|X|X|X}
+            \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel}              &                                                    & \textbf{Verbotene Früchte}                    \\
+            \hline
+            1                 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \hline
+            2                 & Apfel, Brombeere, \underline{Erdbeere}           & \underline{Erdbeere}, Pflaume                      & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+            \hline
+            3                 & Banane, Pflaume, \underline{Weintraube}          &                                                    & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
+            \hline
+            4                 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \hline
+            5                 & Apfel, \underline{Banane}, Brombeere             & \underline{Banane}, Pflaume, Weintraube            & Apfel, Brombeere, Erdbeere, Pflaume           \\
+            \hline
+            6                 & Banane, \underline{Pflaume}, Weintraube          & Erdbeere, \underline{Pflaume}                      & Banane, Apfel, Brombeere, Erdbeere
+        \end{tabularx}
+        \caption{Markierung der legalen Früchte}
+        \label{tab:alle_Schüsseln_legal}
+    \end{center}
+\end{table}
 
 
-\paragraph{Auswahl der Schalen für Donald}
+\subsection{Auswahl der Schalen für Donald}
 Die folgenden Früchte sind (von Donald) gefordert: Weintraube, Brombeere und Apfel
 
 Es werden alle Schüsseln durchgegangen.
 \begin{itemize}
-    \item Wenn alle legalen Früchte einer Schüssel gefordert sind, wird diese Schüssel ausgewählt, da ganz egal, welche legale Frucht die tatsächlich an der Schüssel liegende ist, die Schüssel eine geforderte Frucht liefert.
+    \item Wenn alle legalen Früchte einer Schüssel gefordert sind, wird diese Schüssel ausgewählt.
+          Da es irrelevant ist, welche legale Frucht tatsächlich in der Schüssel liegende ist, liefert die Schüssel eine geforderte Frucht.
     \item Wenn keine der legalen Früchte gefordert sind, ist dies kein ausgewählter Schüssel.
-    \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob der Schüssel eine ausgewählte Frucht enthält oder nicht.
+    \item Wenn einige, aber nicht alle legalen Früchte gefordert sind, ist nicht genügend Information vorhanden, da nicht gesagt werden kann, ob die Schüssel eine ausgewählte Frucht enthält oder nicht.
 \end{itemize}
 Es ergibt sich die Menge aller ausgewählten Schüsseln: 1, 3 und 4
 
@@ -179,50 +192,61 @@ Mit dieser Methode kann in allen Fällen eine Aussage gefällt werden, ob genüg
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
 Die Lösungsidee wird in C++ implementiert.
 
-\paragraph{Einlese der Eingabedatei}
+\subsection{Einlese der Eingabedatei}
 Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
-Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht wird das Programm abgebrochen.
+Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht, wird das Programm abgebrochen.
 Hierzu wird ein Makro \textbf{raise\_error()} verwendet, dass die Ausführung des Programmes abbricht und eine möglichst informative Fehlermeldung zurückgibt.
-Dieses Makro wird ebenfalls für alle Methoden aller Klassen verwendet, um z.b. Segmentation Faults zu verhindern.
 
-Die Fruchtnamen werden mithilfe einer Instanz der Klasse \textbf{LookupTable} aufsteigend und anfangend bei $0$ in Glanzzahlen, Frucht IDs, übersetzt.
-Dadurch ist die Anzahl an verschieden Früchten nicht limitiert.
-Ein weiterer Vorteil ist, dass da die ID aufsteigend und bei $0$ anfangend verteilt werden, die IDs als Indizes in Bit Fields verwendet werden können (hierzu wird std::vctor<bool> verwendet, da die Anzahl der Früchte bei compile time nicht bekannt ist).
+Die Fruchtnamen werden mithilfe einer Instanz der Klasse \textbf{LookupTable} aufsteigend und anfangend bei $0$ in Ganzzahlen, Frucht IDs, übersetzt.
+Dadurch ist die Anzahl an verschieden Früchten nicht auf das Alphabet limitiert.
+Ein weiterer Vorteil ist, dass da die ID aufsteigend und bei $0$ anfangend verteilt werden, die IDs als Indizes in Bit Fields verwendet werden können.
+Hierzu wird ein std::vector<bool> verwendet, da die Anzahl der Früchte zum Zeitpunkt der Kompilierung nicht bekannt ist.
 So liegt für jede Frucht ein Bit/Bool vor, ist er $true$, ist diese Frucht enthalten, ist sie $false$, ist sie nicht enthalten.
 Diese kompakte Datenstruktur ist ressourcenschonender im Vergleich zu einem std::vector<std::string> mit den Namen aller enthaltenden Früchten.
+Zudem können effiziente OR und AND Operationen verwendet werden, um zwei Bit Fields miteinander zu vergleichen, oder weitere weitere Früchte hinzuzufügen.
 
 Die Namen für die Schüsseln werden auf die gleiche Weise behandelt.
 Zwar ist angegeben, dass alle Schüsseln nummeriert sind, es ist allerdings nicht klar, wie die Nummern verteilt werden, daher ergibt es Sinn, die Namen der Schüsseln als Strings zu behandeln und ebenfalls eine Instanz von \textbf{LookupTable} zu verwenden.
 So können auch für die Schüsseln Bit Fields verwendet werden.
-Ein zusätzlicher Vorteil ist, dass so jegliche Namen für die Schüsseln erlaubt sind.
+Ein zusätzlicher Vorteil ist, dass so jegliche Namen für die Schüsseln erlaubt sind, sie sind nicht auf Nummern begrenzt.
 
 Als Größe für die Bit Fields wird die angegebene Anzahl an Früchten verwendet.
 
+\medskip
 Es werden Instanzen der Klasse \textbf{Skewer} erstellt, diese enthalten die Menge der Früchte auf einem Spieß und die Menge der Schüsseln, von denen die Früchte genommen sind.
 Hierbei werden, wie bereits erwähnt, Bit Fields verwendet.
-An dieser Stelle werden fehlende Schüsseln und fehlende Früchte hinzugefügt, sodass die Anzahl an Schüsseln und Früchten der angegebenen Anzahl an Früchten entspricht.
+An dieser Stelle werden fehlende Schüsseln und fehlende Früchte hinzugefügt, sodass die Menge an Schüsseln und Früchten der angegebenen Anzahl an Früchten entspricht.
 Diese neuen Früchte und Schüsseln erhalten Namen wie \glqq new\_bowl0\grqq{} oder \glqq new\_fruit0\grqq{}.
-Es wird überprüft, ob bereits eine Frucht mit dem Namen \glqq new\_fruit0\grqq{} vorliegt, ist dies der Fall wird \glqq new\_fruit1\grqq{} versucht usw.
+Es wird überprüft, ob bereits eine Frucht mit dem Namen \glqq new\_fruit0\grqq{} vorliegt, ist dies der Fall wird \glqq new\_fruit1\grqq{} überprüft.
+Dies wird so lange ausgeführt, bis ein nicht belegter Name gefunden wurde.
 Gleiches gilt für neue Schüsselnamen.
 
-\paragraph{Bestimmung der Legalen Früchte}
-In der Funktion \textbf{determine\_legal\_fruits} werden die legalen Früchte bestimmt, wie bereits in der Lösungsidee beschriebene.
+\subsection{Bestimmung der Legalen Früchte}
+In der Funktion \textbf{determine\_legal\_fruits} werden die legalen Früchte bestimmt, wie bereits in der Lösungsidee beschrieben.
 
 Zuerst werden dazu für jede Schale \textbf{Bowl} Instanzen erstellt.
-Diese enthalten \textbf{allowed\_fruit\_sets}, ein std::vector mit einem Bit Field pro Spieß, der diese Schale verwendet, alle verbotenen Früchte (\textbf{disallowed\_fruits}), alle legalen Früchte (\textbf{legal\_fruits}) und zwei bools, \textbf{selected} und \textbf{possible\_selected}, auf die später eingegangen wird.
-Es werden alle Spieße durchgegangen, wenn der Spieß diese Schale verwendet, werden dessen Früchte zu \textbf{allowed\_fruit\_sets} hinzugefügt, wenn nicht zu \textbf{disallowed\_fruits}.
+Diese enthalten
+\begin{itemize}
+    \item \textbf{allowed\_fruit\_sets}, ein std::vector mit einem Bit Field pro Spieß, der diese Schale verwendet,
+    \item alle verbotenen Früchte (\textbf{disallowed\_fruits}),
+    \item alle legalen Früchte (\textbf{legal\_fruits}) und
+    \item zwei bools, \textbf{selected} und \textbf{possible\_selected}, auf die später eingegangen wird.
+\end{itemize}
+Es werden alle Spieße durchgegangen.
+Wenn der Spieß diese Schale verwendet, werden dessen Früchte zu \textbf{allowed\_fruit\_sets} hinzugefügt, wenn nicht zu \textbf{disallowed\_fruits}.
 
 Nun werden die legalen Früchte für jede Schale bestimmt.
 Dafür werden für jede Frucht die beiden in der Lösungsidee genannten Voraussetzungen überprüft.
+Da Bit Fields verwendet werden, können die gegenüberliegenden Elemente in
 
-\paragraph{Auswahl der Schalen}
+\subsection{Auswahl der Schalen}
 Im letzten Schritt werden alle Schalen durchgegangen.
 Hierbei wird überprüft, wie viele der legalen Früchte einer Schale gefordert sind.
 Sind alle gefordert wird \textbf{selected} auf $true$ gesetzt, sind einige aber nicht alle gefordert, wird \textbf{possible\_selected} auf $true$ und \textbf{possible} auf $false$ gesetzt.
 
 Wenn \textbf{possible} nach Durchlauf aller Schalen $true$ bleibt, ist genügend Information vorhanden, um eine Aussage treffen zu können.
 
-\paragraph{\textbf{main}}
+\subsection{\textbf{main}}
 In der \text{main} Funktion werden die drei genannten Funktionen ausgeführt und die Ergebnisse in der Konsole ausgegeben.
 
 \section{Beispiele}
@@ -261,14 +285,14 @@ Das Programm liefert die korrekte Ausgabe, es gibt eine Lösung und die ausgewä
 Es liegt genügend Information vor und die ausgewählten Schalen sind 18, 15, 20, 11, 4, 7, 10 und 6.
 
 \paragraph{spiesse7.txt}
-Es liegt nicht genügend Information vor und die Schalen 14, 8, 5, 24, 23, new\_bowl0, new\_bowl1 und new\_bowl2 liefern garantiert geforderte Früchte, wobei new\_bowl0, new\_bowl1 und new\_bowl2 Schalen sind, die für keinen der angegebenen Spieße verwendet wurden sind.
+Es liegt nicht genügend Information vor und die Schalen 14, 8, 5, 24, 23, new\_bowl0, new\_bowl1 und new\_bowl2 liefern garantiert geforderte Früchte, wobei new\_bowl0, new\_bowl1 und new\_bowl2 Schalen sind, die für keinen der angegebenen Spieße verwendet werden.
 Zusätzlich gibt das Programm aus, dass vier der folgenden Schalen geforderte Früchte enthalten: 3, 20, 26, 10, 25 und 18
 
 \subsection{Eigene Beispiele}
 
 \paragraph{myspiesse0.txt}
 In der Aufgabenstellung ist angegeben, dass die Namen der Früchte immer unterschiedlichen Anfangsbuchstaben haben.
-Dieses Programm limitiert, die Eingabedatei allerdings nicht auf diese Weise.
+Dieses Programm limitiert die Eingabedatei allerdings nicht auf diese Weise.
 
 Dies ist in diesem Beispiel gezeigt, es ist eine Kopie von spiesse0.txt, wobei alle Früchte den selben Anfangsbuchstaben haben.
 Das Programm produziert das korrekte Ergebnis, Schüsseln 1, 4 und 3.
@@ -309,7 +333,7 @@ In diesem Fall ist nicht klar, in welcher Schale die geforderten Weintrauben lie
 Dies gibt das Programm korrekt aus.
 
 \paragraph{myspiesse4.txt}
-Dies ist eine leere Datei, weshalb das Programm mit einer Fehlermeldung abbricht: \glqq File Parsing Error: More lines required!\grqq{}
+Dies ist eine leere Datei, weshalb das Programm mit einer Fehlermeldung abbricht: \glqq File Parsing Error: Not enough elements found!\grqq{}
 
 \paragraph{myspiesse5.txt}
 Dies ist eine Kopie von spiesse7.txt, wobei die Nummern aller Schalen durch zufällige Wörter ersetzt wurden.
@@ -337,8 +361,8 @@ for (Bowl &bowl : bowls)
                 break;
             }
 
-        // for this to be a legal fruit, it has to be in every allowed fruit set
-        // and not a disallowed fruit
+        // for this to be a legal fruit,
+        // it has to be in every allowed fruit set and not a disallowed fruit
         if (!bowl.get_disallowed_fruits()[fruit_idx] && in_all)
             bowl.add_legal_fruit(fruit_idx);
     }
@@ -348,6 +372,7 @@ for (Bowl &bowl : bowls)
 Die Funktion \textbf{get\_selected\_bowls} verwendet den folgenden Teil, um die jeweils legalen Früchte für alle Schalen auszuwählen.
 \begin{lstlisting}
 possible = true;
+// test each bowl: is this one providing one of the requested fruits?
 for (Bowl &bowl : bowls)
 {
     bool all_legal_are_requested = true;
@@ -364,7 +389,7 @@ for (Bowl &bowl : bowls)
         }
     }
 
-    // when some of this bowls legal fruits are required and others aren't,
+    // when some of this bowls legal fruits are requested and others aren't,
     // there isn't enough information
     if (!all_legal_are_requested && !all_legal_are_not_requested)
     {

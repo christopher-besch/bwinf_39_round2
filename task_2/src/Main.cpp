@@ -22,7 +22,7 @@
 void checked_getline(std::istream &in_stream, std::string &out_str, char delimiter = '\n')
 {
     if (!std::getline(in_stream, out_str, delimiter) || out_str.empty())
-        raise_error("File Parsing Error: More lines required!");
+        raise_error("File Parsing Error: Not enough elements found!");
 }
 
 int checked_stoi(std::string str)
@@ -38,7 +38,7 @@ int checked_stoi(std::string str)
 }
 
 // get vector of indices of all true elements
-std::vector<int> get_true_indices(std::vector<bool> items)
+std::vector<int> get_true_indices(const std::vector<bool> &items)
 {
     std::vector<int> result;
     for (int idx = 0; idx < items.size(); idx++)
@@ -47,45 +47,46 @@ std::vector<int> get_true_indices(std::vector<bool> items)
     return result;
 }
 
-// used to resolve fruit and bowl names to enumerated numbers, starting by 0
+// used to resolve fruit and bowl names to number ids, starting by 0
 class LookupTable
 {
 private:
     // index is key, element is value
-    std::vector<std::string> items;
+    std::vector<std::string> m_items;
 
 public:
     // add value to the vector and return key
     // or when the value is already included only return the key
-    int add_item(std::string value)
+    int add_item(const std::string &value)
     {
         if (value.empty())
             raise_error("Trying to add an empty string as value to a lookup table!");
 
-        std::vector<std::string>::iterator match = std::find(items.begin(), items.end(), value);
-        if (match == items.end())
+        std::vector<std::string>::iterator match = std::find(m_items.begin(), m_items.end(), value);
+        if (match == m_items.end())
         {
-            items.push_back(value);
-            return items.size() - 1;
+            m_items.push_back(value);
+            return m_items.size() - 1;
         }
-        return match - items.begin();
+        return match - m_items.begin();
     }
 
-    const std::string get_value(int key) const
+    const std::string &get_value(int key) const
     {
-        if (key < 0 || key >= items.size())
+        if (key < 0 || key >= m_items.size())
             raise_error("Trying to lookup a non-existent key!");
-        return items[key];
+        return m_items[key];
     }
 
     void reset()
     {
-        items.resize(0);
+        m_items.resize(0);
     }
 
-    int get_amount() const { return items.size(); }
+    int get_amount() const { return m_items.size(); }
 };
 
+// global lookups
 LookupTable fruit_look_up;
 LookupTable bowl_look_up;
 
@@ -94,46 +95,46 @@ class Skewer
 private:
     // using flags for each fruit/bowl
     // one bool per possible fruit/bowl <- true when contains that fruit / uses that bowl
-    std::vector<bool> fruits;
-    std::vector<bool> bowls;
+    std::vector<bool> m_fruits;
+    std::vector<bool> m_bowls;
 
 public:
     Skewer(int fruit_amount)
-        : bowls(fruit_amount), fruits(fruit_amount) {}
+        : m_bowls(fruit_amount), m_fruits(fruit_amount) {}
 
-    const std::vector<bool> get_fruits() const { return fruits; }
-    const std::vector<bool> get_bowls() const { return bowls; }
+    const std::vector<bool> &get_fruits() const { return m_fruits; }
+    const std::vector<bool> &get_bowls() const { return m_bowls; }
 
     bool contains_fruit(int fruit) const
     {
-        if (fruit < 0 || fruit >= fruits.size())
+        if (fruit < 0 || fruit >= m_fruits.size())
             raise_error("Trying to access a non-existent fruit!");
-        return fruits[fruit];
+        return m_fruits[fruit];
     }
     bool uses_bowl(int bowl) const
     {
-        if (bowl < 0 || bowl >= bowls.size())
+        if (bowl < 0 || bowl >= m_bowls.size())
             raise_error("Trying to access a non-existent bowl!");
-        return bowls[bowl];
+        return m_bowls[bowl];
     }
 
     void add_fruit(int fruit)
     {
-        if (fruit < 0 || fruit >= fruits.size())
+        if (fruit < 0 || fruit >= m_fruits.size())
             raise_error("Trying to add a non-existent fruit!");
-        fruits[fruit] = true;
+        m_fruits[fruit] = true;
     }
     void add_bowl(int bowl)
     {
-        if (bowl < 0 || bowl >= bowls.size())
+        if (bowl < 0 || bowl >= m_bowls.size())
             raise_error("Trying to add a non-existent bowl!");
-        bowls[bowl] = true;
+        m_bowls[bowl] = true;
     }
 
-    void resize(int new_amount)
+    void resize(int fruit_amount)
     {
-        bowls.resize(new_amount);
-        fruits.resize(new_amount);
+        m_bowls.resize(fruit_amount);
+        m_fruits.resize(fruit_amount);
     }
 };
 
@@ -144,55 +145,55 @@ private:
     int id;
     // all fruit sets <- all fruits from all skewers using this bowl
     // -> this bowl's fruit must be in all of these skewers
-    std::vector<std::vector<bool>> allowed_fruit_sets;
+    std::vector<std::vector<bool>> m_allowed_fruit_sets;
     // all the fruits on the skewers that didn't use this bowl
     // -> this bowl's fruit can't be in this list
-    std::vector<bool> disallowed_fruits;
+    std::vector<bool> m_disallowed_fruits;
     // all the fruits this bowl could contain
-    std::vector<bool> legal_fruits;
+    std::vector<bool> m_legal_fruits;
     // true when this bowl can satisfy the requested fruits
-    bool selected;
+    bool m_selected;
     // true when this bowl could satisfy the requested fruits but there isn't enough information to be sure
-    bool possible_selected;
+    bool m_possible_selected;
 
 public:
     Bowl(int id, int fruit_amount)
-        : id(id), disallowed_fruits(fruit_amount), legal_fruits(fruit_amount), selected(false), possible_selected(false) {}
+        : id(id), m_disallowed_fruits(fruit_amount), m_legal_fruits(fruit_amount), m_selected(false), m_possible_selected(false) {}
 
-    const int get_id() const { return id; }
-    const std::vector<std::vector<bool>> get_allowed_fruit_sets() const { return allowed_fruit_sets; }
-    const std::vector<bool> get_disallowed_fruits() const { return disallowed_fruits; }
-    const std::vector<bool> get_legal_fruits() const { return legal_fruits; }
+    int get_id() const { return id; }
+    const std::vector<std::vector<bool>> &get_allowed_fruit_sets() const { return m_allowed_fruit_sets; }
+    const std::vector<bool> &get_disallowed_fruits() const { return m_disallowed_fruits; }
+    const std::vector<bool> &get_legal_fruits() const { return m_legal_fruits; }
 
-    const bool is_selected() const { return selected; }
-    const bool is_possible_selected() const { return possible_selected; }
+    bool is_selected() const { return m_selected; }
+    bool is_possible_selected() const { return m_possible_selected; }
 
-    void add_allowed_fruit_set(std::vector<bool> fruits)
+    void add_allowed_fruit_set(const std::vector<bool> &fruits)
     {
-        allowed_fruit_sets.push_back(fruits);
+        m_allowed_fruit_sets.push_back(fruits);
     }
-    // using or on all possible fruits
-    void add_disallowed_fruits(std::vector<bool> fruits)
+    // using or on all fruits
+    void add_disallowed_fruits(const std::vector<bool> &fruits)
     {
-        if (disallowed_fruits.size() != fruits.size())
+        if (m_disallowed_fruits.size() != fruits.size())
             raise_error("Amount of disallowed fruits to be added is invalid!");
-        for (int idx = 0; idx < disallowed_fruits.size(); idx++)
-            disallowed_fruits[idx] = disallowed_fruits[idx] || fruits[idx];
+        for (int idx = 0; idx < m_disallowed_fruits.size(); idx++)
+            m_disallowed_fruits[idx] = m_disallowed_fruits[idx] || fruits[idx];
     }
     void add_legal_fruit(int fruit)
     {
-        if (fruit < 0 || fruit >= legal_fruits.size())
+        if (fruit < 0 || fruit >= m_legal_fruits.size())
             raise_error("Trying to add non-existent legal fruit!");
-        legal_fruits[fruit] = true;
+        m_legal_fruits[fruit] = true;
     }
 
     void set_selected(bool new_value = true)
     {
-        selected = new_value;
+        m_selected = new_value;
     }
     void set_possibly_selected(bool new_value = true)
     {
-        possible_selected = new_value;
+        m_possible_selected = new_value;
     }
 };
 
@@ -224,25 +225,24 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
     int amount_skewers = checked_stoi(input_buffer);
 
     bowl_look_up.reset();
+    skewers.reserve(amount_skewers);
+    skewers.insert(skewers.begin(), amount_skewers, fruit_amount);
     // get skewers
     for (int idx = 0; idx < amount_skewers; idx++)
     {
-        Skewer new_skewer(fruit_amount);
         // extract bowls
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
         for (std::string bowl_buffer; std::getline(ss_input_buffer, bowl_buffer, ' ');)
-            new_skewer.add_bowl(bowl_look_up.add_item(bowl_buffer));
+            skewers[idx].add_bowl(bowl_look_up.add_item(bowl_buffer));
 
         // extract fruits
         checked_getline(file, input_buffer);
         ss_input_buffer.clear();
         ss_input_buffer.str(input_buffer);
         for (std::string fruit_buffer; std::getline(ss_input_buffer, fruit_buffer, ' ');)
-            new_skewer.add_fruit(fruit_look_up.add_item(fruit_buffer));
-
-        skewers.push_back(new_skewer);
+            skewers[idx].add_fruit(fruit_look_up.add_item(fruit_buffer));
     }
 
     if (fruit_amount < fruit_look_up.get_amount())
@@ -262,7 +262,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
             // when a new item has been created
             if (bowl_look_up.add_item(this_name.str()) == idx)
                 break;
-            try_number++;
+            ++try_number;
         }
     }
     // create fruits that have no occurrence in any skewer
@@ -277,7 +277,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
             // when a new item has been created
             if (fruit_look_up.add_item(this_name.str()) == idx)
                 break;
-            try_number++;
+            ++try_number;
         }
     }
 
@@ -301,7 +301,7 @@ void read_file(const char *file_path, std::vector<bool> &requested_fruits, std::
 }
 
 // determine which fruit could be at which bowl
-void determine_legal_fruits(std::vector<Bowl> &bowls, std::vector<Skewer> &skewers)
+void determine_legal_fruits(std::vector<Bowl> &bowls, const std::vector<Skewer> &skewers)
 {
     // create Bowl objects
     // go through all bowls and search for skewers using this bowl
@@ -309,7 +309,7 @@ void determine_legal_fruits(std::vector<Bowl> &bowls, std::vector<Skewer> &skewe
     {
         Bowl new_bowl(bowl_id, fruit_look_up.get_amount());
         // search through all skewers
-        for (Skewer &skewer : skewers)
+        for (const Skewer &skewer : skewers)
         {
             // when this skewer uses the current bowl, one of the fruits on the skewer has to be this bowl's one
             if (skewer.uses_bowl(bowl_id))
@@ -370,7 +370,7 @@ void determine_legal_fruits(std::vector<Bowl> &bowls, std::vector<Skewer> &skewe
 #endif
 }
 
-int get_selected_bowls(std::vector<Bowl> &bowls, std::vector<bool> &requested_fruits, bool &possible)
+void get_selected_bowls(std::vector<Bowl> &bowls, const std::vector<bool> &requested_fruits, bool &possible)
 {
     // false when there isn't enough information to determine which bowls to select
     possible = true;
@@ -400,7 +400,6 @@ int get_selected_bowls(std::vector<Bowl> &bowls, std::vector<bool> &requested_fr
         else if (all_legal_are_requested)
             bowl.set_selected();
     }
-    return 0;
 }
 
 int main(int argc, char *argv[])
