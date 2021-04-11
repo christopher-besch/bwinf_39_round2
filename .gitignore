@@ -32,3 +32,6 @@
 *.app
 **/bin
 
+# Make
+*.make
+
