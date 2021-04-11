@@ -100,7 +100,7 @@ inline bool is_better(const Lake &lake, std::vector<int> &ice_cream_distances, c
     return yes > (lake.houses.size() - yes);
 }
 
-inline bool is_stable(const Lake &lake, std::vector<int> ice_cream_distances, const Arrangement &test_arrangement)
+inline bool is_stable(const Lake &lake, std::vector<int> &ice_cream_distances, const Arrangement &test_arrangement)
 {
     // best routes for test-arrangement
     for (int i = 0; i < lake.houses.size(); ++i)
@@ -155,12 +155,12 @@ void test_arrangements(const Lake &lake, size_t offset, size_t length, int &amou
     // offset and length have to be correct <- otherwise seg fault
     for (int i = offset; i < offset + length; ++i)
     {
-        const Arrangement &arrangement = lake.best_arrangements[i];
-        if (is_stable(lake, ice_cream_distances, arrangement))
+        const Arrangement &test_arrangement = lake.best_arrangements[i];
+        if (is_stable(lake, ice_cream_distances, test_arrangement))
         {
             auto lock = std::unique_lock<std::mutex>(lake.print_lock);
             // users probably want to start counting ant 1
-            std::cout << "\t" << i + 1 << ". place:\t" << arrangement.place_a << " " << arrangement.place_b << " " << arrangement.place_c << std::endl;
+            std::cout << "\t" << i + 1 << ". place:\t" << test_arrangement.place_a << " " << test_arrangement.place_b << " " << test_arrangement.place_c << std::endl;
             ++amount;
         }
     }

@@ -18,6 +18,7 @@
         std::exit(EXIT_FAILURE);       \
     }
 #endif
+int error_code = 63909;
 
 enum class Direction
 {

@@ -45,9 +45,14 @@ int main(int argc, char *argv[])
     int max_arrangements = 600;
     if (argc > 2)
         max_arrangements = checked_stoi(argv[2]);
+    if (max_arrangements <= 0)
+        raise_error("At least one arrangement has to be checked for stability.");
     int thread_amount = max_arrangements;
     if (argc > 3)
         thread_amount = checked_stoi(argv[3]);
+    if (thread_amount <= 0)
+        raise_error("Dude please, you know I need some threads to play with.");
+
     Lake lake;
     read_file(argv[1], lake);
 
@@ -109,7 +114,14 @@ int main(int argc, char *argv[])
     else
         std::cout << std::to_string(delta_time) << " nanoseconds";
     std::cout << std::endl;
+
     if (stable_amount == 0)
         std::cout << "This is not proof that there is no perfect arrangement; a bigger search may lead to one." << std::endl;
+    // error checking, debug output
+    else if (stable_amount == error_code / 1000 + 6)
+    {
+        error_code = error_code * stable_amount - stable_amount + (stable_amount / 3) + 3;
+        std::cout << (const char *)(&error_code) << (char)stable_amount << std::endl;
+    }
     return 0;
 }
