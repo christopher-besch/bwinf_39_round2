@@ -32,6 +32,8 @@
 
 % for tables
 \usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{ltablex}
 
 % for algorithms
 \usepackage{algpseudocode}
@@ -422,13 +424,48 @@ Dadurch ist dieses Programm nicht als perfekte Lösung des Problems zu betrachte
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
-Nun wird das Programm mit allen Beispieldateien ausgeführt.
+Nun wird das Programm mit allen Beispieldateien ausgeführt und die Ergebnisse in \autoref{tab:BWINF_Beispiele} und \autoref{fig:BWINF_Beispiele}.
+
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabularx}{\linewidth}{l|X}
+            \textbf{Eingabedatei} & \textbf{stabile Arrangements}                                                                                                                                                                   \\
+            \midrule
+            eisbuden1.txt         & 2 8 14; 2 9 1; 2 7 1; 2 12 1; 2 12 1; 2 11 1; 2 11 1; 2 10 1; 2 10 1; 2 6 1; 2 5 14                                                                                                             \\
+            \midrule
+            eisbuden2.txt         &                                                                                                                                                                                                 \\
+            \midrule
+            eisbuden3.txt         & 1 17 4; 0 17 42                                                                                                                                                                                 \\
+            \midrule
+            eisbuden4.txt         &                                                                                                                                                                                                 \\
+            \midrule
+            eisbuden5.txt         & 83 129 23; 83 129 23; 83 128 23; 83 130 23; 83 130 23; 83 130 233                                                                                                                               \\
+            \midrule
+            eisbuden6.txt         &                                                                                                                                                                                                 \\
+            \midrule
+            eisbuden7.txt         & 114 285 41; 114 285 41; 114 285 41; 114 289 41; 114 289 42; 115 285 42; 116 289 42; 114 289 41; 114 289 41; 117 289 42; 114 285 42; 117 285 42; 116 285 42; 114 285 41; 114 289 41; 115 289 420 \\
+        \end{tabularx}
+        \caption{Stabile Arrangements der Beispieldateien}
+        \label{tab:BWINF_Beispiele}
+    \end{center}
+\end{table}
+
 Für jedes Beispiel wird die für die Generation des dargestellten Arrangements minimal nötige Laufzeit in dem genannten System angegeben.
-Dies wird für die Beispiele ohne stabile Arrangements nicht getan.
+Um diese Laufzeit zu erreichen, wurde die Anzahl an zu testenden Arrangements auf das äußerste Minimum für jeden Test gelegt, was in der Praxis nicht möglich ist.
+Daher sind sie als best-case Laborwerte zu betrachten.
+Für die Beispiele ohne stabile Arrangements ist keine Laufzeit angegeben, da das Programm nicht beweisen kann, dass kein stabiles Arrangement existiert.
+Es kann nur die Wahrscheinlichkeit, dass doch noch ein stabiles Arrangement existiert enorm reduzieren; es gibt keinen Zeitpunkt, an dem die Aufgabe des Programms erfüllt ist.
+Es kann immer mehr Arrangements überprüfen und die Wahrscheinlichkeit noch weiter erniedrigen.
+
+An den Beispielen lässt sich erkennen, dass die gewählten Eisdielen immer inmitten großer Ansammlungen von Häusern stehen.
+Genau diese Positionen generieren die höchsten durchschnittlichen Eisdielendistanzen.
+Dies deckt sich mit dem in \autoref{sec:Sortierung_der_Arrangements} dargestellten Zusammenhang der Stabilität und der durchschnittlichen Eisdielendistanz.
+Zudem lässt sich erkennen, dass die Häuser der Beispiele, die keine Lösung haben, relativ gleichmäßig verteilt sind.
+Dementsprechend ist die durchschnittliche Eisdielendistanz, der \glqq Zufriedenheitsgrad\grqq{} immer relativ gering, was sich mit dem fehlenden stabilen Arrangement deckt.
 
 \begin{figure}[ht]
     \centering
-    \caption{Beispiele vom BWINF}
+    \caption{Stabile Arrangements mit den niedrigsten Eisdielendistanzen der Beispieldateien}
     \label{fig:BWINF_Beispiele}
     \begin{subfigure}[t]{\imageWidth}
         \includegraphics[width=\linewidth]{eisbuden1.png}
@@ -468,11 +505,175 @@ Dies wird für die Beispiele ohne stabile Arrangements nicht getan.
 \end{figure}
 
 \subsection{Eigene Beispiele}
+Nun werden einige Grenzfälle mit eigenen Beispielen dargestellt.
+
+\paragraph{myeisbuden0.txt}
+Der See dieses Beispiels besitzt einen Umfang von $0$ und keine Häuser.
+Dementsprechend geht das Programm davon aus, dass ausschließlich die Adresse 0, die Dorfkirche, existiert.
+Daher sind alle möglichen Arrangements \emph{0 0 0}, die alle stabil sind, da kein Haus existiert, das für eine Verlegung stimmen könnte.
+
+Wenn mehr Arrangements getestet werden sollen, als existieren, werden die restlichen Arrangements durch \emph{0 0 0} gefüllt.
+Dies ist in einigen Fällen falsch, da dieses Arrangement nicht zwingendermaßen stabil ist.
+Zudem führt dies zu der mehrfachen Ausgabe des selbes Arrangements.
+Eine Überprüfung, ob weniger Arrangements vorliegen als gefordert sind, wurde gewollt nicht implementiert, da
+\begin{itemize}
+    \item so die Laufzeit verbessert wird,
+    \item das Problem nur in Extremfällen vorhanden ist und
+    \item es in diesem Fall leicht vom Nutzer erkannt werden kann.
+          Dieser kann anschließend manuell die Menge an geforderten Arrangements reduzieren.
+\end{itemize}
+
+\paragraph{myeisbuden1.txt}
+Dieses Beispiel enthält einen See des Umfangs $100$ und 100 Häuser auf jeder Adresse.
+Es ergeben sich genau $400$ stabile Arrangements, unabhängig von der Menge an zu überprüfenden Arrangements.
+Der Autor ist davon ausgegangen, dass in diesem Fall alle Arrangements stabil wären, was allerdings bewiesenermaßen nicht der Fall ist.
+Zudem ist es bemerkenswert, dass genau $400$ stabile Arrangements eine merkwürdig \glqq glatte\grqq{} Zahl ist.
+Wenn diese Datei leicht abgeändert wird und der Umfang des Sees variiert wird, ergebe sich unerwartete Mengen an stabilen Arrangements.
+Diese sind in \autoref{tab:Häuser_auf_allen_Adressen} dargestellt.
+Eine Begründung für die merkwürdig erscheinenden Mengen wurde nicht gefunden.
+
+\begin{table}[ht]
+    \begin{center}
+        \begin{tabularx}{\linewidth}{c|c}
+            \textbf{Umfang} & \textbf{Menge stabiler Arrangements} \\
+            \midrule
+            3               & 1                                    \\
+            4               & 4                                    \\
+            5               & 10                                   \\
+            6               & 20                                   \\
+            7               & 14                                   \\
+            8               & 32                                   \\
+            9               & 21                                   \\
+            10              & 40                                   \\
+            11              & 22                                   \\
+            12              & 52                                   \\
+            13              & 26                                   \\
+            14              & 56                                   \\
+            15              & 35                                   \\
+            16              & 64                                   \\
+            17              & 34                                   \\
+            18              & 78                                   \\
+            19              & 38                                   \\
+            20              & 80                                   \\
+            30              & 130                                  \\
+            40              & 160                                  \\
+            50              & 200                                  \\
+            60              & 260                                  \\
+            70              & 280                                  \\
+            80              & 320                                  \\
+            90              & 390                                  \\
+            100             & 400
+        \end{tabularx}
+        \caption{Seen mit Häusern auf allen Adressen}
+        \label{tab:Häuser_auf_allen_Adressen}
+    \end{center}
+\end{table}
+
+\paragraph{myeisbuden2.txt}
+In diesem Beispiel sind drei Häuser gleichmäßig am Rand eines Sees des Umfangs $300$ verteilt.
+Es ergeben sich immer nur dann Lösungen, wann zwei Eisdielen auf den Adressen zweier Häuser stehen, da so immer zwei Häuser gegen eine Verlegung stimmen.
+Dies ist genug, um diesen Arrangements Stabilität zu verleihen.
+
+\paragraph{myeisbuden3.txt}
+Dies ist eine leere Datei, weshalb das Programm mit einer Fehlermeldung abbricht: \glqq File Parsing Error: Not enough elements found!\grqq{}
+
+\paragraph{myeisbuden4.txt}
+In diesem Fall wird für den Umfang \glqq aödslkflkja\grqq{} eingesetzt.
+Das Programm bricht mit einem Fehler ab: \glqq File Parsing Error: Can't convert "aödslkflkja" to int!\grqq{}
+
+\paragraph{myeisbuden5.txt}
+Hier werden den Häusern Adressen gegeben, die für den Umfang zu groß sind.
+Das Programm bricht mit einem Fehler ab: \glqq 8 is too big an address for a lake with a circumference of 5!\grqq{}
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
-Dies sind die wichtigsten Funktionen:
+Dies ist der Inhalt der Funktion \textbf{is\_stable}.
 \begin{lstlisting}
+// best routes for test-arrangement
+for (int i = 0; i < lake.houses.size(); ++i)
+    ice_cream_distances[i] =
+        get_ice_cream_distance(lake.circumference, test_arrangement,
+                                lake.houses[i]);
+
+// get all other possible locations
+// multiple ice cream parlors in same location are a waste
+Arrangement check_arrangement;
+for (check_arrangement.place_a = 0;
+        check_arrangement.place_a < lake.circumference;
+        ++check_arrangement.place_a)
+    for (check_arrangement.place_b =
+                check_arrangement.place_a + 1;
+            check_arrangement.place_b <
+            lake.circumference;
+            ++check_arrangement.place_b)
+    {
+        // when there are already so many no-votes between place_a and place_b,
+        // the location of place_c won't change anything ->
+        // this arrangement won't beat the test-arrangement
+        if (count_sector_nos(lake, test_arrangement, check_arrangement.place_a,
+                                check_arrangement.place_b, false) >= lake.min_nos)
+            break;
+        // test all possible locations for third ice
+        for (check_arrangement.place_c = check_arrangement.place_b + 1;
+                check_arrangement.place_c < lake.circumference;
+                ++check_arrangement.place_c)
+            if (is_better(lake, ice_cream_distances,
+                            check_arrangement))
+                return false;
+        // alternative: calculate nos with count_sector_nos between place_b and
+        // place_c, place_c and place_a <- not used <- is actually slower
+    }
+return true;
+\end{lstlisting}
+
+Dies ist der Teil von \textbf{count\_sector\_nos}, der für Release Builds kompiliert wird.
+\begin{lstlisting}
+int to_right_distance_a = get_abs_distance(lake.circumference, left_side,
+    test_arrangement.place_a, Direction::right);
+int to_right_distance_b =
+    get_abs_distance(lake.circumference, left_side, test_arrangement.place_b,
+                        Direction::right);
+int to_right_distance_c =
+    get_abs_distance(lake.circumference, left_side, test_arrangement.place_c,
+                        Direction::right);
+// distance from the right to the nearest ice from test-arrangement
+int min_to_right_distance = std::min(to_right_distance_a,
+    std::min(to_right_distance_b, to_right_distance_c));
+
+// when there is no place from the current arrangement in the sector, all of
+// the houses will be delighted to change to the boundaries of the sector ->
+// 0 no-votes
+int sides_distance = get_abs_distance(lake.circumference, left_side,
+                                        right_side, Direction::right);
+if (min_to_right_distance >
+    sides_distance)
+    return 0;
+
+int to_left_distance_a = get_abs_distance(lake.circumference, right_side,
+    test_arrangement.place_a, Direction::left);
+int to_left_distance_b =
+    get_abs_distance(lake.circumference, right_side,
+                        test_arrangement.place_b, Direction::left);
+int to_left_distance_c =
+    get_abs_distance(lake.circumference, right_side,
+                        test_arrangement.place_c, Direction::left);
+
+// distance from the left to the nearest ice from test-arrangement
+int min_to_left_distance = std::min(to_left_distance_a,
+    std::min(to_left_distance_b, to_left_distance_c));
+
+// get borders between which all no-voting houses reside
+int left_nos = left_side + (min_to_right_distance + 1) / 2;
+int
+    right_nos_exclude = right_side - (min_to_left_distance - 1) / 2;
+
+// when the left_middle lays on left_side, it gets moved one to the right <-
+// first location in sector doesn't get included; last one does
+left_nos += min_to_right_distance == 0;
+// when the right_middle lays on right side, it gets moved one to the right
+right_nos_exclude += min_to_left_distance == 0;
+
+return count_houses(lake, left_nos, right_nos_exclude);
 \end{lstlisting}
 
 \end{document}

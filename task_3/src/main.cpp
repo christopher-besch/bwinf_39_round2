@@ -30,6 +30,8 @@ void read_file(const char *file_path, Lake &lake)
     {
         checked_getline(file, input_buffer, ' ');
         int house_location = checked_stoi(input_buffer);
+        if (house_location > lake.circumference)
+            raise_error(house_location << " is too big an address for a lake with a circumference of " << lake.circumference << "!");
         lake.houses[idx] = house_location;
         ++lake.houses_map[house_location];
     }

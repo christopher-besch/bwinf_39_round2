@@ -30,6 +30,7 @@
 
 % for tables
 \usepackage{tabularx}
+\usepackage{booktabs}
 
 % for algorithms
 \usepackage{algpseudocode}
@@ -100,7 +101,7 @@ Die von Donald beobachteten Spieße lassen sich in \autoref{tab:alle_Spiesse} da
     \begin{center}
         \begin{tabular}{l|l}
             \textbf{Schüsseln} & \textbf{Früchte}            \\
-            \hline
+            \midrule
             1, 4, 5            & Apfel, Banane, Brombeere    \\
             3, 5, 6            & Banane, Pflaume, Weintraube \\
             1, 2, 4            & Apfel, Brombeere, Erdbeere  \\
@@ -119,19 +120,19 @@ Diese Früchte können nicht von dieser Schüssel sein.
 \begin{table}[ht]
     \begin{center}
         \begin{tabularx}{\linewidth}{l|X|X|X}
-            \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel} &                             & \textbf{Verbotene Früchte}                    \\
-            \hline
-            1                 & Apfel, Banane, Brombeere            & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
-            \hline
-            2                 & Apfel, Brombeere, Erdbeere          & Erdbeere, Pflaume           & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
-            \hline
-            3                 & Banane, Pflaume, Weintraube         &                             & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
-            \hline
-            4                 & Apfel, Banane, Brombeere            & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
-            \hline
-            5                 & Apfel, Banane, Brombeere            & Banane, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume           \\
-            \hline
-            6                 & Banane, Pflaume, Weintraube         & Erdbeere, Pflaume           & Banane, Apfel, Brombeere, Erdbeere
+            \textbf{Schüssel} & \multicolumn{2}{c|}{\textbf{Spieße von dieser Schüssel}} & \textbf{Verbotene Früchte}                                                  \\
+            \midrule
+            1                 & Apfel, Banane, Brombeere                                 & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \midrule
+            2                 & Apfel, Brombeere, Erdbeere                               & Erdbeere, Pflaume           & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+            \midrule
+            3                 & Banane, Pflaume, Weintraube                              &                             & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
+            \midrule
+            4                 & Apfel, Banane, Brombeere                                 & Apfel, Brombeere, Erdbeere  & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \midrule
+            5                 & Apfel, Banane, Brombeere                                 & Banane, Pflaume, Weintraube & Apfel, Brombeere, Erdbeere, Pflaume           \\
+            \midrule
+            6                 & Banane, Pflaume, Weintraube                              & Erdbeere, Pflaume           & Banane, Apfel, Brombeere, Erdbeere
         \end{tabularx}
         \caption{Auflistung aller Schüsseln}
         \label{tab:alle_Schüsseln}
@@ -151,19 +152,19 @@ Alle legalen Früchte werden in \autoref{tab:alle_Schüsseln_legal} markiert.
 \begin{table}[ht]
     \begin{center}
         \begin{tabularx}{\linewidth}{l|X|X|X}
-            \textbf{Schüssel} & \textbf{Spieße von dieser Schüssel}              &                                                    & \textbf{Verbotene Früchte}                    \\
-            \hline
-            1                 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
-            \hline
-            2                 & Apfel, Brombeere, \underline{Erdbeere}           & \underline{Erdbeere}, Pflaume                      & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
-            \hline
-            3                 & Banane, Pflaume, \underline{Weintraube}          &                                                    & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
-            \hline
-            4                 & \underline{Apfel}, Banane, \underline{Brombeere} & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
-            \hline
-            5                 & Apfel, \underline{Banane}, Brombeere             & \underline{Banane}, Pflaume, Weintraube            & Apfel, Brombeere, Erdbeere, Pflaume           \\
-            \hline
-            6                 & Banane, \underline{Pflaume}, Weintraube          & Erdbeere, \underline{Pflaume}                      & Banane, Apfel, Brombeere, Erdbeere
+            \textbf{Schüssel} & \multicolumn{2}{c|}{\textbf{Spieße von dieser Schüssel}} & \textbf{Verbotene Früchte}                                                                         \\
+            \midrule
+            1                 & \underline{Apfel}, Banane, \underline{Brombeere}         & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \midrule
+            2                 & Apfel, Brombeere, \underline{Erdbeere}                   & \underline{Erdbeere}, Pflaume                      & Apfel, Brombeere, Banane, Weintraube, Pflaume \\
+            \midrule
+            3                 & Banane, Pflaume, \underline{Weintraube}                  &                                                    & Banane, Apfel, Brombeere, Erdbeere, Pflaume   \\
+            \midrule
+            4                 & \underline{Apfel}, Banane, \underline{Brombeere}         & \underline{Apfel}, \underline{Brombeere}, Erdbeere & Banane, Weintraube, Erdbeere, Pflaume         \\
+            \midrule
+            5                 & Apfel, \underline{Banane}, Brombeere                     & \underline{Banane}, Pflaume, Weintraube            & Apfel, Brombeere, Erdbeere, Pflaume           \\
+            \midrule
+            6                 & Banane, \underline{Pflaume}, Weintraube                  & Erdbeere, \underline{Pflaume}                      & Banane, Apfel, Brombeere, Erdbeere
         \end{tabularx}
         \caption{Markierung der legalen Früchte}
         \label{tab:alle_Schüsseln_legal}
@@ -341,7 +342,7 @@ Das Programm produziert problemlos das korrekte Ergebnis.
 
 \paragraph{myspiesse6.txt}
 In diesem Fall wird für die Anzahl aller Früchte \glqq fdfhasdfgdfhsdfh\grqq{} eingesetzt.
-Das Programm bricht mit einem Fehler ab, \glqq File Parsing Error: Can't convert "fdfhasdfgdfhsdfh" to int!\grqq{}
+Das Programm bricht mit einem Fehler ab: \glqq File Parsing Error: Can't convert "fdfhasdfgdfhsdfh" to int!\grqq{}
 
 \section{Quellcode}
 % Unwichtige Teile des Programms sollen hier nicht abgedruckt werden. Dieser Teil sollte nicht mehr als 2–3 Seiten umfassen, maximal 10.
