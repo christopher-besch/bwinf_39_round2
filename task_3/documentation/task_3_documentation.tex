@@ -237,7 +237,7 @@ In dem letzten Fall, von mehr als zwei Test-Eisdielen im Sektor, müssen nur die
 Dies geht aus der Definition eines Sektors hervor.
 Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge an Test-Eisdielen.
 
-Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen, werden zwei verschiedene Methoden verwendet werden:
+Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen, werden zwei verschiedene Methoden verwendet:
 \begin{itemize}
     \item Wenn sich keine Test-Eisdiele in dem Sektor befindet, stimmen alle Häuser für eine Verlegung.
     \item In allen anderen Fällen befinden sich die einzigen Ja-stimmenden Häuser in den beiden Bereichen zwischen einem Rand un der nächsten Test-Eisdiele.
@@ -246,7 +246,7 @@ Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen, werd
           Dies lässt sich gut in \autoref{fig:08_two_test_ice} erkennen.
           Bei einer ungeraden Anzahl an Adressen in diesem Bereich wird der Nein-stimmenden Hälfte eine Adresse mehr zugeteilt, da bei gleichbleibender Eisdielendistanz das Haus Nein stimmt.
 \end{itemize}
-Auf diese Weise können effizient die Bereiche berechnet werden, in denen alle sich befindlichen Häuser Nein stimmen.
+Auf diese Weise können effizient die Bereiche berechnet werden, in denen alle sich befindlichen Häuser mit Nein stimmen.
 
 \medskip
 Um alle Positionen für die Check-Eisdielen durchzugehen, können zuerst zwei Positionen für die ersten beiden Eisdielen festgesetzt werden und daraufhin alle möglichen Positionen für die dritte Eisdiele verwendet werden, die die genannten Bedingungen erfüllt.
@@ -304,8 +304,8 @@ Dieses enthält:
 Der erste Schritt ist die Berechnung der Arrangements mit den besten Scores.
 Hierzu wird die Funktion \textbf{do\_scored\_search} verwendet.
 In ihr werden in drei verschachtelten Schleifen alle Test-Arrangements durchgegangen.
-Zu beachten ist, dass die erste Position angefangen von $0$ hochzählt, während die zweite Position eine Adresse nach der ersten Position anfängt.
-Gleiches gilt für die dritte Position.
+Zu beachten ist, dass die erste Position startet von $0$ hochzählt, während die zweite Position eine Adresse nach der ersten Position anfängt.
+Gleiches gilt für die dritte Position, sie starten eine Adresse nach der zweiten.
 Hierdurch werden die in \autoref{sec:Bestimmung_der_Stabilität} aufgezählten Optimierungen umgesetzt, die genauso für Test-Arrangements gelten können als auch für Check-Arrangements.
 Die Adressen der Eisdielen werden in einer neuen \textbf{Arrangement} Instanz gespeichert.
 
@@ -317,6 +317,7 @@ Sie wird für die Optimierung weggelassen.
 \medskip
 \begin{addmargin}[3em]{4em}
     \textbf{get\_ice\_cream\_distance} berechnet mithilfe von \textbf{get\_shortest\_distance} die Entfernung von einem Haus zu allen Eisdielen des Arrangements und wählt die kürzeste aus.
+    Dieser Wert entspricht der Eisdielendistanz.
 \end{addmargin}
 
 \medskip
@@ -337,8 +338,8 @@ Dieser Score ist schlechter als alle möglichen Scores, weshalb ein Dummy gegen 
 
 \subsection{Überprüfung der Stabilität}
 \label{sec:Überprüfung_der_Stabilität}
-Wenn die besten Test-Arrangements berechnet wurden, werden sie anschließend alle mit der Funktion \textbf{is\_stable} auf Stabilität überprüft.
-Diese nimmt ein Test-Arrangement entgegen und geht alle möglichen Check-Arrangements durch, bis entweder ein Check-Arrangement gefunden wurde, dass gegen das Test-Arrangements in einer Abstimmung gewinnen und es ablösen würde, oder entdeckt wird, dass kein derartiges Check-Arrangement vorliegen kann.
+Nachdem die besten Test-Arrangements berechnet wurden, werden sie anschließend alle mit der Funktion \textbf{is\_stable} auf Stabilität überprüft.
+Diese nimmt ein Test-Arrangement entgegen und geht alle möglichen Check-Arrangements durch, bis entweder ein Check-Arrangement gefunden wurde, das gegen das Test-Arrangements in einer Abstimmung gewinnen und es ablösen würde, oder erkannt wird, dass kein derartiges Check-Arrangement vorliegen kann.
 
 Diese Funktion wird in \textbf{test\_arrangements} auf einen bestimmten Teil der besten Arrangements ausgeführt.
 Dies ist der einzige multithreaded Teil des Programms, jeder Thread führt \textbf{test\_arrangements} einmalig aus.
@@ -359,7 +360,7 @@ Dafür wird \textbf{get\_abs\_distance} eingesetzt und mit der geringstern Entfe
 
 \medskip
 \begin{addmargin}[3em]{4em}
-    \textbf{get\_abs\_distance} wird durch eine Instanze der Enum Class \textbf{Direction} auf Links- oder Rechtssuche eingestellt.
+    \textbf{get\_abs\_distance} wird durch eine Instanz der Enum Class \textbf{Direction} auf Links- oder Rechtssuche eingestellt.
     Dementsprechend wird zurerst die direkte Distanz zwischen dem Startpunkt und dem Endpunkt berechnet.
     Wenn die direkte Distanz negativ ist, wird stattdessen die indirekte zurückgegeben.
     Hierdurch ergibt sich immer ein nicht-negativer Wert.
@@ -413,8 +414,8 @@ Das Programm besteht aus zwei Teilen.
 Der eine, die Funktion \textbf{is\_stable}, produziert bewiesenermaßen stabile Arrangements, ist allerdings zu langsam, um auf alle möglichen Arrangements angewendet zu werden.
 Diese Funktion lässt sich allerdings leicht parallelisieren und auf mehreren Threads ausführen.
 Auf der anderen Seite steht die Suche nach den besten Arrangements durch die durchschnittliche Eisdielendistanz, \textbf{do\_scored\_search}.
-Diese lässt sich nur empirisch beweisen und ist damit kein Garant für eine perfekte Lösung.
-Dafür ist sie äußerst schnell, weshalb es kein Problem ist, hiermit alle möglichen Arrangements durchzugehen.
+Diese lässt sich nur empirisch belegen und ist damit kein Garant für eine perfekte Lösung.
+Dafür ist sie äußerst schnell, weshalb es kein Problem ist, mit ihr alle möglichen Arrangements durchzugehen.
 
 Die Kombination dieser beiden Teile führt dazu, dass wenn das Programm ein stabiles Arrangement ausgibt, dieses definitiv stabil ist.
 Wenn das Programm allerdings kein stabiles Arrangement findet, besteht immer noch die Möglichkeit, dass es doch ein stabiles Arrangements gibt, dass nur eine hohe durchschnittliche Eisdielendistanz aufweist und daher noch nicht auf Stabilität geprüft wurde.
