@@ -113,6 +113,7 @@ Diese werden \emph{Test-Arrangement} genannt.
 Um die Stabilität zu bestimmen, muss das Test-Arrangement mit allen möglichen anderen Arrangements (\emph{Check-Arrangements} genannt) verglichen werden.
 Wenn auch nur ein einziges Check-Arrangement gefunden wird, das mehr Ja- als Nein-Stimmen erhält, ist das getestete Test-Arrangement instabil.
 Es lässt sich leicht erkennen, dass dieser Algorithmus, der Durchgang aller möglichen Test-Arrangements, mit einer Laufzeit von $O(n^6)$ nicht verwendbar ist.
+Allerdings entspricht er einer 1:1 Umsetzung der Bedingungen und produziert damit garantiert alle korrekten Ergebnisse und alle Ergebnisse, die er generiert, sind korrekt.
 
 \subsection{Ein Wort über die Graphiken}
 Alle in dieser Dokumentation verwendeten Darstellungen verwenden einheitliche Symbole:
@@ -141,7 +142,7 @@ Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hau
 Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen einen Wechsel stimmt.
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Das einzige Haus ist zufrieden mit der einzigen Eisdiele und lehnt jegliche Veränderung ab. Die Eisdielendistanz beträgt $0$.}
     \label{fig:01_hapy_house}
@@ -150,7 +151,7 @@ Dies ist in \autoref{fig:01_hapy_house} gezeigt.
 
 Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Unzufriedene Häuser}
     \begin{subfigure}[t]{\imageWidth}
@@ -170,7 +171,7 @@ Je höher er ist, desto unwahrscheinlicher wird eine Verlegung durchgesetzt.
 
 Allerdings muss dieser Wert nicht zwangsweise mit der Stabilität eines Arrangements übereinstimmen, was beispielsweise in \autoref{fig:04_broken_example} gezeigt wird.
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Trotz der für dieses Beispiel, \textit{eisbuden3.txt}, minimalen durchschnittlichen Eisdielendistanz von $3,3125$ stimmen mehr Häuser für eine Verlegung.}
     \label{fig:04_broken_example}
@@ -192,7 +193,7 @@ Daher können zwei Optimierungen getroffen werden:
 Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
 Hieraus folgt, dass der See immer in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Einteilung in Sektoren}
     \label{fig:05_sectors}
@@ -213,7 +214,7 @@ Aus diesen beiden Tatsachen geht hervor, dass ausschließlich die Ränder des Se
 Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
 In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehrere Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Test-Eisdielen Anordnung im Sektor}
     \begin{subfigure}[t]{\imageWidth}
@@ -304,8 +305,8 @@ Dieses enthält:
 Der erste Schritt ist die Berechnung der Arrangements mit den besten Scores.
 Hierzu wird die Funktion \textbf{do\_scored\_search} verwendet.
 In ihr werden in drei verschachtelten Schleifen alle Test-Arrangements durchgegangen.
-Zu beachten ist, dass die erste Position startet von $0$ hochzählt, während die zweite Position eine Adresse nach der ersten Position anfängt.
-Gleiches gilt für die dritte Position, sie starten eine Adresse nach der zweiten.
+Zu beachten ist, dass die erste Eisdielenposition anfängend von $0$ hochzählt, während die zweite Eisdielenposition eine Adresse nach der ersten Position anfängt.
+Gleiches gilt für die dritte Eisdiele, sie starten eine Adresse nach der zweiten.
 Hierdurch werden die in \autoref{sec:Bestimmung_der_Stabilität} aufgezählten Optimierungen umgesetzt, die genauso für Test-Arrangements gelten können als auch für Check-Arrangements.
 Die Adressen der Eisdielen werden in einer neuen \textbf{Arrangement} Instanz gespeichert.
 
@@ -349,8 +350,10 @@ Es lässt sich erkennen, dass es keinen Vorteil bringt, mehr Threads als beste A
 \medskip
 Hierzu wird anfänglich für jedes Haus die Eisdielendistanz in dem Test-Arrangement berechnet und in einem std::vector pro Thread gespeichert.
 Auf diese Weise muss nicht für jedes neue Test-Arrangement neuer Speicherplatz im Heap zugewiesen werden.
-Genau wie in \autoref{sec:Scored_Search} werden die in \autoref{sec:Bestimmung_der_Stabilität} genannten Optimierungen implementiert.
-Der einzige Unterschied ist, dass wenn die ersten beiden Positionen gewählt wurden, die Suche nach einer Dritten nicht begonnen wird, wenn wie in \autoref{sec:Auszählung_der_Stimmen} gezeigt bereits zu viele Stimmen gegen eine Verlegung in dem ersten Bereich gefunden werden.
+
+Die in \textbf{do\_scored\_search} eingesetzten und in \autoref{sec:Bestimmung_der_Stabilität} dargestellten Optimierungen werden hier ebenso eingesetzt.
+So kann die Suche nach einer dritten Eisdiele weggelassen werden, wenn bereits zwischen den ersten beiden Eisdielen zu viele Stimmen gegen eine Verlegung vorliegen.
+Dies wurde bereits in \autoref{sec:Auszählung_der_Stimmen} erklärt.
 
 \subsubsection{Nein-Stimmenzählung in einem Sektor}
 \label{sec:Stimmenzählung_in_einem_Sektor}
@@ -411,7 +414,7 @@ Schlussendlich wird die Anzahl an gefundenen stabilen Arrangements und die benö
 
 \section{Zugeständnisse}
 Das Programm besteht aus zwei Teilen.
-Der eine, die Funktion \textbf{is\_stable}, produziert bewiesenermaßen stabile Arrangements, ist allerdings zu langsam, um auf alle möglichen Arrangements angewendet zu werden.
+Der eine, die Funktion \textbf{is\_stable}, produziert durch die unmittelbare Umsetzung der Anforderungen der Aufgabenstellung garantiert stabile Arrangements, ist allerdings zu langsam, um auf alle möglichen Arrangements angewendet zu werden.
 Diese Funktion lässt sich allerdings leicht parallelisieren und auf mehreren Threads ausführen.
 Auf der anderen Seite steht die Suche nach den besten Arrangements durch die durchschnittliche Eisdielendistanz, \textbf{do\_scored\_search}.
 Diese lässt sich nur empirisch belegen und ist damit kein Garant für eine perfekte Lösung.
@@ -425,9 +428,9 @@ Dadurch ist dieses Programm nicht als perfekte Lösung des Problems zu betrachte
 
 \section{Beispiele}
 % Genügend Beispiele einbinden! Die Beispiele von der BwInf-Webseite sollten hier diskutiert werden, aber auch eigene Beispiele sind sehr gut – besonders wenn sie Spezialfälle abdecken. Aber bitte nicht 30 Seiten Programmausgabe hier einfügen!
-Nun wird das Programm mit allen Beispieldateien ausgeführt und die Ergebnisse in \autoref{tab:BWINF_Beispiele} und \autoref{fig:BWINF_Beispiele}.
+Die Beispieldateien werden nun mit dem Programm gelöst und die Ergebnisse in \autoref{tab:BWINF_Beispiele} und \autoref{fig:BWINF_Beispiele} eingetragen.
 
-\begin{table}[ht]
+\begin{table}[h!t]
     \begin{center}
         \begin{tabularx}{\linewidth}{l|X}
             \textbf{Eingabedatei} & \textbf{stabile Arrangements}                                                                                                                                                                   \\
@@ -464,7 +467,7 @@ Dies deckt sich mit dem in \autoref{sec:Sortierung_der_Arrangements} dargestellt
 Zudem lässt sich erkennen, dass die Häuser der Beispiele, die keine Lösung haben, relativ gleichmäßig verteilt sind.
 Dementsprechend ist die durchschnittliche Eisdielendistanz, der \glqq Zufriedenheitsgrad\grqq{} immer relativ gering, was sich mit dem fehlenden stabilen Arrangement deckt.
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \caption{Stabile Arrangements mit den niedrigsten Eisdielendistanzen der Beispieldateien}
     \label{fig:BWINF_Beispiele}
@@ -533,7 +536,7 @@ Wenn diese Datei leicht abgeändert wird und der Umfang des Sees variiert wird, 
 Diese sind in \autoref{tab:Häuser_auf_allen_Adressen} dargestellt.
 Eine Begründung für die merkwürdig erscheinenden Mengen wurde nicht gefunden.
 
-\begin{table}[ht]
+\begin{table}[h!t]
     \begin{center}
         \begin{tabularx}{\linewidth}{c|c}
             \textbf{Umfang} & \textbf{Menge stabiler Arrangements} \\

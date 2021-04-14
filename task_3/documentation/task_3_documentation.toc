@@ -1,8 +1,8 @@
 \babel@toc {ngerman}{}
 \contentsline {section}{\numberline {1}L\IeC {\"o}sungsidee}{1}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Ein Wort \IeC {\"u}ber die Graphiken}{1}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.1}Ein Wort \IeC {\"u}ber die Graphiken}{2}{subsection.1.1}%
 \contentsline {subsection}{\numberline {1.2}Sortierung der Arrangements}{2}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Bestimmung der Stabilit\IeC {\"a}t}{2}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.3}Bestimmung der Stabilit\IeC {\"a}t}{3}{subsection.1.3}%
 \contentsline {subsubsection}{\numberline {1.3.1}Ausz\IeC {\"a}hlung der Stimmen}{3}{subsubsection.1.3.1}%
 \contentsline {section}{\numberline {2}Umsetzung}{5}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Einlese der Eingabedatei}{5}{subsection.2.1}%
@@ -14,9 +14,9 @@
 \contentsline {section}{\numberline {4}Beispiele}{8}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Eigene Beispiele}{8}{subsection.4.1}%
 \contentsline {paragraph}{\nonumberline myeisbuden0.txt}{9}{section*.9}%
-\contentsline {paragraph}{\nonumberline myeisbuden1.txt}{9}{section*.10}%
-\contentsline {paragraph}{\nonumberline myeisbuden2.txt}{9}{section*.12}%
+\contentsline {paragraph}{\nonumberline myeisbuden1.txt}{10}{section*.10}%
+\contentsline {paragraph}{\nonumberline myeisbuden2.txt}{10}{section*.12}%
 \contentsline {paragraph}{\nonumberline myeisbuden3.txt}{10}{section*.13}%
 \contentsline {paragraph}{\nonumberline myeisbuden4.txt}{10}{section*.14}%
 \contentsline {paragraph}{\nonumberline myeisbuden5.txt}{10}{section*.15}%
-\contentsline {section}{\numberline {5}Quellcode}{10}{section.5}%
+\contentsline {section}{\numberline {5}Quellcode}{11}{section.5}%
