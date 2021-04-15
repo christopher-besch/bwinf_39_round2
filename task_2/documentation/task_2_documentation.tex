@@ -139,7 +139,7 @@ Diese Früchte können nicht von dieser Schüssel sein.
     \end{center}
 \end{table}
 
-Nun werden für jede Schüssel alle möglicherweise vorliegenden Früchte gesucht; diese werden im Folgenden legale Früchte genannt.
+Nun werden für jede Schüssel alle möglicherweise vorliegenden Früchte gesucht; diese werden im Folgenden \glqq legale Früchte\grqq{} genannt.
 In jeder Schüssel liegt eine Frucht aus der Menge der legalen Früchte für diese Schüssel.
 
 Alle legalen Früchte für eine bestimmte Schüssel müssen zwei Voraussetzungen erfüllen:
@@ -268,8 +268,8 @@ Hier lässt sich erkennen, dass eine Schale in keinem Spieß vorkommt und einen 
 Erneut wird das korrekte Ergebnis produziert, es liegt genügend Information vor und die Schalen 6, 1, 7, 11, 5 und 10 wurden ausgewählt.
 
 \paragraph{spiesse3.txt}
-In diesem Fall liegt nicht genügend Information vor, um eindeutig sagen zu können, welche Schalen auszuwählen sind.
-Dies gibt das Programm korrekt aus und gibt and, dass die Schalen 7, 10, 12, 5, 1 und 8 definitiv geforderte Früchte enthalten und dass entweder die Schale 2 oder 11 eine geforderte Frucht enthält, es liegt allerdings nicht genügend Information vor, um genau bestimmen zu können, welche das ist.
+In diesem Fall liegt nicht genügend Information vor, um eindeutig sagen zu können, welche Schalen auszuwählen sind---das System ist unterbestimmt.
+Dies gibt das Programm korrekt aus und gibt an, dass die Schalen 7, 10, 12, 5, 1 und 8 definitiv geforderte Früchte enthalten und dass entweder die Schale 2 oder 11 eine geforderte Frucht enthält, es liegt allerdings nicht genügend Information vor, um genau bestimmen zu können, welche das ist.
 
 In der ersten Zeile der Beispieldatei wird die Anzahl der Früchte angegeben, in diesem Fall 15.
 Allerdings sind nur 14 verschiedene Früchte in den Spießen und den geforderten Früchten vorzufinden.
@@ -326,7 +326,8 @@ Die Datei sieht wie folgt aus:
 \textbf{Weintraube}
 
 \textbf{0}
-Der einzige Unterschied zu dem vorherigen Beispiel ist die Anzahl aller Früchte total.
+
+Der Unterschied zu dem vorherigen Beispiel ist die Absolutzahl der Früchte.
 In Diesem Fall sind zwei Früchte vorhanden.
 
 Das Programm erstellt eine neue Frucht, da nur eine gefunden werden kann, Weintraube, und zwei neue Schalen.
