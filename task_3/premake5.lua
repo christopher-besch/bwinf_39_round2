@@ -11,6 +11,11 @@ workspace "task_3"
     filter "configurations:Release"
         defines { "RELEASE" }
         optimize "On"
+    
+    filter "system:linux"
+        defines { "LINUX" }
+    filter "system:windows"
+        defines { "WINDOWS" }
 
 
 project "task_3"
@@ -27,7 +32,7 @@ project "task_3"
         "src/**.h", "src/**.cpp"
     }
 
-    -- what the fuck, linux?
-    links {
-        "pthread"
-    }
+    filter "not system:windows"
+        links {
+            "pthread"
+        }

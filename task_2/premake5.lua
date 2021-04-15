@@ -11,6 +11,11 @@ workspace "task_2"
     filter "configurations:Release"
         defines { "RELEASE" }
         optimize "On"
+    
+    filter "system:linux"
+        defines { "LINUX" }
+    filter "system:windows"
+        defines { "WINDOWS" }
 
 
 project "task_2"

@@ -3,7 +3,9 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#ifndef WINDOWS
 #include <pthread.h>
+#endif
 #include <mutex>
 
 #include "utils.h"
