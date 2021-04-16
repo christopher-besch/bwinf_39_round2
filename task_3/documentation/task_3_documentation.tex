@@ -139,7 +139,7 @@ Hierzu wird für jedes mögliche Arrangement ein Score berechnet.
 Dieser entspricht der durchschnittlichen Eisdielendistanz aller Häuser.
 Nun stellt sich heraus, dass stabile Arrangements auch die niedrigsten Scores aller Arrangements aufweisen.
 Dies lässt sich damit erklären, dass je kleiner die Eisdielendistanz eines Hauses in einem Test-Arrangement ist, desto weniger Check-Arrangements existieren, die eine noch geringere Eisdielendistanz für das Haus generieren.
-Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen einen Wechsel stimmt.
+Wenn die Eisdielendistanz beispielsweise $0$ beträgt, existiert kein einziges Check-Arrangement, dem dieses Haus eine Ja-Stimme geben würde, da eine geringere Eisdielendistanz nicht möglich ist und ein Haus bei gleichbleibender Eisdielendistanz immer gegen eine Verlegung stimmt.
 Dies ist in \autoref{fig:01_hapy_house} gezeigt.
 
 \begin{figure}[h!t]
@@ -149,7 +149,7 @@ Dies ist in \autoref{fig:01_hapy_house} gezeigt.
     \includegraphics[width=\imageWidth]{01_happy_house.png}
 \end{figure}
 
-Wenn die Eisdielendistanz den maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
+Wenn die Eisdielendistanz dem maximalen Wert, dem halben Umfang des Sees, entspricht, stimmt es für alle Check-Arrangements (\autoref{fig:02_unhappy_house}), abgesehen von denen, die die Eisdielendistanz nicht verändern (\autoref{fig:03_slightly_happy_house}).
 
 \begin{figure}[h!t]
     \centering
@@ -184,14 +184,14 @@ Trotzdem kann sie zur Generierung eines Satzes an Test-Arrangements, den $x$ Arr
 \subsection{Bestimmung der Stabilität}
 \label{sec:Bestimmung_der_Stabilität}
 Um die Stabilität eines Test-Arrangements zu berechnen, müssen alle möglichen Check-Arrangements durchgegangen werden.
-Es wird nur eine einziges Check-Arrangement gesucht, das das Test-Arrangement schlagen kann.
+Es wird nur ein einziges Check-Arrangement gesucht, das das Test-Arrangement schlagen kann.
 Daher können zwei Optimierungen getroffen werden:
 \begin{enumerate}
     \item Eisdielen sollten nicht übereinander liegen, da bei der Aufsplittung zweier Aufeinanderliegender die Eisdielendistanz keines Häuses vergrößert wird.
-    \item Alle Dopplungen sind unnötig, da die Reihenfolge der Eisdielen für die Stimmen der Häuser irrelevant sind.
+    \item Alle Dopplungen sind unnötig, da die Reihenfolge der Eisdielen für die Stimmen der Häuser irrelevant ist.
 \end{enumerate}
 Deshalb darf die Bedingung gelten, dass die Adresse der zweiten Eisdiele größer als die der ersten und kleiner als die der dritten ist.
-Hieraus folgt, dass der See immer in drei Sektoren unterteilt ist (\autoref{fig:05_sectors}).
+Hieraus folgt, dass der See immer in drei Sektoren unterteilt ist, dessen Grenzen Check-Eisdielen sind (\autoref{fig:05_sectors}).
 
 \begin{figure}[h!t]
     \centering
@@ -204,14 +204,14 @@ Hieraus folgt, dass der See immer in drei Sektoren unterteilt ist (\autoref{fig:
 \label{sec:Auszählung_der_Stimmen}
 Es zeigt sich, dass die Stimme der Häuser innerhalb eines Sektors ausschließlich durch die Größe und Position des Sektors und die in dem Sektor befindlichen Eisdielen des Test-Arrangements determiniert sind.
 \begin{itemize}
-    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die Eisdielendistanz ohne Test-Eisdielen innerhalb des Sektors nie verkürzen wird.
+    \item Alle Test-Eisdielen außerhalb des Sektors sind von den Häusern immer weiter entfernt als die Ränder des Sektors, weshalb sich die Eisdielendistanz ohne Test-Eisdielen innerhalb des Sektors bei Verlegung immer verkürzen würde.
     \item Genauso ist für jedes Haus im Sektor eine der Sektorgrenzen immer die nächste Check-Eisdiele.
           Dementsprechend ist die Position der dritten Check-Eisdiele ebenfalls irrelevant. da immer nur die Eisdielendistanz betrachtet wird.
 \end{itemize}
 Aus diesen beiden Tatsachen geht hervor, dass ausschließlich die Ränder des Sektors und die sich im Sektor befindlichen Test-Eisdielen Einfluss auf die Stimme eines Hauses in dem Sektor haben.
 
 \medskip
-Nun wird sich die Verteilung der Ja- und Nein-Stimmen betrachtet.
+Nun wird die Verteilung der Ja- und Nein-Stimmen betrachtet.
 In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\autoref{fig:07_one_test_ice}) oder mehrere Eisdielen (\autoref{fig:08_two_test_ice}) befinden.
 
 \begin{figure}[h!t]
@@ -234,14 +234,14 @@ In einem Sektor können sich keine (\autoref{fig:06_no_test_ice}) nur eine (\aut
     \end{subfigure}
 \end{figure}
 
-In dem letzten Fall, von mehr als zwei Test-Eisdielen im Sektor, müssen nur die äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
+In dem letzten Fall, von mehr als einer Test-Eisdielenn im Sektor, müssen nur die äußersten betrachtet werden, da zwischen diesen beiden keine Check-Eisdiele stehen kann.
 Dies geht aus der Definition eines Sektors hervor.
 Somit stimmen immer alle Häuser zwischen diesen gegen eine Verlegung, unabhängig von der Menge an Test-Eisdielen.
 
 Um die Anzahl an Nein- beziehungsweise Ja-stimmenden Häusern zu bestimmen, werden zwei verschiedene Methoden verwendet:
 \begin{itemize}
     \item Wenn sich keine Test-Eisdiele in dem Sektor befindet, stimmen alle Häuser für eine Verlegung.
-    \item In allen anderen Fällen befinden sich die einzigen Ja-stimmenden Häuser in den beiden Bereichen zwischen einem Rand un der nächsten Test-Eisdiele.
+    \item In allen anderen Fällen befinden sich die einzigen Ja-stimmenden Häuser in den beiden Bereichen zwischen einem Rand und der nächsten Test-Eisdiele.
           Wenn diese Bereiche in der Mitte geteilt wird, befinden sich alle Ja-stimmenden Häuser in der Hälfte, die näher am Rand ist.
           Alle Nein-stimmenden Häuser liegen in der anderen Hälfte.
           Dies lässt sich gut in \autoref{fig:08_two_test_ice} erkennen.
@@ -265,14 +265,14 @@ Der Übersichtlichkeit halber ist das Programm in drei Dateien unterteilt:
     \item \textbf{utils.h} enthält verwendete Structs und generell anwendbare Funktionen und Makros und
     \item \textbf{calculate\_stable.h} enthält die eigentlichen Funktionen zur Bestimmung der stabilen Arrangements.
 \end{itemize}
-Die einzigen Eingaben, die das Programm benötigt, ist:
-\begin{itemize}
-    \item der Pfad der Eingabedatei und
-    \item die optionale Angabe der Menge zu verwendender Threads und
-    \item besten Arrangements, die auf Stabilität überprüft werden sollen.
-\end{itemize}
+Die einzigen Command Line Parameter, die das Programm benötigt, sind:
+\begin{enumerate}
+    \item der Pfad der Eingabedatei,
+    \item die optionale Angabe der auf Stabilität zu überprüfenden Arrangements und
+    \item die optionale Angabe der Menge zu verwendender Threads.
+\end{enumerate}
 
-Je geringer die Menge and besten Arrangements ist, desto kürzer ist die Laufzeit.
+Je geringer die Menge an besten Arrangements ist, desto kürzer ist die Laufzeit.
 Allerdings ist ein zu niedriger Wert problemtisch, da wie bereits in \autoref{fig:04_broken_example} gezeigt, die stabilen Arrangements nicht zwingendermaßen die geringste Eisdielendistanz aufweisen.
 Wenn kein Wert angegeben wird, werde die $600$ besten Arrangements überprüft.
 Dieser Wert ist eine gute Wahl für die Beispieldateien.
@@ -305,7 +305,7 @@ Dieses enthält:
 Der erste Schritt ist die Berechnung der Arrangements mit den besten Scores.
 Hierzu wird die Funktion \textbf{do\_scored\_search} verwendet.
 In ihr werden in drei verschachtelten Schleifen alle Test-Arrangements durchgegangen.
-Zu beachten ist, dass die erste Eisdielenposition anfängend von $0$ hochzählt, während die zweite Eisdielenposition eine Adresse nach der ersten Position anfängt.
+Zu beachten ist, dass die erste Eisdielenposition von $0$ hochzählt, während die zweite Eisdielenposition eine Adresse nach der ersten Position anfängt.
 Gleiches gilt für die dritte Eisdiele, sie starten eine Adresse nach der zweiten.
 Hierdurch werden die in \autoref{sec:Bestimmung_der_Stabilität} aufgezählten Optimierungen umgesetzt, die genauso für Test-Arrangements gelten können als auch für Check-Arrangements.
 Die Adressen der Eisdielen werden in einer neuen \textbf{Arrangement} Instanz gespeichert.
@@ -328,14 +328,14 @@ Sie wird für die Optimierung weggelassen.
 \end{addmargin}
 
 \medskip
-Dieser Score wird in der \textbf{Arrangement} Instanzen gespeichert.
+Dieser Scores werden in den \textbf{Arrangement} Instanzen gespeichert.
 Um die Arrangements effizient zu sortieren, wird zuerst der std::vector in der \textbf{Lake} Instanz, der die besten Arrangements enthalten soll, mit so vielen Dummy Arrangements gefüllt, wie beste Arrangements gefordert sind.
 Wenn eine weitere \textbf{Arrangement} Instanz erstellt wurde, wird diese mit der Funktion \textbf{insert} an der richtigen Stelle in den std::vector eingefügt.
 Anschließend wird das letzte Element, das mit dem schlechtesten Score, entfernt.
 Diese vorgehensweise hat den Vorteil, dass der std::vector zu jedem Zeitpunkt sortiert ist.
 
 Der Score der Dummy Arrangements entspricht dem Produkt aus Umfang und Menge an Häusern.
-Dieser Score ist schlechter als alle möglichen Scores, weshalb ein Dummy gegen jegliche Test-Arrangements ersetzt wird.
+Dieser Score ist schlechter als alle möglichen Scores, weshalb ein Dummy gegen jegliche Test-Arrangements ersetzt werden kann.
 
 \subsection{Überprüfung der Stabilität}
 \label{sec:Überprüfung_der_Stabilität}
@@ -421,7 +421,7 @@ Diese lässt sich nur empirisch belegen und ist damit kein Garant für eine perf
 Dafür ist sie äußerst schnell, weshalb es kein Problem ist, mit ihr alle möglichen Arrangements durchzugehen.
 
 Die Kombination dieser beiden Teile führt dazu, dass wenn das Programm ein stabiles Arrangement ausgibt, dieses definitiv stabil ist.
-Wenn das Programm allerdings kein stabiles Arrangement findet, besteht immer noch die Möglichkeit, dass es doch ein stabiles Arrangements gibt, dass nur eine hohe durchschnittliche Eisdielendistanz aufweist und daher noch nicht auf Stabilität geprüft wurde.
+Wenn das Programm allerdings kein stabiles Arrangement findet, besteht immer noch die Möglichkeit, dass es doch ein stabiles Arrangements gibt, das nur eine hohe durchschnittliche Eisdielendistanz aufweist und daher noch nicht auf Stabilität geprüft wurde.
 Diese Situation kommt in den Beispielen vom BWINF mit $600$ besten Arrangements nicht vor.
 Deshalb sollte die Menge an Arrangements, die überprüft werden soll, möglichst groß gewählt werden, um die Wahrscheinlichkeit, dass ein stabiles Arrangement nicht gefunden wird, zu minimieren.
 Dadurch ist dieses Programm nicht als perfekte Lösung des Problems zu betrachten.
@@ -465,7 +465,7 @@ An den Beispielen lässt sich erkennen, dass die gewählten Eisdielen immer inmi
 Genau diese Positionen generieren die höchsten durchschnittlichen Eisdielendistanzen.
 Dies deckt sich mit dem in \autoref{sec:Sortierung_der_Arrangements} dargestellten Zusammenhang der Stabilität und der durchschnittlichen Eisdielendistanz.
 Zudem lässt sich erkennen, dass die Häuser der Beispiele, die keine Lösung haben, relativ gleichmäßig verteilt sind.
-Dementsprechend ist die durchschnittliche Eisdielendistanz, der \glqq Zufriedenheitsgrad\grqq{} immer relativ gering, was sich mit dem fehlenden stabilen Arrangement deckt.
+Dementsprechend ist die durchschnittliche Eisdielendistanz, der \glqq Zufriedenheitsgrad\grqq{} immer relativ hoch, was sich mit dem fehlenden stabilen Arrangement deckt.
 
 \begin{figure}[h!t]
     \centering
@@ -518,7 +518,7 @@ Daher sind alle möglichen Arrangements \emph{0 0 0}, die alle stabil sind, da k
 
 Wenn mehr Arrangements getestet werden sollen, als existieren, werden die restlichen Arrangements durch \emph{0 0 0} gefüllt.
 Dies ist in einigen Fällen falsch, da dieses Arrangement nicht zwingendermaßen stabil ist.
-Zudem führt dies zu der mehrfachen Ausgabe des selbes Arrangements.
+Zudem führt dies zu der mehrfachen Ausgabe des selben Arrangements.
 Eine Überprüfung, ob weniger Arrangements vorliegen als gefordert sind, wurde gewollt nicht implementiert, da
 \begin{itemize}
     \item so die Laufzeit verbessert wird,

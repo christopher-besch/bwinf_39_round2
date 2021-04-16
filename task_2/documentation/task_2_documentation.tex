@@ -187,24 +187,25 @@ Es ergibt sich die Menge aller ausgewählten Schüsseln: 1, 3 und 4
 Die Schüsseln 1 und 2 liefern jeweils entweder Äpfel oder Brombeeren.
 Da beide Früchte gefordert sind, ist diese Ungewissheit irrelevant.
 
-Mit dieser Methode kann in allen Fällen eine Aussage gefällt werden, ob genügend Information vorliegt und wenn dies der Fall ist, die Menge der ausgewählten Schüsseln angegeben werden.
+Mit dieser Methode kann in allen Fällen eine Aussage gefällt werden, ob genügend Information vorliegt und, wenn dies der Fall ist, die Menge der ausgewählten Schüsseln angegeben werden.
 
 \section{Umsetzung}
 % Hier wird kurz erläutert, wie die Lösungsidee im Programm tatsächlich umgesetzt wurde. Hier können auch Implementierungsdetails erwähnt werden.
 Die Lösungsidee wird in C++ implementiert.
+Der einzige Command Line Parameter, den das Programm benötigt, ist der Pfad der Eingabedatei.
 
 \subsection{Einlese der Eingabedatei}
 Als erster Schritt wird in der Funktion \textbf{read\_file} die Eingabedatei gelesen.
 Hierbei wird überprüft, ob die Eingabedatei dem gegebenen Format entspricht, wenn nicht, wird das Programm abgebrochen.
-Hierzu wird ein Makro \textbf{raise\_error()} verwendet, dass die Ausführung des Programmes abbricht und eine möglichst informative Fehlermeldung zurückgibt.
+Hierzu wird ein Makro \textbf{raise\_error()} verwendet, das die Ausführung des Programmes abbricht und eine möglichst informative Fehlermeldung zurückgibt.
 
 Die Fruchtnamen werden mithilfe einer Instanz der Klasse \textbf{LookupTable} aufsteigend und anfangend bei $0$ in Ganzzahlen, Frucht IDs, übersetzt.
 Dadurch ist die Anzahl an verschieden Früchten nicht auf das Alphabet limitiert.
 Ein weiterer Vorteil ist, dass da die ID aufsteigend und bei $0$ anfangend verteilt werden, die IDs als Indizes in Bit Fields verwendet werden können.
 Hierzu wird ein std::vector<bool> verwendet, da die Anzahl der Früchte zum Zeitpunkt der Kompilierung nicht bekannt ist.
-So liegt für jede Frucht ein Bit/Bool vor, ist er $true$, ist diese Frucht enthalten, ist sie $false$, ist sie nicht enthalten.
+So liegt für jede Frucht ein Bit/Bool vor, ist sie $true$, ist diese Frucht enthalten, ist sie $false$, ist sie nicht enthalten.
 Diese kompakte Datenstruktur ist ressourcenschonender im Vergleich zu einem std::vector<std::string> mit den Namen aller enthaltenden Früchten.
-Zudem können effiziente OR und AND Operationen verwendet werden, um zwei Bit Fields miteinander zu vergleichen, oder weitere weitere Früchte hinzuzufügen.
+Zudem können effiziente OR und AND Operationen verwendet werden, um zwei Bit Fields miteinander zu vergleichen, oder weitere Früchte hinzuzufügen.
 
 Die Namen für die Schüsseln werden auf die gleiche Weise behandelt.
 Zwar ist angegeben, dass alle Schüsseln nummeriert sind, es ist allerdings nicht klar, wie die Nummern verteilt werden, daher ergibt es Sinn, die Namen der Schüsseln als Strings zu behandeln und ebenfalls eine Instanz von \textbf{LookupTable} zu verwenden.
@@ -238,12 +239,12 @@ Wenn der Spieß diese Schale verwendet, werden dessen Früchte zu \textbf{allowe
 
 Nun werden die legalen Früchte für jede Schale bestimmt.
 Dafür werden für jede Frucht die beiden in der Lösungsidee genannten Voraussetzungen überprüft.
-Da Bit Fields verwendet werden, können die gegenüberliegenden Elemente in
+Hierzu werden die erlaubten und verbotenen Früchte in std::vector<bool> geladen und miteinenader verglichen.
 
 \subsection{Auswahl der Schalen}
 Im letzten Schritt werden alle Schalen durchgegangen.
 Hierbei wird überprüft, wie viele der legalen Früchte einer Schale gefordert sind.
-Sind alle gefordert wird \textbf{selected} auf $true$ gesetzt, sind einige aber nicht alle gefordert, wird \textbf{possible\_selected} auf $true$ und \textbf{possible} auf $false$ gesetzt.
+Sind alle gefordert, wird \textbf{selected} auf $true$ gesetzt, sind einige aber nicht alle gefordert, wird \textbf{possible\_selected} auf $true$ und \textbf{possible} auf $false$ gesetzt.
 
 Wenn \textbf{possible} nach Durchlauf aller Schalen $true$ bleibt, ist genügend Information vorhanden, um eine Aussage treffen zu können.
 
